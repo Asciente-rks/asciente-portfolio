@@ -1,1 +1,16 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables (Spotify keys, etc)
+.env
+.env.local
+
+# Tooling
+.vscode/
+.astro/
+
+# OS files
+.DS_Store
