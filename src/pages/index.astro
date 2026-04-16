@@ -1,0 +1,288 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { Image } from 'astro:assets';
+import GradPicSrc from '../assets/GradPic_Sonio.jpg';
+import AscienteHubThumb from '../assets/AscienteHub/LoginAscienteHub.png';
+import ServiceTicketThumb from '../assets/ServiceTicket/LoginServiceTicket.png';
+import TodoThumb from '../assets/Todo/TodoList.png';
+import H100Thumb from '../assets/H100/CXUI_Homepage.png';
+import NHCThumb from '../assets/NHC/Login.png';
+import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
+---
+<MainLayout>
+  <section class="mx-auto flex min-h-[calc(100vh-5rem)] max-w-4xl px-4 pt-12">
+    <div class="w-full flex flex-col md:flex-row items-start gap-8">
+      <div class="flex-shrink-0 w-[240px]">
+        <img src="/src/assets/GradPic_Sonio.jpg" srcset="/src/assets/GradPic_Sonio.jpg 1x, /src/assets/GradPic_Sonio.jpg 2x" sizes="240px" width="240" height="320" alt="GradPic Sonio" class="profile-img" />
+      </div>
+
+      <div class="flex-1">
+        <div class="mb-2">
+          <h1 class="text-3xl font-semibold code-font text-black">Ralph Kenneth Sonio</h1>
+          <p class="mt-1 text-sm code-font text-black">Cloud Native Backend Developer | Quality Assurance Tester</p>
+        </div>
+
+        <div class="mt-4 cmd-window">
+          <div class="cmd-header">
+            <div class="cmd-buttons">
+              <span class="cmd-btn" style="background:#ff5f56"></span>
+              <span class="cmd-btn" style="background:#ffbd2e"></span>
+              <span class="cmd-btn" style="background:#27c93f"></span>
+            </div>
+            <div class="cmd-title">C:\\Users\\ralph-sonio — Command Prompt</div>
+            <div style="width:36px"></div>
+          </div>
+
+          <div class="cmd-body">
+            <div id="cmd-content" class="code-font" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <script type="module">
+          const lines = [
+            '--check-status',
+            'current project: Asciente Hub Game Launcher [Under Development]',
+            'tech stack: AWS Lambda, Cloudflare R2, TiDB, ReactJS, TailwindCSS, Tauri',
+            'status: Debugging and Testing Production Build'
+          ];
+
+          const container = document.getElementById('cmd-content');
+
+          function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+          async function typeLines(target, lines, charDelay=35, lineDelay=500){
+            for(const text of lines){
+              const div = document.createElement('div');
+              div.className = 'line';
+              target.appendChild(div);
+              for(let i=0;i<=text.length;i++){
+                div.innerHTML = escapeHtml(text.slice(0,i)) + '<span class="caret"></span>';
+                await new Promise(r => setTimeout(r, charDelay));
+              }
+              // remove caret after line complete
+              div.innerHTML = escapeHtml(text);
+              await new Promise(r => setTimeout(r, lineDelay));
+            }
+            // final prompt
+            const prompt = document.createElement('div');
+            prompt.className = 'line';
+            prompt.innerHTML = 'C:\\Users\\ralph-sonio>' + '<span class="caret"></span>';
+            target.appendChild(prompt);
+          }
+
+          // start typing after small delay
+          setTimeout(()=> typeLines(container, lines, 30, 450), 300);
+        </script>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto mt-16 max-w-6xl px-4 pb-16">
+    <div class="mb-8 flex items-center justify-between gap-4">
+      <div>
+        <p class="text-sm uppercase tracking-[0.35em] text-slate-500">Projects</p>
+        <h2 class="mt-3 text-3xl font-semibold text-slate-900">Recent Work</h2>
+      </div>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2 items-stretch project-grid">
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
+            <h3 class="mt-2 text-2xl font-semibold text-slate-950">Asciente Hub</h3>
+          </div>
+          <span class="project-tag">TypeScript</span>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+          <Image src={AscienteHubThumb} width={1920} alt="Asciente Hub thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
+        </div>
+
+        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
+          <p>Architecting a cloud-native Game Launcher with distributed SQL and observability.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="tech-chip">AWS Lambda</span>
+            <span class="tech-chip">Cloudflare R2</span>
+            <span class="tech-chip">TiDB</span>
+            <span class="tech-chip">ReactJS</span>
+            <span class="tech-chip">TailwindCSS</span>
+            <span class="tech-chip">Tauri</span>
+          </div>
+          <div class="card-actions">
+            <a href="#" class="card-action-btn">Source Code</a>
+            <a href="#" class="card-action-btn">Live Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
+            <h3 class="mt-2 text-2xl font-semibold text-slate-950">Service Ticket System</h3>
+          </div>
+          <span class="project-tag">TypeScript</span>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+          <Image src={ServiceTicketThumb} width={1920} alt="Service Ticket System thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
+        </div>
+
+        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
+          <p>Built a secure, 24/7 live ticketing system featuring RBAC and enterprise-grade auth.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="tech-chip">Node.js</span>
+            <span class="tech-chip">JWT</span>
+            <span class="tech-chip">TiDB</span>
+            <span class="tech-chip">React</span>
+            <span class="tech-chip">Tailwind</span>
+            <span class="tech-chip">Render</span>
+            <span class="tech-chip">Vercel</span>
+          </div>
+          <div class="card-actions">
+            <a href="#" class="card-action-btn">Source Code</a>
+            <a href="#" class="card-action-btn">Live Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
+            <h3 class="mt-2 text-2xl font-semibold text-slate-950">To-Do List App</h3>
+          </div>
+          <span class="project-tag">TypeScript</span>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+          <Image src={TodoThumb} width={1920} alt="To-Do List App thumbnail" class="project-thumb todo-crop" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
+        </div>
+
+        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
+          <p>Full-Stack Developer - Integrated a mobile-to-cloud task manager with automated CI/CD via Expo Services.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="tech-chip">React Native</span>
+            <span class="tech-chip">EAS</span>
+            <span class="tech-chip">TiDB</span>
+            <span class="tech-chip">Render</span>
+            <span class="tech-chip">Vercel</span>
+          </div>
+          <div class="card-actions">
+            <a href="#" class="card-action-btn">Source Code</a>
+            <a href="#" class="card-action-btn">Live Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
+            <h3 class="mt-2 text-2xl font-semibold text-slate-950">H100 Ecolodge</h3>
+          </div>
+          <span class="project-tag">Java</span>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+          <Image src={H100Thumb} width={1920} alt="H100 Ecolodge thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
+        </div>
+
+        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
+          <p>Delivered a commercial booking engine under zero-cost infrastructure constraints as the client requested.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="tech-chip">Spring Boot</span>
+            <span class="tech-chip">MySQL</span>
+            <span class="tech-chip">Aiven</span>
+            <span class="tech-chip">HTML</span>
+            <span class="tech-chip">CSS</span>
+            <span class="tech-chip">JavaScript</span>
+            <span class="tech-chip">Spring Data JPA</span>
+          </div>
+          <div class="card-actions">
+            <a href="#" class="card-action-btn">Source Code</a>
+            <a href="#" class="card-action-btn">Live Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
+            <h3 class="mt-2 text-2xl font-semibold text-slate-950">NHC Internal Gym</h3>
+          </div>
+          <span class="project-tag">C#</span>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+          <Image src={NHCThumb} width={1920} alt="NHC Internal Gym thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
+        </div>
+
+        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
+          <p>Engineered a custom desktop management solution focusing on high-performance local data handling.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="tech-chip">.NET Windows Forms</span>
+            <span class="tech-chip">SQL Server</span>
+          </div>
+          <div class="card-actions">
+            <a href="#" class="card-action-btn">Source Code</a>
+            <a href="#" class="card-action-btn">Live Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
+            <h3 class="mt-2 text-2xl font-semibold text-slate-950">The Last Light</h3>
+          </div>
+          <span class="project-tag">C#</span>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+          <Image src={LastLightThumb} width={1920} alt="The Last Light thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
+        </div>
+
+        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
+          <p>A Tutorial Based 3D Horror Game from User1 Productions, extended the game for additional Enemy, UI, Accessibility Features, Sound for a more exciting gameplay.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="tech-chip">Unity</span>
+            <span class="tech-chip">Blender</span>
+            <span class="tech-chip">VS Code</span>
+          </div>
+          <div class="card-actions">
+            <a href="#" class="card-action-btn">Source Code</a>
+            <a href="#" class="card-action-btn">Live Demo</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="footer-section">
+    <div class="footer-card">
+      <p class="footer-headline">Reach out to me with</p>
+      <div id="contact-area" class="flex flex-col items-center gap-4">
+        <button id="contact-trigger" class="footer-btn">Get in touch</button>
+      </div>
+    </div>
+    <script type="module">
+      const contactArea = document.getElementById('contact-area');
+      const contactTrigger = document.getElementById('contact-trigger');
+      contactTrigger.addEventListener('click', () => {
+        contactTrigger.classList.add('opacity-0');
+        setTimeout(() => {
+          contactArea.innerHTML = `
+            <div class="contact-links">
+              <a href="mailto:hello@example.com">Email</a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+          `;
+        }, 250);
+      });
+    </script>
+  </section>
+</MainLayout>

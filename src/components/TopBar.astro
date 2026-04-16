@@ -1,0 +1,37 @@
+---
+const navItems = [
+  { label: 'Projects', href: '#projects' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'About', href: '#about' }
+];
+---
+<header class="fixed inset-x-0 top-0 z-50 border-b border-black bg-white">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+    <a href="/" class="inline-flex items-center gap-2 text-sm font-semibold text-black transition hover:text-slate-700">
+      <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-black ring-1 ring-black/10">~</span>
+      <span>~/ralph-sonio</span>
+    </a>
+
+    <nav class="hidden items-center gap-3 md:flex">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class="rounded-full px-3 py-2 text-sm font-medium text-black transition hover:bg-slate-100 hover:text-black"
+          >{item.label}</a>
+      ))}
+      <button
+        class="ml-2 inline-flex items-center rounded-full border border-black bg-white px-3 py-2 text-sm font-medium text-black transition hover:bg-slate-100"
+        type="button"
+      >
+        Light / Dark
+      </button>
+    </nav>
+
+    <button
+      class="inline-flex items-center gap-2 rounded-full border border-black bg-white px-3 py-2 text-sm font-medium text-black transition hover:bg-slate-100 md:hidden"
+      type="button"
+    >
+      Menu
+    </button>
+  </div>
+</header>
