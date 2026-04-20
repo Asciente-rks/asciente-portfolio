@@ -1,0 +1,11 @@
+---
+export const prerender = false;
+export async function getStaticPaths() {
+  return [];
+}
+import MainLayout from '../../layouts/MainLayout.astro';
+const { slug } = Astro.params;
+---
+<MainLayout>
+  <section></section>
+</MainLayout>

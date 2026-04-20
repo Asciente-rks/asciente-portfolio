@@ -6,71 +6,183 @@ import AscienteHubThumb from '../assets/AscienteHub/LoginAscienteHub.png';
 import ServiceTicketThumb from '../assets/ServiceTicket/LoginServiceTicket.png';
 import TodoThumb from '../assets/Todo/TodoList.png';
 import H100Thumb from '../assets/H100/CXUI_Homepage.png';
+import SystemPulseThumb from '../assets/SystemPulse/LoginPage_SystemPulse.png';
 import NHCThumb from '../assets/NHC/Login.png';
 import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
 ---
 <MainLayout>
   <section class="mx-auto flex min-h-[calc(100vh-5rem)] max-w-4xl px-4 pt-12">
-    <div class="w-full flex flex-col md:flex-row items-start gap-8">
+    <div class="w-full flex flex-col md:flex-row md:justify-center items-start gap-8">
       <div class="flex-shrink-0 w-[240px]">
         <img src="/src/assets/GradPic_Sonio.jpg" srcset="/src/assets/GradPic_Sonio.jpg 1x, /src/assets/GradPic_Sonio.jpg 2x" sizes="240px" width="240" height="320" alt="GradPic Sonio" class="profile-img" />
       </div>
 
-      <div class="flex-1">
+      <div class="flex-none">
         <div class="mb-2">
           <h1 class="text-3xl font-semibold code-font text-black">Ralph Kenneth Sonio</h1>
           <p class="mt-1 text-sm code-font text-black">Cloud Native Backend Developer | Quality Assurance Tester</p>
         </div>
 
-        <div class="mt-4 cmd-window">
-          <div class="cmd-header">
-            <div class="cmd-buttons">
-              <span class="cmd-btn" style="background:#ff5f56"></span>
-              <span class="cmd-btn" style="background:#ffbd2e"></span>
-              <span class="cmd-btn" style="background:#27c93f"></span>
+        <div class="terminal-panel">
+          <div class="mt-4 cmd-window">
+            <div class="cmd-header">
+              <div class="cmd-buttons">
+                <span class="cmd-btn" style="background:#ff5f56"></span>
+                <span class="cmd-btn" style="background:#ffbd2e"></span>
+                <span class="cmd-btn" style="background:#27c93f"></span>
+              </div>
+              <div class="cmd-title">C:\\Users\\ralph-sonio — Command Prompt</div>
+              <div style="width:36px"></div>
             </div>
-            <div class="cmd-title">C:\\Users\\ralph-sonio — Command Prompt</div>
-            <div style="width:36px"></div>
+
+            <div class="cmd-body">
+              <div id="cmd-content" class="code-font" aria-live="polite"></div>
+            </div>
           </div>
 
-          <div class="cmd-body">
-            <div id="cmd-content" class="code-font" aria-live="polite"></div>
+          <div class="terminal-tooltip">
+            <p class="tooltip-title">Quick command tips</p>
+            <p><strong>ls</strong> lists all projects</p>
+            <p>Use <strong>↑</strong> / <strong>↓</strong> to choose a project.</p>
+            <p>Then press <strong>Enter</strong>.</p>
+            <p>Manual typing also works:</p>
+            <p class="tooltip-code">cd System Pulse</p>
           </div>
         </div>
 
         <script type="module">
+          const projects = [
+            { label: 'System Pulse', route: '/projects/system-pulse' },
+            { label: 'Asciente Hub', route: '/projects/asciente-hub' },
+            { label: 'Service Ticket System', route: '/projects/service-ticket-system' },
+            { label: 'To-Do List App', route: '/projects/todo-list-app' },
+            { label: 'H100 Ecolodge', route: '/projects/h100-ecolodge' },
+            { label: 'NHC Internal Gym', route: '/projects/nhc-internal-gym' },
+            { label: 'The Last Light', route: '/projects/the-last-light' }
+          ];
+          const projectRoutes = Object.fromEntries(projects.map((project) => [project.label.toLowerCase(), project.route]));
+          const projectNames = projects.map((project) => project.label);
+          let selectedProjectIndex = -1;
+
           const lines = [
             '--check-status',
-            'current project: Asciente Hub Game Launcher [Under Development]',
-            'tech stack: AWS Lambda, Cloudflare R2, TiDB, ReactJS, TailwindCSS, Tauri',
-            'status: Debugging and Testing Production Build'
+            'current project: Swiftrace [Under Development]',
+            'tech stack: Serverless Framework, CloudFormation, S3, DynamoDB, Lambda, SQS, SNS, ReactJS, Vite, TailwindCSS',
+            'status: Backend still in development'
           ];
 
           const container = document.getElementById('cmd-content');
+          let isTyping = false;
+          let stopTyping = false;
 
           function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+          function createPrompt() {
+            const prompt = document.createElement('div');
+            prompt.className = 'line';
+            prompt.style.display = 'inline-flex';
+            prompt.style.alignItems = 'center';
+            prompt.style.gap = '0';
+            prompt.innerHTML = 'C:\\Users\\ralph-sonio> ';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'cmd-input';
+            input.autofocus = true;
+            input.spellcheck = false;
+            input.autocomplete = 'off';
+            input.style.display = 'inline-flex';
+            input.style.flex = '1';
+            input.style.minWidth = '0';
+            input.style.background = 'transparent';
+            input.style.border = 'none';
+            input.style.outline = 'none';
+            input.style.color = '#ffffff';
+            input.style.font = 'inherit';
+            input.style.width = 'auto';
+            input.style.padding = '0';
+            input.style.margin = '0';
+            input.style.caretColor = '#ffffff';
+
+            input.addEventListener('keydown', (event) => {
+              if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (event.key === 'ArrowDown') {
+                  selectedProjectIndex = selectedProjectIndex < projectNames.length - 1 ? selectedProjectIndex + 1 : 0;
+                } else {
+                  selectedProjectIndex = selectedProjectIndex > 0 ? selectedProjectIndex - 1 : projectNames.length - 1;
+                }
+                input.value = `cd ${projectNames[selectedProjectIndex]}`;
+                return;
+              }
+
+              if (event.key !== 'Enter') return;
+              event.preventDefault();
+              const command = input.value.trim();
+              selectedProjectIndex = -1;
+              input.disabled = true;
+              if (command.toLowerCase() === 'ls') {
+                projects.forEach((project) => {
+                  const listLine = document.createElement('div');
+                  listLine.className = 'line';
+                  listLine.textContent = project.label;
+                  container.appendChild(listLine);
+                });
+                const nextPrompt = createPrompt();
+                container.appendChild(nextPrompt);
+                nextPrompt.querySelector('input').focus();
+                return;
+              }
+              if (command.toLowerCase().startsWith('cd ')) {
+                let targetName = command.slice(3).trim();
+                const route = projectRoutes[targetName.toLowerCase()];
+                if (route) {
+                  const line = document.createElement('div');
+                  line.className = 'line';
+                  line.textContent = `Routing to ${targetName}`;
+                  container.appendChild(line);
+                  setTimeout(() => window.location.href = route, 500);
+                  return;
+                }
+              }
+              const err = document.createElement('div');
+              err.className = 'line';
+              err.textContent = `The system cannot find the path specified: ${command}`;
+              container.appendChild(err);
+              const nextPrompt = createPrompt();
+              container.appendChild(nextPrompt);
+              nextPrompt.querySelector('input').focus();
+            });
+
+            prompt.appendChild(input);
+            return prompt;
+          }
+
           async function typeLines(target, lines, charDelay=35, lineDelay=500){
+            isTyping = true;
+            stopTyping = false;
+            const cancelTyping = () => stopTyping = true;
+            window.addEventListener('keydown', cancelTyping, { once: true });
+
             for(const text of lines){
               const div = document.createElement('div');
               div.className = 'line';
               target.appendChild(div);
               for(let i=0;i<=text.length;i++){
+                if (stopTyping) break;
                 div.innerHTML = escapeHtml(text.slice(0,i)) + '<span class="caret"></span>';
                 await new Promise(r => setTimeout(r, charDelay));
               }
-              // remove caret after line complete
               div.innerHTML = escapeHtml(text);
+              if (stopTyping) continue;
               await new Promise(r => setTimeout(r, lineDelay));
             }
-            // final prompt
-            const prompt = document.createElement('div');
-            prompt.className = 'line';
-            prompt.innerHTML = 'C:\\Users\\ralph-sonio>' + '<span class="caret"></span>';
-            target.appendChild(prompt);
+
+            isTyping = false;
+            target.appendChild(createPrompt());
+            container.scrollTop = container.scrollHeight;
           }
 
-          // start typing after small delay
           setTimeout(()=> typeLines(container, lines, 30, 450), 300);
         </script>
       </div>
@@ -86,7 +198,39 @@ import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
     </div>
 
     <div class="grid gap-6 md:grid-cols-2 items-stretch project-grid">
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/system-pulse'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/system-pulse'">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
+            <h3 class="mt-2 text-2xl font-semibold text-slate-950">System Pulse</h3>
+          </div>
+          <span class="project-tag">TypeScript</span>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+          <Image src={SystemPulseThumb} width={1920} alt="System Pulse thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
+        </div>
+
+        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
+          <p>Developed an automation tester to verify service health endpoints and ensure system availability.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="tech-chip">Fastify</span>
+            <span class="tech-chip">DynamoDB</span>
+            <span class="tech-chip">Lambda</span>
+            <span class="tech-chip">SQS</span>
+            <span class="tech-chip">SNS</span>
+            <span class="tech-chip">ReactJS</span>
+            <span class="tech-chip">Vite</span>
+            <span class="tech-chip">TailwindCSS</span>
+          </div>
+          <div class="card-actions">
+            <a href="#" class="card-action-btn">Source Code</a>
+            <a href="#" class="card-action-btn">Live Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/asciente-hub'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/asciente-hub'">
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
@@ -116,7 +260,7 @@ import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
         </div>
       </article>
 
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/service-ticket-system'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/service-ticket-system'">
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
@@ -147,7 +291,7 @@ import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
         </div>
       </article>
 
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/todo-list-app'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/todo-list-app'">
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
@@ -176,7 +320,7 @@ import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
         </div>
       </article>
 
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/h100-ecolodge'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/h100-ecolodge'">
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
@@ -207,7 +351,7 @@ import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
         </div>
       </article>
 
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/nhc-internal-gym'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/nhc-internal-gym'">
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
@@ -233,7 +377,7 @@ import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
         </div>
       </article>
 
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/the-last-light'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/the-last-light'">
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
