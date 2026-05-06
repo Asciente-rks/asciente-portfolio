@@ -1,0 +1,152 @@
+---
+import { projects } from '../data/projects';
+
+const items = [
+  { label: 'home', sub: 'go to landing', href: '/' },
+  ...projects.map((p) => ({ label: `open · ${p.title}`, sub: p.role, href: `/projects/${p.slug}` })),
+  { label: 'about', sub: 'scroll to about section', href: '/#about' },
+  { label: 'stack', sub: 'scroll to stack section', href: '/#stack' },
+  { label: 'contact', sub: 'scroll to contact section', href: '/#contact' },
+];
+---
+
+<div class="cmdk-overlay" id="cmdk-overlay" aria-hidden="true">
+  <div class="cmdk-modal" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cmdk-input-row">
+      <span class="prompt">▸</span>
+      <input id="cmdk-input" class="cmdk-input" placeholder="type to filter — ls, cd <project>, about, stack, contact…" autocomplete="off" spellcheck="false" />
+    </div>
+    <div id="cmdk-list" class="cmdk-list">
+      {items.map((item, i) => (
+        <div class="cmdk-item" data-href={item.href} data-label={item.label} data-i={i}>
+          <span>
+            <strong style="color: var(--accent)">›</strong>
+            <span style="margin-left:0.5rem">{item.label}</span>
+          </span>
+          <span class="right">{item.sub}</span>
+        </div>
+      ))}
+    </div>
+    <div class="cmdk-footer">
+      <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+      <span><span class="kbd">↵</span> select</span>
+      <span><span class="kbd">esc</span> close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('cmdk-overlay');
+  const input = document.getElementById('cmdk-input') as HTMLInputElement | null;
+  const list = document.getElementById('cmdk-list');
+  const items = Array.from(document.querySelectorAll('.cmdk-item')) as HTMLElement[];
+  let activeIndex = 0;
+
+  function setActive(i: number) {
+    items.forEach((el, idx) => el.classList.toggle('is-active', idx === i));
+    activeIndex = i;
+    items[i]?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function open() {
+    overlay?.classList.add('is-open');
+    overlay?.setAttribute('aria-hidden', 'false');
+    if (input) input.value = '';
+    items.forEach((el) => (el.style.display = ''));
+    setActive(0);
+    setTimeout(() => input?.focus(), 30);
+  }
+
+  function close() {
+    overlay?.classList.remove('is-open');
+    overlay?.setAttribute('aria-hidden', 'true');
+  }
+
+  function navigate() {
+    const visible = items.filter((el) => el.style.display !== 'none');
+    const target = visible[activeIndex] || visible[0];
+    const href = target?.dataset.href;
+    if (href) window.location.href = href;
+  }
+
+  input?.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let visIdx = 0;
+    items.forEach((el) => {
+      const label = (el.dataset.label || '').toLowerCase();
+      const matches = !q || label.includes(q);
+      el.style.display = matches ? '' : 'none';
+      if (matches) {
+        el.dataset.visIdx = String(visIdx++);
+      }
+    });
+    activeIndex = 0;
+    const visible = items.filter((el) => el.style.display !== 'none');
+    visible.forEach((el, idx) => el.classList.toggle('is-active', idx === 0));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const isMac = navigator.platform.toUpperCase().includes('MAC');
+    const isCmdK = (isMac ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() === 'k';
+    if (isCmdK) {
+      e.preventDefault();
+      const isOpen = overlay?.classList.contains('is-open');
+      if (isOpen) close();
+      else open();
+      return;
+    }
+
+    if (!overlay?.classList.contains('is-open')) return;
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      close();
+      return;
+    }
+
+    const visible = items.filter((el) => el.style.display !== 'none');
+    if (!visible.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextI = (activeIndex + 1) % visible.length;
+      visible.forEach((el, idx) => el.classList.toggle('is-active', idx === nextI));
+      activeIndex = nextI;
+      visible[nextI].scrollIntoView({ block: 'nearest' });
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevI = (activeIndex - 1 + visible.length) % visible.length;
+      visible.forEach((el, idx) => el.classList.toggle('is-active', idx === prevI));
+      activeIndex = prevI;
+      visible[prevI].scrollIntoView({ block: 'nearest' });
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      navigate();
+    }
+  });
+
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+
+  items.forEach((el) => {
+    el.addEventListener('click', () => {
+      const href = el.dataset.href;
+      if (href) window.location.href = href;
+    });
+    el.addEventListener('mouseenter', () => {
+      const visible = items.filter((x) => x.style.display !== 'none');
+      const idx = visible.indexOf(el);
+      if (idx >= 0) {
+        visible.forEach((x, i) => x.classList.toggle('is-active', i === idx));
+        activeIndex = idx;
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-cmdk-trigger]').forEach((btn) => {
+    btn.addEventListener('click', open);
+  });
+</script>

@@ -1,21 +1,90 @@
 ---
 import TopBar from '../components/TopBar.astro';
+import Footer from '../components/Footer.astro';
+import CommandPalette from '../components/CommandPalette.astro';
 import '../styles/globals.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Ralph Sonio · Portfolio', description = 'Cloud-native backend engineer & quality assurance tester. Selected work, architecture, and notes.' } = Astro.props;
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ralph Sonio | System Dashboard Portfolio</title>
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230a0e1a'/><text x='16' y='22' font-family='JetBrains Mono, monospace' font-size='18' fill='%235eead4' text-anchor='middle' font-weight='700'>~</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif&display=swap"
+      rel="stylesheet"
+    />
+
+    <script is:inline>
+      // Apply theme before paint to avoid flash. Default is dark.
+      (function () {
+        try {
+          const stored = localStorage.getItem('theme');
+          if (stored === 'light') {
+            document.documentElement.classList.add('theme-light');
+          }
+        } catch (_) {}
+      })();
+    </script>
   </head>
-  <body class="min-h-screen bg-grid-dots text-slate-100 antialiased font-sans">
+
+  <body>
+    <div class="bg-decor" aria-hidden="true"></div>
+
     <TopBar />
-    <main class="relative pt-20">
+
+    <main class="relative z-10 pt-20">
       <slot />
     </main>
+
+    <Footer />
+    <CommandPalette />
+
+    <script>
+      // Reveal-on-scroll observer (lightweight, vanilla)
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+      );
+
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      // Theme toggle
+      function applyTheme(theme: string) {
+        if (theme === 'light') {
+          document.documentElement.classList.add('theme-light');
+        } else {
+          document.documentElement.classList.remove('theme-light');
+        }
+        try {
+          localStorage.setItem('theme', theme);
+        } catch (_) {}
+      }
+
+      const toggleBtn = document.getElementById('theme-toggle');
+      toggleBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.classList.contains('theme-light');
+        applyTheme(isLight ? 'dark' : 'light');
+      });
+    </script>
   </body>
 </html>

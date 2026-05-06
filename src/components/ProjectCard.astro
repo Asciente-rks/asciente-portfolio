@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  thumbSrc?: ImageMetadata;
+  index?: number;
+}
+
+const { project, thumbSrc, index = 0 } = Astro.props;
+const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
+const projectNumber = String(index + 1).padStart(2, '0');
+
+// Choose accent for placeholder gradient based on slug hash
+function hashStr(s: string) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i);
+  return Math.abs(h);
+}
+const palette = [
+  ['#0d9488', '#5eead4'],
+  ['#7c3aed', '#a78bfa'],
+  ['#dc2626', '#fda4af'],
+  ['#0369a1', '#7dd3fc'],
+  ['#a16207', '#fcd34d'],
+];
+const [c1, c2] = palette[hashStr(project.slug) % palette.length];
+---
+
+<a class="project-card reveal" href={`/projects/${project.slug}`} aria-label={`Open ${project.title}`}>
+  <div class="project-card-cover" style={!thumbSrc ? `background: linear-gradient(135deg, ${c1} 0%, #0a0e1a 80%);` : ''}>
+    {thumbSrc ? (
+      <Image src={thumbSrc} width={1280} alt={`${project.title} thumbnail`} format="avif" quality={85} />
+    ) : (
+      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; padding:1.5rem; color:#f1f5f9; font-family:'Instrument Serif', serif;">
+        <span style="font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.24em; text-transform:uppercase; opacity:0.6;">no preview yet</span>
+        <span style="font-size:1.6rem; line-height:1.1; text-align:center; max-width:240px;">{project.title}</span>
+      </div>
+    )}
+    <div class="project-card-overlay-tag">
+      <span class={`status-dot ${project.status}`}></span>
+      <span>{statusLabel}</span>
+    </div>
+  </div>
+
+  <div class="project-card-body">
+    <div class="project-card-eyebrow">
+      <span>P{projectNumber} · {project.role}</span>
+      <span style="color: var(--accent)">{project.language}</span>
+    </div>
+
+    <h3 class="project-card-title">{project.title}</h3>
+
+    <p class="project-card-summary">{project.tagline}</p>
+
+    <div class="project-card-tech">
+      {project.tech.slice(0, 5).map((t) => <span class="tech-chip">{t}</span>)}
+      {project.tech.length > 5 && <span class="tech-chip">+{project.tech.length - 5}</span>}
+    </div>
+
+    <div class="project-card-actions" onclick="event.stopPropagation()">
+      <a
+        class="action-btn is-disabled"
+        href="#"
+        onclick="event.preventDefault(); event.stopPropagation();"
+        aria-disabled="true"
+        title="Coming soon"
+      >
+        <span>source</span>
+        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+      </a>
+      <a
+        class="action-btn is-disabled"
+        href="#"
+        onclick="event.preventDefault(); event.stopPropagation();"
+        aria-disabled="true"
+        title="Coming soon"
+      >
+        <span>live demo</span>
+        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+      </a>
+    </div>
+  </div>
+</a>
