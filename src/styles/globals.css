@@ -663,6 +663,8 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
+  /* Equal-height rows: every card in a given row stretches to the tallest sibling */
+  grid-auto-rows: 1fr;
   align-items: stretch;
 }
 
@@ -692,8 +694,7 @@ body {
     box-shadow 0.3s ease;
   text-decoration: none;
   color: var(--fg);
-  height: 100%; /* fill grid cell */
-  min-height: 480px; /* consistent visual baseline */
+  height: 100%; /* fill the grid cell so all cards in a row match heights */
 }
 
 .project-card::before {
