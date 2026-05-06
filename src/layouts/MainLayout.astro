@@ -51,9 +51,11 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
       />
     </noscript>
 
-    <script is:inline>
+    <script is:inline data-astro-rerun>
       // Apply theme before paint to avoid flash. Default is LIGHT - to switch
       // back to dark-by-default, change the fallback branch in this script.
+      // data-astro-rerun makes this re-execute on every ClientRouter
+      // navigation so the .theme-light class survives view transitions.
       (function () {
         try {
           var stored = localStorage.getItem('theme');
@@ -110,6 +112,23 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
         try {
           localStorage.setItem('theme', theme);
         } catch (_) {}
+        document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme } }));
+      }
+
+      function readStoredTheme(): 'light' | 'dark' {
+        try {
+          return localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
+        } catch (_) {
+          return 'light';
+        }
+      }
+
+      function syncThemeToHtml(html: HTMLElement) {
+        if (readStoredTheme() === 'dark') {
+          html.classList.remove('theme-light');
+        } else {
+          html.classList.add('theme-light');
+        }
       }
 
       function bindToggle() {
@@ -123,12 +142,24 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
       }
 
       function bootstrap() {
+        syncThemeToHtml(document.documentElement);
         initReveals();
         bindToggle();
       }
 
       bootstrap();
       document.addEventListener('astro:page-load', bootstrap);
+
+      // Apply the stored theme to the INCOMING document during view-transition
+      // morph. This avoids any flash of the wrong theme between pages.
+      document.addEventListener('astro:before-swap', (event: any) => {
+        const incoming = event.newDocument?.documentElement;
+        if (incoming) syncThemeToHtml(incoming);
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        syncThemeToHtml(document.documentElement);
+      });
     </script>
   </body>
 </html>

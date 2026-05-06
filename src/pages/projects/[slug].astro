@@ -411,67 +411,94 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs';
 
-    const isLight = document.documentElement.classList.contains('theme-light');
+    const LIGHT_THEME = {
+      primaryColor: '#f1f5f9',
+      primaryTextColor: '#0f172a',
+      primaryBorderColor: '#0f766e',
+      lineColor: '#0f766e',
+      secondaryColor: '#e2e8f0',
+      tertiaryColor: '#f8fafc',
+      background: '#ffffff',
+      mainBkg: '#f1f5f9',
+      secondBkg: '#e2e8f0',
+      tertiaryBkg: '#f8fafc',
+      edgeLabelBackground: '#ffffff',
+      clusterBkg: '#f1f5f9',
+      clusterBorder: '#0f766e',
+      attributeBackgroundColorOdd: '#f8fafc',
+      attributeBackgroundColorEven: '#f1f5f9',
+      relationLabelColor: '#0f172a',
+    };
 
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'base',
-      securityLevel: 'loose',
-      fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-      themeVariables: isLight
-        ? {
-            primaryColor: '#f1f5f9',
-            primaryTextColor: '#0f172a',
-            primaryBorderColor: '#0f766e',
-            lineColor: '#0f766e',
-            secondaryColor: '#e2e8f0',
-            tertiaryColor: '#f8fafc',
-            background: '#ffffff',
-            mainBkg: '#f1f5f9',
-            secondBkg: '#e2e8f0',
-            tertiaryBkg: '#f8fafc',
-            edgeLabelBackground: '#ffffff',
-            clusterBkg: '#f1f5f9',
-            clusterBorder: '#0f766e',
-            attributeBackgroundColorOdd: '#f8fafc',
-            attributeBackgroundColorEven: '#f1f5f9',
-            relationLabelColor: '#0f172a',
-          }
-        : {
-            primaryColor: '#0f1422',
-            primaryTextColor: '#e2e8f0',
-            primaryBorderColor: '#5eead4',
-            lineColor: '#5eead4',
-            secondaryColor: '#0a0e1a',
-            tertiaryColor: '#0f1422',
-            background: 'transparent',
-            mainBkg: '#0f1422',
-            secondBkg: '#0a0e1a',
-            tertiaryBkg: '#1e293b',
-            edgeLabelBackground: '#0a0e1a',
-            clusterBkg: '#0f1422',
-            clusterBorder: '#5eead4',
-            attributeBackgroundColorOdd: '#0f1422',
-            attributeBackgroundColorEven: '#0a0e1a',
-            relationLabelColor: '#e2e8f0',
-            relationLabelBackground: '#0a0e1a',
-          },
-    });
+    const DARK_THEME = {
+      primaryColor: '#0f1422',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#5eead4',
+      lineColor: '#5eead4',
+      secondaryColor: '#0a0e1a',
+      tertiaryColor: '#0f1422',
+      background: 'transparent',
+      mainBkg: '#0f1422',
+      secondBkg: '#0a0e1a',
+      tertiaryBkg: '#1e293b',
+      edgeLabelBackground: '#0a0e1a',
+      clusterBkg: '#0f1422',
+      clusterBorder: '#5eead4',
+      attributeBackgroundColorOdd: '#0f1422',
+      attributeBackgroundColorEven: '#0a0e1a',
+      relationLabelColor: '#e2e8f0',
+      relationLabelBackground: '#0a0e1a',
+    };
 
-    try {
-      await mermaid.run({ querySelector: '.mermaid' });
-    } catch (err) {
-      console.error('Mermaid render error:', err);
+    function captureOriginalSource() {
+      document.querySelectorAll('.mermaid').forEach((el) => {
+        if (!el.dataset.mermaidSrc) {
+          el.dataset.mermaidSrc = el.textContent || '';
+        }
+      });
     }
 
-    const observer = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.attributeName === 'class') {
-          window.location.reload();
+    async function renderMermaid() {
+      const isLight = document.documentElement.classList.contains('theme-light');
+
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        securityLevel: 'loose',
+        fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+        themeVariables: isLight ? LIGHT_THEME : DARK_THEME,
+      });
+
+      // Reset every diagram back to its original source so mermaid can
+      // re-render with the new theme variables instead of leaving the
+      // previous SVG in place.
+      document.querySelectorAll('.mermaid').forEach((el) => {
+        const src = el.dataset.mermaidSrc;
+        if (src !== undefined) {
+          el.removeAttribute('data-processed');
+          el.textContent = src;
         }
+      });
+
+      try {
+        await mermaid.run({ querySelector: '.mermaid' });
+      } catch (err) {
+        console.error('Mermaid render error:', err);
       }
+    }
+
+    captureOriginalSource();
+    await renderMermaid();
+
+    // Re-render Mermaid after a view-transition swap brings us into a new
+    // case-study page, and whenever the user toggles the global theme.
+    document.addEventListener('astro:page-load', () => {
+      captureOriginalSource();
+      renderMermaid();
     });
-    observer.observe(document.documentElement, { attributes: true });
+    document.addEventListener('theme-changed', () => {
+      renderMermaid();
+    });
   </script>
 
   <script>
