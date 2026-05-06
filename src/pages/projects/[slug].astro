@@ -1,11 +1,322 @@
 ---
-export const prerender = false;
-export async function getStaticPaths() {
-  return [];
-}
 import MainLayout from '../../layouts/MainLayout.astro';
-const { slug } = Astro.params;
+import { Image } from 'astro:assets';
+import { projects, projectBySlug } from '../../data/projects';
+
+export async function getStaticPaths() {
+  return projects.map((p) => ({
+    params: { slug: p.slug },
+    props: { project: p },
+  }));
+}
+
+const { project } = Astro.props;
+
+if (!project) {
+  return Astro.redirect('/');
+}
+
+// Glob all asset images for the gallery
+const assetModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
+
+function getAsset(rel: string | undefined): ImageMetadata | undefined {
+  if (!rel) return undefined;
+  const key = `../../assets/${rel}`;
+  return assetModules[key]?.default;
+}
+
+const thumb = getAsset(project.thumbnail);
+const gallery = project.gallery
+  .map((g) => ({ ...g, asset: getAsset(g.src) }))
+  .filter((g) => g.asset);
+
+const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
+
+// Dynamic section numbering based on what data the project has.
+const sectionOrder = ['about', 'architecture'];
+if (project.database) sectionOrder.push('data');
+if (project.apiEndpoints && project.apiEndpoints.length > 0) sectionOrder.push('api');
+sectionOrder.push('costs');
+if (gallery.length > 0) sectionOrder.push('gallery');
+const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padStart(2, '0');
 ---
-<MainLayout>
-  <section></section>
+
+<MainLayout
+  title={`${project.title} · Ralph Sonio`}
+  description={project.tagline}
+>
+  <article>
+    <!-- HERO ================================================= -->
+    <section class="detail-hero">
+      <a href="/" class="detail-back">
+        <span style="font-family:'JetBrains Mono', monospace">←</span>
+        <span>back to projects</span>
+      </a>
+
+      <div class="reveal">
+        <span class="detail-status-pill">
+          <span class={`status-dot ${project.status}`}></span>
+          <span>{statusLabel}</span>
+          <span style="margin: 0 0.4rem; opacity: 0.4;">·</span>
+          <span>{project.role}</span>
+        </span>
+
+        <h1 class="detail-title">{project.title}</h1>
+
+        <p class="detail-tagline">{project.tagline}</p>
+      </div>
+
+      <div class="detail-meta-strip reveal">
+        <div class="meta-cell">
+          <span class="meta-label">Status</span>
+          <span class="meta-value">
+            <span class={`status-dot ${project.status}`}></span>
+            {statusLabel}
+          </span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-label">Language</span>
+          <span class="meta-value">{project.language}</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-label">Cost</span>
+          <span class="meta-value" style="color: var(--accent)">{project.cost.monthlyTotal}</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-label">Stack</span>
+          <span class="meta-value" style="font-size:0.82rem; line-height:1.4;">{project.tech.length} technologies</span>
+        </div>
+      </div>
+
+      <div class="detail-actions reveal">
+        <a class="action-btn is-disabled" href="#" onclick="event.preventDefault();" aria-disabled="true" title="Coming soon">
+          <span>source code</span>
+          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+        </a>
+        <a class="action-btn is-disabled" href="#" onclick="event.preventDefault();" aria-disabled="true" title="Coming soon">
+          <span>live demo</span>
+          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- SUMMARY ============================================== -->
+    <section class="detail-section reveal" id="summary">
+      <div class="section-eyebrow">
+        <span class="section-num">{sectionNum('about')} · about</span>
+      </div>
+      <h2>What it is</h2>
+      <p style="margin-top: 1rem; max-width: 64ch; font-size: 1.05rem; line-height: 1.65; color: var(--fg-muted);">
+        {project.summary}
+      </p>
+
+      {project.repos && project.repos.length > 1 && (
+        <>
+          <h3>Repositories</h3>
+          <div class="repos-strip">
+            {project.repos.map((repo) => (
+              <a href={repo.url} target="_blank" rel="noopener noreferrer" class="repo-card">
+                <span class="name">{repo.name}</span>
+                <span class="stack">{repo.stack}</span>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+
+    <!-- ARCHITECTURE ========================================= -->
+    <section class="detail-section reveal" id="architecture">
+      <div class="section-eyebrow">
+        <span class="section-num">{sectionNum('architecture')} · architecture</span>
+      </div>
+      <h2>System architecture</h2>
+
+      <div class="diagram-block">
+        <pre>{project.architecture.diagram}</pre>
+      </div>
+
+      {project.architecture.notes.length > 0 && (
+        <>
+          <h3>Notable choices</h3>
+          <ul class="notes-list">
+            {project.architecture.notes.map((note) => (
+              <li>{note}</li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+
+    <!-- DATABASE DESIGN ===================================== -->
+    {project.database && (
+      <section class="detail-section reveal" id="database">
+        <div class="section-eyebrow">
+          <span class="section-num">{sectionNum('data')} · data</span>
+        </div>
+        <h2>Database design</h2>
+        <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
+          {project.database.blurb}
+        </p>
+
+        {project.database.tables.map((table) => (
+          <div class="db-table" style="margin-top: 1.5rem;">
+            <div class="db-table-header">
+              <span class="db-table-name">
+                <span class="accent">▸</span> {table.name}
+              </span>
+              {table.description && <span class="db-table-desc">{table.description}</span>}
+            </div>
+            <div class="db-rows">
+              <div class="head" style="grid-column: 1 / -1; display:grid; grid-template-columns: minmax(160px, 1fr) minmax(120px, auto) 2fr; padding: 0.6rem 1.2rem; background: color-mix(in srgb, var(--bg) 50%, var(--bg-elev)); border-top: none; font-family:'JetBrains Mono', monospace; font-size:0.7rem; text-transform: uppercase; letter-spacing:0.16em; color: var(--fg-muted);">
+                <span>Column</span>
+                <span>Type</span>
+                <span>Notes</span>
+              </div>
+              {table.columns.map((col) => (
+                <>
+                  <div class="col-name">{col.name}</div>
+                  <div class="col-type">{col.type}</div>
+                  <div>{col.notes || ''}</div>
+                </>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+    )}
+
+    <!-- API REFERENCE ===================================== -->
+    {project.apiEndpoints && project.apiEndpoints.length > 0 && (
+      <section class="detail-section reveal" id="api">
+        <div class="section-eyebrow">
+          <span class="section-num">{sectionNum('api')} · api</span>
+        </div>
+        <h2>API surface</h2>
+        <div class="api-table" style="margin-top: 1.5rem;">
+          <div class="api-row head">
+            <div>Method</div>
+            <div>Path</div>
+            <div>Auth</div>
+            <div>Purpose</div>
+          </div>
+          {project.apiEndpoints.map((ep) => (
+            <div class="api-row">
+              <div><span class={`method-badge method-${ep.method}`}>{ep.method}</span></div>
+              <div style="color: var(--fg);">{ep.path}</div>
+              <div>{ep.auth || '—'}</div>
+              <div>{ep.purpose}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- COST ============================================== -->
+    <section class="detail-section reveal" id="cost">
+      <div class="section-eyebrow">
+        <span class="section-num">{sectionNum('costs')} · costs</span>
+      </div>
+      <h2>Cost breakdown</h2>
+      <p style="margin-top:1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
+        Designed for $0/month forever — every line of the stack runs on a free tier with no expiry.
+      </p>
+
+      <div class="cost-summary">
+        <div class="head">Service</div>
+        <div class="head">Free tier</div>
+        <div class="head">We use</div>
+        <div class="head">Headroom</div>
+        {project.cost.rows.map((row) => (
+          <>
+            <div class="service-name">{row.service}</div>
+            <div>{row.freeTier}</div>
+            <div>{row.weUse}</div>
+            <div class="headroom">{row.headroom}</div>
+          </>
+        ))}
+      </div>
+
+      <div class="cost-total">
+        <div style="display:flex; flex-direction:column; gap:0.3rem;">
+          <span class="label">Monthly total</span>
+          <span class="value">{project.cost.monthlyTotal}</span>
+        </div>
+      </div>
+
+      <h3>Why each free tier was chosen</h3>
+      <ul class="notes-list">
+        {project.cost.rationale.map((r) => (
+          <li>{r}</li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- GALLERY ========================================== -->
+    {gallery.length > 0 && (
+      <section class="detail-section reveal" id="gallery">
+        <div class="section-eyebrow">
+          <span class="section-num">{sectionNum('gallery')} · gallery</span>
+        </div>
+        <h2>Gallery</h2>
+        <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
+          Click any image to expand.
+        </p>
+
+        <div class="gallery-grid">
+          {gallery.map((g) => (
+            <div class="gallery-item" data-zoom={g.asset!.src} data-caption={g.caption || ''}>
+              <Image src={g.asset!} width={1280} alt={g.caption || project.title} format="avif" quality={85} />
+              {g.caption && <div class="gallery-caption">{g.caption}</div>}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+  </article>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Close">×</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
+  <script>
+    // Gallery lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+    const closeBtn = document.querySelector('.lightbox-close');
+
+    document.querySelectorAll('.gallery-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        const src = (item as HTMLElement).dataset.zoom;
+        const caption = (item as HTMLElement).dataset.caption;
+        if (src && lightboxImg) {
+          lightboxImg.src = src;
+          lightboxImg.alt = caption || '';
+          lightbox?.classList.add('is-open');
+          lightbox?.setAttribute('aria-hidden', 'false');
+        }
+      });
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      lightbox?.classList.remove('is-open');
+      lightbox?.setAttribute('aria-hidden', 'true');
+    });
+
+    lightbox?.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.classList.remove('is-open');
+        lightbox.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox?.classList.contains('is-open')) {
+        lightbox.classList.remove('is-open');
+        lightbox.setAttribute('aria-hidden', 'true');
+      }
+    });
+  </script>
 </MainLayout>

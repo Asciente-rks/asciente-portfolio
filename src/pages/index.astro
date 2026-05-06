@@ -1,432 +1,141 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+import Terminal from '../components/Terminal.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { Image } from 'astro:assets';
+import { projects } from '../data/projects';
 import GradPicSrc from '../assets/GradPic_Sonio.jpg';
-import AscienteHubThumb from '../assets/AscienteHub/LoginAscienteHub.png';
-import ServiceTicketThumb from '../assets/ServiceTicket/LoginServiceTicket.png';
-import TodoThumb from '../assets/Todo/TodoList.png';
-import H100Thumb from '../assets/H100/CXUI_Homepage.png';
-import SystemPulseThumb from '../assets/SystemPulse/LoginPage_SystemPulse.png';
-import NHCThumb from '../assets/NHC/Login.png';
-import LastLightThumb from '../assets/TheLastLight/MainMenu.png';
+
+// Lazy-resolved imports for project thumbnails.
+// Returns ImageMetadata for use with the <Image /> component.
+const thumbModules = import.meta.glob<{ default: ImageMetadata }>('../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
+
+function getThumb(rel: string | undefined): ImageMetadata | undefined {
+  if (!rel) return undefined;
+  const key = `../assets/${rel}`;
+  return thumbModules[key]?.default;
+}
+
+// Groupings for the projects strip
+const liveProjects = projects.filter((p) => p.status === 'live');
+const totalProjects = projects.length;
+
+// Tech stack list for the "stack" section
+const stackGroups = [
+  {
+    label: 'Cloud + Serverless',
+    items: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'SQS', 'SNS', 'Cloudflare R2', 'Vercel'],
+  },
+  {
+    label: 'Languages + Runtime',
+    items: ['TypeScript', 'Node.js', 'Python', 'Java', 'C#', 'Rust (Tauri)'],
+  },
+  {
+    label: 'Web + Mobile',
+    items: ['React 18/19', 'Vite', 'Tailwind 3/4', 'Astro', 'React Native (Expo)', 'Tauri 2'],
+  },
+  {
+    label: 'Data',
+    items: ['TiDB Cloud', 'MySQL', 'DynamoDB single-table', 'Sequelize', 'Redis (Upstash)'],
+  },
+  {
+    label: 'Tooling + CI/CD',
+    items: ['GitHub Actions', 'Serverless Framework', 'EAS Build', 'Scrapy', 'node-cron'],
+  },
+];
 ---
-<MainLayout>
-  <section class="mx-auto flex min-h-[calc(100vh-5rem)] max-w-4xl px-4 pt-12">
-    <div class="w-full flex flex-col md:flex-row md:justify-center items-start gap-8">
-      <div class="flex-shrink-0 w-[240px]">
-        <img src="/src/assets/GradPic_Sonio.jpg" srcset="/src/assets/GradPic_Sonio.jpg 1x, /src/assets/GradPic_Sonio.jpg 2x" sizes="240px" width="240" height="320" alt="GradPic Sonio" class="profile-img" />
-      </div>
 
-      <div class="flex-none">
-        <div class="mb-2">
-          <h1 class="text-3xl font-semibold code-font text-black">Ralph Kenneth Sonio</h1>
-          <p class="mt-1 text-sm code-font text-black">Cloud Native Backend Developer | Quality Assurance Tester</p>
-        </div>
-
-        <div class="terminal-panel">
-          <div class="mt-4 cmd-window">
-            <div class="cmd-header">
-              <div class="cmd-buttons">
-                <span class="cmd-btn" style="background:#ff5f56"></span>
-                <span class="cmd-btn" style="background:#ffbd2e"></span>
-                <span class="cmd-btn" style="background:#27c93f"></span>
-              </div>
-              <div class="cmd-title">C:\\Users\\ralph-sonio — Command Prompt</div>
-              <div style="width:36px"></div>
-            </div>
-
-            <div class="cmd-body">
-              <div id="cmd-content" class="code-font" aria-live="polite"></div>
-            </div>
+<MainLayout
+  title="Ralph Sonio · Cloud-Native Backend & QA Engineer"
+  description="Selected work, architecture notes, and case studies — every project ships at $0/month on free tiers."
+>
+  <!-- HERO ===================================================== -->
+  <section class="hero" id="about">
+    <div class="hero-grid">
+      <div class="profile-card reveal">
+        <Image src={GradPicSrc} width={400} alt="Ralph Sonio" class="profile-img" format="avif" quality={88} />
+        <div class="profile-meta">
+          <div class="profile-meta-row">
+            <span>name</span>
+            <strong>R. K. F. Sonio</strong>
           </div>
-
-          <div class="terminal-tooltip">
-            <p class="tooltip-title">Quick command tips</p>
-            <p><strong>ls</strong> lists all projects</p>
-            <p>Use <strong>↑</strong> / <strong>↓</strong> to choose a project.</p>
-            <p>Then press <strong>Enter</strong>.</p>
-            <p>Manual typing also works:</p>
-            <p class="tooltip-code">cd System Pulse</p>
+          <div class="profile-meta-row">
+            <span>role</span>
+            <strong>Backend · QA</strong>
+          </div>
+          <div class="profile-meta-row">
+            <span>focus</span>
+            <strong>Cloud Native</strong>
+          </div>
+          <div class="profile-meta-row">
+            <span>status</span>
+            <span style="color: var(--status-live); display:inline-flex; align-items:center; gap:0.4rem;">
+              <span class="status-dot live" style="position:relative; display:inline-block;"></span>
+              Available
+            </span>
           </div>
         </div>
-
-        <script type="module">
-          const projects = [
-            { label: 'System Pulse', route: '/projects/system-pulse' },
-            { label: 'Asciente Hub', route: '/projects/asciente-hub' },
-            { label: 'Service Ticket System', route: '/projects/service-ticket-system' },
-            { label: 'To-Do List App', route: '/projects/todo-list-app' },
-            { label: 'H100 Ecolodge', route: '/projects/h100-ecolodge' },
-            { label: 'NHC Internal Gym', route: '/projects/nhc-internal-gym' },
-            { label: 'The Last Light', route: '/projects/the-last-light' }
-          ];
-          const projectRoutes = Object.fromEntries(projects.map((project) => [project.label.toLowerCase(), project.route]));
-          const projectNames = projects.map((project) => project.label);
-          let selectedProjectIndex = -1;
-
-          const lines = [
-            '--check-status',
-            'current project: Swiftrace [Under Development]',
-            'tech stack: Serverless Framework, CloudFormation, S3, DynamoDB, Lambda, SQS, SNS, ReactJS, Vite, TailwindCSS',
-            'status: Backend still in development'
-          ];
-
-          const container = document.getElementById('cmd-content');
-          let isTyping = false;
-          let stopTyping = false;
-
-          function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-          function createPrompt() {
-            const prompt = document.createElement('div');
-            prompt.className = 'line';
-            prompt.style.display = 'inline-flex';
-            prompt.style.alignItems = 'center';
-            prompt.style.gap = '0';
-            prompt.innerHTML = 'C:\\Users\\ralph-sonio> ';
-
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'cmd-input';
-            input.autofocus = true;
-            input.spellcheck = false;
-            input.autocomplete = 'off';
-            input.style.display = 'inline-flex';
-            input.style.flex = '1';
-            input.style.minWidth = '0';
-            input.style.background = 'transparent';
-            input.style.border = 'none';
-            input.style.outline = 'none';
-            input.style.color = '#ffffff';
-            input.style.font = 'inherit';
-            input.style.width = 'auto';
-            input.style.padding = '0';
-            input.style.margin = '0';
-            input.style.caretColor = '#ffffff';
-
-            input.addEventListener('keydown', (event) => {
-              if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                event.preventDefault();
-                if (event.key === 'ArrowDown') {
-                  selectedProjectIndex = selectedProjectIndex < projectNames.length - 1 ? selectedProjectIndex + 1 : 0;
-                } else {
-                  selectedProjectIndex = selectedProjectIndex > 0 ? selectedProjectIndex - 1 : projectNames.length - 1;
-                }
-                input.value = `cd ${projectNames[selectedProjectIndex]}`;
-                return;
-              }
-
-              if (event.key !== 'Enter') return;
-              event.preventDefault();
-              const command = input.value.trim();
-              selectedProjectIndex = -1;
-              input.disabled = true;
-              if (command.toLowerCase() === 'ls') {
-                projects.forEach((project) => {
-                  const listLine = document.createElement('div');
-                  listLine.className = 'line';
-                  listLine.textContent = project.label;
-                  container.appendChild(listLine);
-                });
-                const nextPrompt = createPrompt();
-                container.appendChild(nextPrompt);
-                nextPrompt.querySelector('input').focus();
-                return;
-              }
-              if (command.toLowerCase().startsWith('cd ')) {
-                let targetName = command.slice(3).trim();
-                const route = projectRoutes[targetName.toLowerCase()];
-                if (route) {
-                  const line = document.createElement('div');
-                  line.className = 'line';
-                  line.textContent = `Routing to ${targetName}`;
-                  container.appendChild(line);
-                  setTimeout(() => window.location.href = route, 500);
-                  return;
-                }
-              }
-              const err = document.createElement('div');
-              err.className = 'line';
-              err.textContent = `The system cannot find the path specified: ${command}`;
-              container.appendChild(err);
-              const nextPrompt = createPrompt();
-              container.appendChild(nextPrompt);
-              nextPrompt.querySelector('input').focus();
-            });
-
-            prompt.appendChild(input);
-            return prompt;
-          }
-
-          async function typeLines(target, lines, charDelay=35, lineDelay=500){
-            isTyping = true;
-            stopTyping = false;
-            const cancelTyping = () => stopTyping = true;
-            window.addEventListener('keydown', cancelTyping, { once: true });
-
-            for(const text of lines){
-              const div = document.createElement('div');
-              div.className = 'line';
-              target.appendChild(div);
-              for(let i=0;i<=text.length;i++){
-                if (stopTyping) break;
-                div.innerHTML = escapeHtml(text.slice(0,i)) + '<span class="caret"></span>';
-                await new Promise(r => setTimeout(r, charDelay));
-              }
-              div.innerHTML = escapeHtml(text);
-              if (stopTyping) continue;
-              await new Promise(r => setTimeout(r, lineDelay));
-            }
-
-            isTyping = false;
-            target.appendChild(createPrompt());
-            container.scrollTop = container.scrollHeight;
-          }
-
-          setTimeout(()=> typeLines(container, lines, 30, 450), 300);
-        </script>
       </div>
-    </div>
-  </section>
 
-  <section class="mx-auto mt-16 max-w-6xl px-4 pb-16">
-    <div class="mb-8 flex items-center justify-between gap-4">
       <div>
-        <p class="text-sm uppercase tracking-[0.35em] text-slate-500">Projects</p>
-        <h2 class="mt-3 text-3xl font-semibold text-slate-900">Recent Work</h2>
+        <p class="eyebrow reveal">~/portfolio · v2.0</p>
+        <h1 class="hero-name reveal" style="margin-top: 1rem;">
+          Ralph Kenneth<br />Sonio
+        </h1>
+        <p class="hero-tagline reveal">
+          ./cloud-native-backend.run · ./quality-assurance-tester.run
+        </p>
+        <p class="hero-bio reveal">
+          I design serverless backends and ship them on free tiers. {totalProjects} projects total · {liveProjects.length} live in production · every one of them runs at <strong style="color: var(--accent)">$0/month</strong>. AWS Lambda, DynamoDB, TiDB, Tauri, and React are my daily kit.
+        </p>
+
+        <div class="reveal" style="margin-top: 1rem;">
+          <Terminal />
+        </div>
       </div>
-    </div>
-
-    <div class="grid gap-6 md:grid-cols-2 items-stretch project-grid">
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/system-pulse'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/system-pulse'">
-        <div class="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
-            <h3 class="mt-2 text-2xl font-semibold text-slate-950">System Pulse</h3>
-          </div>
-          <span class="project-tag">TypeScript</span>
-        </div>
-
-        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-          <Image src={SystemPulseThumb} width={1920} alt="System Pulse thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
-        </div>
-
-        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
-          <p>Developed an automation tester to verify service health endpoints and ensure system availability.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="tech-chip">Fastify</span>
-            <span class="tech-chip">DynamoDB</span>
-            <span class="tech-chip">Lambda</span>
-            <span class="tech-chip">SQS</span>
-            <span class="tech-chip">SNS</span>
-            <span class="tech-chip">ReactJS</span>
-            <span class="tech-chip">Vite</span>
-            <span class="tech-chip">TailwindCSS</span>
-          </div>
-          <div class="card-actions">
-            <a href="#" class="card-action-btn">Source Code</a>
-            <a href="#" class="card-action-btn">Live Demo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/asciente-hub'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/asciente-hub'">
-        <div class="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
-            <h3 class="mt-2 text-2xl font-semibold text-slate-950">Asciente Hub</h3>
-          </div>
-          <span class="project-tag">TypeScript</span>
-        </div>
-
-        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-          <Image src={AscienteHubThumb} width={1920} alt="Asciente Hub thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
-        </div>
-
-        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
-          <p>Architecting a cloud-native Game Launcher with distributed SQL and observability.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="tech-chip">AWS Lambda</span>
-            <span class="tech-chip">Cloudflare R2</span>
-            <span class="tech-chip">TiDB</span>
-            <span class="tech-chip">ReactJS</span>
-            <span class="tech-chip">TailwindCSS</span>
-            <span class="tech-chip">Tauri</span>
-          </div>
-          <div class="card-actions">
-            <a href="#" class="card-action-btn">Source Code</a>
-            <a href="#" class="card-action-btn">Live Demo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/service-ticket-system'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/service-ticket-system'">
-        <div class="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
-            <h3 class="mt-2 text-2xl font-semibold text-slate-950">Service Ticket System</h3>
-          </div>
-          <span class="project-tag">TypeScript</span>
-        </div>
-
-        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-          <Image src={ServiceTicketThumb} width={1920} alt="Service Ticket System thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
-        </div>
-
-        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
-          <p>Built a secure, 24/7 live ticketing system featuring RBAC and enterprise-grade auth.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="tech-chip">Node.js</span>
-            <span class="tech-chip">JWT</span>
-            <span class="tech-chip">TiDB</span>
-            <span class="tech-chip">React</span>
-            <span class="tech-chip">Tailwind</span>
-            <span class="tech-chip">Render</span>
-            <span class="tech-chip">Vercel</span>
-          </div>
-          <div class="card-actions">
-            <a href="#" class="card-action-btn">Source Code</a>
-            <a href="#" class="card-action-btn">Live Demo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/todo-list-app'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/todo-list-app'">
-        <div class="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
-            <h3 class="mt-2 text-2xl font-semibold text-slate-950">To-Do List App</h3>
-          </div>
-          <span class="project-tag">TypeScript</span>
-        </div>
-
-        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-          <Image src={TodoThumb} width={1920} alt="To-Do List App thumbnail" class="project-thumb todo-crop" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
-        </div>
-
-        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
-          <p>Full-Stack Developer - Integrated a mobile-to-cloud task manager with automated CI/CD via Expo Services.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="tech-chip">React Native</span>
-            <span class="tech-chip">EAS</span>
-            <span class="tech-chip">TiDB</span>
-            <span class="tech-chip">Render</span>
-            <span class="tech-chip">Vercel</span>
-          </div>
-          <div class="card-actions">
-            <a href="#" class="card-action-btn">Source Code</a>
-            <a href="#" class="card-action-btn">Live Demo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/h100-ecolodge'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/h100-ecolodge'">
-        <div class="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
-            <h3 class="mt-2 text-2xl font-semibold text-slate-950">H100 Ecolodge</h3>
-          </div>
-          <span class="project-tag">Java</span>
-        </div>
-
-        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-          <Image src={H100Thumb} width={1920} alt="H100 Ecolodge thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
-        </div>
-
-        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
-          <p>Delivered a commercial booking engine under zero-cost infrastructure constraints as the client requested.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="tech-chip">Spring Boot</span>
-            <span class="tech-chip">MySQL</span>
-            <span class="tech-chip">Aiven</span>
-            <span class="tech-chip">HTML</span>
-            <span class="tech-chip">CSS</span>
-            <span class="tech-chip">JavaScript</span>
-            <span class="tech-chip">Spring Data JPA</span>
-          </div>
-          <div class="card-actions">
-            <a href="#" class="card-action-btn">Source Code</a>
-            <a href="#" class="card-action-btn">Live Demo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/nhc-internal-gym'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/nhc-internal-gym'">
-        <div class="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
-            <h3 class="mt-2 text-2xl font-semibold text-slate-950">NHC Internal Gym</h3>
-          </div>
-          <span class="project-tag">C#</span>
-        </div>
-
-        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-          <Image src={NHCThumb} width={1920} alt="NHC Internal Gym thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
-        </div>
-
-        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
-          <p>Engineered a custom desktop management solution focusing on high-performance local data handling.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="tech-chip">.NET Windows Forms</span>
-            <span class="tech-chip">SQL Server</span>
-          </div>
-          <div class="card-actions">
-            <a href="#" class="card-action-btn">Source Code</a>
-            <a href="#" class="card-action-btn">Live Demo</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="group project-card overflow-hidden rounded-3xl border border-black bg-white/95 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg" role="button" tabindex="0" onclick="if (!event.target.closest('a')) window.location.href='/projects/the-last-light'" onkeydown="if (event.key === 'Enter') window.location.href='/projects/the-last-light'">
-        <div class="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Project</p>
-            <h3 class="mt-2 text-2xl font-semibold text-slate-950">The Last Light</h3>
-          </div>
-          <span class="project-tag">C#</span>
-        </div>
-
-        <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-          <Image src={LastLightThumb} width={1920} alt="The Last Light thumbnail" class="project-thumb" sizes="(min-width: 768px) 540px, 100vw" format="avif" quality={90} />
-        </div>
-
-        <div class="project-content mt-5 space-y-4 text-sm leading-6 text-slate-700">
-          <p>A Tutorial Based 3D Horror Game from User1 Productions, extended the game for additional Enemy, UI, Accessibility Features, Sound for a more exciting gameplay.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="tech-chip">Unity</span>
-            <span class="tech-chip">Blender</span>
-            <span class="tech-chip">VS Code</span>
-          </div>
-          <div class="card-actions">
-            <a href="#" class="card-action-btn">Source Code</a>
-            <a href="#" class="card-action-btn">Live Demo</a>
-          </div>
-        </div>
-      </article>
     </div>
   </section>
 
-  <section class="footer-section">
-    <div class="footer-card">
-      <p class="footer-headline">Reach out to me with</p>
-      <div id="contact-area" class="flex flex-col items-center gap-4">
-        <button id="contact-trigger" class="footer-btn">Get in touch</button>
+  <!-- STACK ==================================================== -->
+  <section class="projects-section" id="stack" style="margin-top: 6rem;">
+    <div class="projects-header reveal">
+      <p class="eyebrow">02 · stack</p>
+      <h2 class="section-title">The toolkit, opinionated.</h2>
+      <div class="meta-line">
+        <span>{`stack.json :: ${stackGroups.reduce((a, g) => a + g.items.length, 0)} entries`}</span>
+        <span style="color: var(--accent);">$0/month forever</span>
       </div>
     </div>
-    <script type="module">
-      const contactArea = document.getElementById('contact-area');
-      const contactTrigger = document.getElementById('contact-trigger');
-      contactTrigger.addEventListener('click', () => {
-        contactTrigger.classList.add('opacity-0');
-        setTimeout(() => {
-          contactArea.innerHTML = `
-            <div class="contact-links">
-              <a href="mailto:hello@example.com">Email</a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            </div>
-          `;
-        }, 250);
-      });
-    </script>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+      {stackGroups.map((group) => (
+        <div class="reveal" style="border:1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.4rem; background: var(--bg-elev);">
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; text-transform:uppercase; letter-spacing: 0.18em; color: var(--fg-muted); margin-bottom: 0.85rem;">
+            {group.label}
+          </p>
+          <div style="display:flex; flex-wrap: wrap; gap: 0.4rem;">
+            {group.items.map((item) => <span class="tech-chip">{item}</span>)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- PROJECTS ================================================= -->
+  <section class="projects-section" id="projects">
+    <div class="projects-header reveal">
+      <p class="eyebrow">03 · projects</p>
+      <h2 class="section-title">Selected work.</h2>
+      <div class="meta-line">
+        <span>{`projects.ls :: ${totalProjects} entries · ${liveProjects.length} live · ${projects.filter((p) => p.status === 'in-dev').length} in development`}</span>
+        <span>last_updated: {new Date().getFullYear()}</span>
+      </div>
+    </div>
+
+    <div class="projects-grid stagger">
+      {projects.map((project, i) => (
+        <ProjectCard project={project} thumbSrc={getThumb(project.thumbnail)} index={i} />
+      ))}
+    </div>
   </section>
 </MainLayout>

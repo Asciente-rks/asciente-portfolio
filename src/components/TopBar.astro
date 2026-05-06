@@ -1,37 +1,31 @@
 ---
-const navItems = [
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'About', href: '#about' }
-];
+import { projects } from '../data/projects';
 ---
-<header class="fixed inset-x-0 top-0 z-50 border-b border-black bg-white">
-  <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-    <a href="/" class="inline-flex items-center gap-2 text-sm font-semibold text-black transition hover:text-slate-700">
-      <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-black ring-1 ring-black/10">~</span>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="topbar-brand" aria-label="Home">
+      <span class="glyph">~</span>
       <span>~/ralph-sonio</span>
     </a>
 
-    <nav class="hidden items-center gap-3 md:flex">
-      {navItems.map((item) => (
-        <a
-          href={item.href}
-          class="rounded-full px-3 py-2 text-sm font-medium text-black transition hover:bg-slate-100 hover:text-black"
-          >{item.label}</a>
-      ))}
-      <button
-        class="ml-2 inline-flex items-center rounded-full border border-black bg-white px-3 py-2 text-sm font-medium text-black transition hover:bg-slate-100"
-        type="button"
-      >
-        Light / Dark
-      </button>
+    <nav class="topbar-nav">
+      <a href="/#projects" class="topbar-link">projects.ls</a>
+      <a href="/#stack" class="topbar-link">stack.json</a>
+      <a href="/#contact" class="topbar-link">contact.tsx</a>
     </nav>
 
-    <button
-      class="inline-flex items-center gap-2 rounded-full border border-black bg-white px-3 py-2 text-sm font-medium text-black transition hover:bg-slate-100 md:hidden"
-      type="button"
-    >
-      Menu
-    </button>
+    <div class="topbar-actions">
+      <button class="kbd-hint" data-cmdk-trigger aria-label="Open command palette">
+        <span>command</span>
+        <span class="kbd">⌘</span>
+        <span class="kbd">K</span>
+      </button>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z" />
+        </svg>
+      </button>
+    </div>
   </div>
 </header>

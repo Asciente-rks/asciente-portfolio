@@ -1,0 +1,195 @@
+---
+import { projects } from '../data/projects';
+
+// Surface project list to client-side script
+const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
+---
+
+<div class="terminal-stack">
+  <div class="cmd-window">
+    <div class="cmd-header">
+      <div class="cmd-buttons">
+        <span class="cmd-btn" style="background:#ff5f56"></span>
+        <span class="cmd-btn" style="background:#ffbd2e"></span>
+        <span class="cmd-btn" style="background:#27c93f"></span>
+      </div>
+      <div class="cmd-title">~/ralph-sonio — bash</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="cmd-body">
+      <div id="cmd-content" class="code-font" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <aside class="terminal-tip">
+    <h4>quick toolkit</h4>
+    <p><strong>ls</strong> · list every project</p>
+    <p><strong>cd &lt;name&gt;</strong> · open a case study</p>
+    <p><strong>↑ / ↓</strong> · cycle through projects</p>
+    <p><strong>about</strong> / <strong>stack</strong> / <strong>contact</strong></p>
+    <p style="margin-top:0.85rem"><kbd>⌘</kbd> <kbd>K</kbd> · open the full palette</p>
+  </aside>
+</div>
+
+<script type="module" define:vars={{ projectIndex }}>
+  const projects = projectIndex;
+  const projectRoutes = Object.fromEntries(projects.map((p) => [p.label.toLowerCase(), `/projects/${p.slug}`]));
+  const projectNames = projects.map((p) => p.label);
+  let selectedProjectIndex = -1;
+
+  const intro = [
+    'whoami',
+    'ralph kenneth f. sonio · cloud-native backend & qa tester',
+    '',
+    '--check-status',
+    'currently shipping: System Pulse · AscienteHub · SwiftRace [live]',
+    'currently building: Judgement Cut [in-dev]',
+    '',
+    'tech stack: AWS Lambda · DynamoDB · TiDB · React · Tauri · Expo',
+    'principle: every project ships at $0/month on free tiers — designed, not stitched.',
+    '',
+    "type 'ls' to list projects · 'cd <name>' to open one"
+  ];
+
+  const container = document.getElementById('cmd-content');
+  let isTyping = false;
+  let stopTyping = false;
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function createPrompt() {
+    const prompt = document.createElement('div');
+    prompt.className = 'line cmd-prompt-line';
+
+    const prefix = document.createElement('span');
+    prefix.className = 'prompt-prefix';
+    prefix.textContent = '~/ralph-sonio $ ';
+    prompt.appendChild(prefix);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'cmd-input';
+    input.autofocus = true;
+    input.spellcheck = false;
+    input.autocomplete = 'off';
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (event.key === 'ArrowDown') {
+          selectedProjectIndex = selectedProjectIndex < projectNames.length - 1 ? selectedProjectIndex + 1 : 0;
+        } else {
+          selectedProjectIndex = selectedProjectIndex > 0 ? selectedProjectIndex - 1 : projectNames.length - 1;
+        }
+        input.value = `cd ${projectNames[selectedProjectIndex]}`;
+        return;
+      }
+
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      const command = input.value.trim();
+      selectedProjectIndex = -1;
+      input.disabled = true;
+
+      const cmdLower = command.toLowerCase();
+
+      if (cmdLower === '' || cmdLower === 'help') {
+        appendLine('available commands:');
+        appendLine('  ls            list projects');
+        appendLine('  cd <project>  open project case study');
+        appendLine('  about         scroll to about');
+        appendLine('  stack         scroll to stack');
+        appendLine('  contact       scroll to contact');
+        appendLine('  clear         clear the terminal');
+        nextPrompt();
+        return;
+      }
+
+      if (cmdLower === 'ls') {
+        projects.forEach((project) => appendLine(`▸ ${project.label}`));
+        nextPrompt();
+        return;
+      }
+
+      if (cmdLower === 'clear') {
+        container.innerHTML = '';
+        const newPrompt = createPrompt();
+        container.appendChild(newPrompt);
+        newPrompt.querySelector('input').focus();
+        return;
+      }
+
+      if (cmdLower === 'about' || cmdLower === 'stack' || cmdLower === 'contact') {
+        const target = document.getElementById(cmdLower) || document.getElementById(cmdLower + '-section');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          appendLine(`scrolling to ${cmdLower}…`);
+        } else {
+          appendLine(`section "${cmdLower}" not found`);
+        }
+        nextPrompt();
+        return;
+      }
+
+      if (cmdLower.startsWith('cd ')) {
+        const targetName = command.slice(3).trim();
+        const route = projectRoutes[targetName.toLowerCase()];
+        if (route) {
+          appendLine(`opening ${targetName}…`);
+          setTimeout(() => (window.location.href = route), 480);
+          return;
+        }
+      }
+
+      appendLine(`The system cannot find the path specified: ${command}`);
+      nextPrompt();
+    });
+
+    function appendLine(text) {
+      const line = document.createElement('div');
+      line.className = 'line';
+      line.textContent = text;
+      container.appendChild(line);
+    }
+
+    function nextPrompt() {
+      const next = createPrompt();
+      container.appendChild(next);
+      next.querySelector('input').focus();
+      container.scrollTop = container.scrollHeight;
+    }
+
+    prompt.appendChild(input);
+    return prompt;
+  }
+
+  async function typeLines(target, lines, charDelay = 18, lineDelay = 220) {
+    isTyping = true;
+    stopTyping = false;
+    const cancel = () => (stopTyping = true);
+    window.addEventListener('keydown', cancel, { once: true });
+
+    for (const text of lines) {
+      const div = document.createElement('div');
+      div.className = 'line';
+      target.appendChild(div);
+      for (let i = 0; i <= text.length; i++) {
+        if (stopTyping) break;
+        div.innerHTML = escapeHtml(text.slice(0, i)) + '<span class="caret"></span>';
+        await new Promise((r) => setTimeout(r, charDelay));
+      }
+      div.innerHTML = escapeHtml(text);
+      if (stopTyping) continue;
+      await new Promise((r) => setTimeout(r, lineDelay));
+    }
+
+    isTyping = false;
+    target.appendChild(createPrompt());
+    target.scrollTop = target.scrollHeight;
+    target.querySelector('input')?.focus();
+  }
+
+  setTimeout(() => typeLines(container, intro, 14, 180), 250);
+</script>
