@@ -12,6 +12,7 @@ const { project, thumbSrc, index = 0 } = Astro.props;
 const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
 const projectNumber = String(index + 1).padStart(2, '0');
 const liveLabel = project.liveLabel ?? 'live demo';
+const detailHref = `/projects/${project.slug}`;
 
 // Choose accent for placeholder gradient based on slug hash
 function hashStr(s: string) {
@@ -29,82 +30,115 @@ const palette = [
 const [c1] = palette[hashStr(project.slug) % palette.length];
 ---
 
-<a class="project-card" href={`/projects/${project.slug}`} aria-label={`Open ${project.title}`}>
-  <div class="project-card-cover" style={!thumbSrc ? `background: linear-gradient(135deg, ${c1} 0%, #0a0e1a 80%);` : ''}>
-    {thumbSrc ? (
-      <Image src={thumbSrc} width={1280} alt={`${project.title} thumbnail`} format="avif" quality={85} />
-    ) : (
-      <div class="cover-placeholder">
-        <span class="cover-placeholder-eyebrow">No preview yet</span>
-        <span class="cover-placeholder-title">{project.title}</span>
+<!--
+  IMPORTANT: nested <a> tags are invalid HTML — browsers will auto-close the
+  outer anchor and split your card across grid cells. So the card root is an
+  <article>, the main clickable region (cover + title + summary + chips) is
+  its own <a>, and the action buttons are SIBLINGS of that anchor, not
+  descendants. JS makes the article itself feel clickable.
+-->
+<article class="project-card" data-href={detailHref} tabindex="0" role="link" aria-label={`Open ${project.title}`}>
+  <a class="project-card-main" href={detailHref}>
+    <div class="project-card-cover" style={!thumbSrc ? `background: linear-gradient(135deg, ${c1} 0%, #0a0e1a 80%);` : ''}>
+      {thumbSrc ? (
+        <Image src={thumbSrc} width={1280} alt={`${project.title} thumbnail`} format="avif" quality={85} />
+      ) : (
+        <div class="cover-placeholder">
+          <span class="cover-placeholder-eyebrow">No preview yet</span>
+          <span class="cover-placeholder-title">{project.title}</span>
+        </div>
+      )}
+      <div class="project-card-overlay-tag">
+        <span class={`status-dot ${project.status}`}></span>
+        <span>{statusLabel}</span>
       </div>
+    </div>
+
+    <div class="project-card-body">
+      <div class="project-card-eyebrow">
+        <span>P{projectNumber} · {project.role}</span>
+        <span style="color: var(--accent)">{project.language}</span>
+      </div>
+
+      <h3 class="project-card-title">{project.title}</h3>
+
+      <p class="project-card-summary">{project.tagline}</p>
+
+      <div class="project-card-tech">
+        {project.tech.slice(0, 5).map((t) => <span class="tech-chip">{t}</span>)}
+        {project.tech.length > 5 && <span class="tech-chip">+{project.tech.length - 5}</span>}
+      </div>
+    </div>
+  </a>
+
+  <div class="project-card-actions">
+    {project.sourceUrl ? (
+      <a
+        class="action-btn"
+        href={project.sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>source</span>
+        <span style="color:var(--accent); font-size:0.7rem">↗</span>
+      </a>
+    ) : (
+      <span
+        class="action-btn is-disabled"
+        aria-disabled="true"
+        title="Source not on GitHub"
+      >
+        <span>source</span>
+        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+      </span>
     )}
-    <div class="project-card-overlay-tag">
-      <span class={`status-dot ${project.status}`}></span>
-      <span>{statusLabel}</span>
-    </div>
+    {project.liveUrl ? (
+      <a
+        class="action-btn"
+        href={project.liveUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>{liveLabel.toLowerCase()}</span>
+        <span style="color:var(--accent); font-size:0.7rem">↗</span>
+      </a>
+    ) : (
+      <span
+        class="action-btn is-disabled"
+        aria-disabled="true"
+        title="No live deployment"
+      >
+        <span>live demo</span>
+        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+      </span>
+    )}
   </div>
+</article>
 
-  <div class="project-card-body">
-    <div class="project-card-eyebrow">
-      <span>P{projectNumber} · {project.role}</span>
-      <span style="color: var(--accent)">{project.language}</span>
-    </div>
+<script>
+  // Make the whole article behave like a link, but only when the user clicks
+  // somewhere that ISN'T already a link / button (so the action buttons keep
+  // their own destinations and middle-click / cmd-click still work as expected).
+  document.querySelectorAll<HTMLElement>('article.project-card[data-href]').forEach((card) => {
+    const href = card.dataset.href;
+    if (!href) return;
 
-    <h3 class="project-card-title">{project.title}</h3>
+    card.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      // If the click landed on an interactive element inside the actions row,
+      // let it handle itself.
+      if (target.closest('a, button, [role="button"]:not([data-href])')) return;
+      // The main `<a class="project-card-main">` will already navigate; don't
+      // double-navigate.
+      if (target.closest('.project-card-main')) return;
+      window.location.href = href;
+    });
 
-    <p class="project-card-summary">{project.tagline}</p>
-
-    <div class="project-card-tech">
-      {project.tech.slice(0, 5).map((t) => <span class="tech-chip">{t}</span>)}
-      {project.tech.length > 5 && <span class="tech-chip">+{project.tech.length - 5}</span>}
-    </div>
-
-    <div class="project-card-actions" onclick="event.stopPropagation()">
-      {project.sourceUrl ? (
-        <a
-          class="action-btn"
-          href={project.sourceUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onclick="event.stopPropagation()"
-        >
-          <span>source</span>
-          <span style="color:var(--accent); font-size:0.7rem">↗</span>
-        </a>
-      ) : (
-        <span
-          class="action-btn is-disabled"
-          aria-disabled="true"
-          title="Source not on GitHub"
-          onclick="event.stopPropagation()"
-        >
-          <span>source</span>
-          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-        </span>
-      )}
-      {project.liveUrl ? (
-        <a
-          class="action-btn"
-          href={project.liveUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onclick="event.stopPropagation()"
-        >
-          <span>{liveLabel.toLowerCase()}</span>
-          <span style="color:var(--accent); font-size:0.7rem">↗</span>
-        </a>
-      ) : (
-        <span
-          class="action-btn is-disabled"
-          aria-disabled="true"
-          title="No live deployment"
-          onclick="event.stopPropagation()"
-        >
-          <span>live demo</span>
-          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-        </span>
-      )}
-    </div>
-  </div>
-</a>
+    card.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        window.location.href = href;
+      }
+    });
+  });
+</script>

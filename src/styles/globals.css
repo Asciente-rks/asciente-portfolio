@@ -690,9 +690,9 @@ body {
   cursor: pointer;
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease,
     box-shadow 0.3s ease;
-  text-decoration: none;
   color: var(--fg);
   height: 100%; /* fill the grid cell so all cards in a row match heights */
+  margin: 0;
 }
 
 .project-card::before {
@@ -703,6 +703,7 @@ body {
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  z-index: 0;
 }
 
 .project-card:hover {
@@ -713,6 +714,26 @@ body {
 
 .project-card:hover::before {
   opacity: 1;
+}
+
+/* The main clickable area inside the card: cover + body content. */
+.project-card-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+.project-card-main:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .project-card-cover {
@@ -888,12 +909,19 @@ body {
   border-color: var(--border-strong);
 }
 
+/*
+  Actions row is now a SIBLING of .project-card-main inside the article (not
+  nested in the link), so it sits flush at the bottom of the card with its own
+  padding + top border.
+*/
 .project-card-actions {
   display: flex;
   gap: 0.6rem;
-  padding-top: 0.85rem;
+  padding: 0.85rem 1.25rem 1.1rem;
   border-top: 1px solid var(--border);
-  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+  background: transparent;
 }
 
 .action-btn {
