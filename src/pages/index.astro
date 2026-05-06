@@ -18,43 +18,62 @@ function getThumb(rel: string | undefined): ImageMetadata | undefined {
 const liveProjects = projects.filter((p) => p.status === 'live');
 const totalProjects = projects.length;
 
-// Real skills, sourced from author's GitHub bio. 9 categories.
+// Real skills, sourced from author's GitHub bio + augmented with everything
+// actually used across the portfolio's projects. 9 categories.
 const stackGroups = [
   {
     label: 'Backend & Logic',
-    items: ['Node.js', 'Express', 'Sequelize', 'ASP.NET Core', 'Spring Boot', 'Spring Data JPA', 'Tauri', 'Serverless Framework', 'Fastify'],
+    items: [
+      'Node.js', 'Express', 'Fastify', 'Sequelize', 'ASP.NET Core', 'Spring Boot', 'Spring MVC', 'Spring Data JPA', 'Hibernate',
+      'Tauri', 'Serverless Framework', 'FastAPI', 'Mangum', 'Scrapy', 'node-cron', '@vendia/serverless-express',
+      'Multer', 'Nodemailer', 'Resend', 'helmet', 'CORS',
+    ],
   },
   {
     label: 'Languages',
-    items: ['TypeScript', 'JavaScript', 'C# (.NET)', 'Java', 'Python', 'Rust'],
+    items: ['TypeScript', 'JavaScript', 'C# (.NET)', 'Java', 'Python', 'Rust', 'HTML', 'CSS', 'SQL'],
   },
   {
     label: 'Frontend & Mobile',
-    items: ['React', 'React Native (Expo)', 'Tailwind CSS', 'Astro'],
+    items: [
+      'React 18/19', 'React Native (Expo)', 'Tailwind CSS', 'Astro', 'Vite',
+      'react-router-dom', 'axios', 'fetch', 'AsyncStorage', 'jwt-decode', 'lucide-react', 'lucide-react-native',
+    ],
   },
   {
     label: 'AWS Ecosystem',
-    items: ['Lambda', 'DynamoDB', 'S3', 'SQS', 'SNS', 'CloudWatch', 'CloudFormation', 'Amplify', 'API Gateway'],
+    items: [
+      'Lambda', 'Lambda Function URLs', 'DynamoDB', 'S3', 'SQS', 'SQS DLQ', 'SNS',
+      'CloudWatch', 'CloudFormation', 'Amplify', 'API Gateway', 'IAM', 'KMS',
+      '@aws-sdk/lib-dynamodb v3', '@aws-sdk/client-s3',
+    ],
   },
   {
     label: 'Database & Storage',
-    items: ['TiDB Cloud', 'DynamoDB', 'Aiven', 'MySQL', 'MongoDB', 'Cloudflare R2', 'S3'],
+    items: [
+      'TiDB Cloud (Serverless)', 'DynamoDB (single-table)', 'Aiven', 'MySQL', 'MongoDB',
+      'SQL Server Express', 'PostgreSQL', 'Cloudflare R2', 'S3',
+      'mysql2', 'ioredis', 'Upstash Redis', 'ADO.NET',
+    ],
   },
   {
     label: 'Security & Auth',
-    items: ['JWT', 'Bcrypt', 'RBAC', 'Spring Security', 'OAuth'],
+    items: ['JWT (jsonwebtoken)', 'Bcrypt', 'bcryptjs', 'scrypt', 'RBAC', 'Spring Security', 'OAuth', '3-D Secure', 'Yup', 'Session-based auth'],
   },
   {
     label: 'Deployment & Ops',
-    items: ['EAS', 'Render', 'Vercel', 'AWS', 'Ngrok'],
+    items: [
+      'AWS', 'Render', 'Vercel', 'EAS Build', 'GitHub Actions', 'GitHub Releases', 'Cloudflare', 'Aiven', 'Zyte Scrapy Cloud',
+      'PayMongo', 'Ngrok', 'Idempotent CI/CD',
+    ],
   },
   {
     label: 'QA & Architecture',
-    items: ['ISO/IEC 25010', 'Postman', 'Manual Testing', 'C4 Model'],
+    items: ['ISO/IEC 25010', 'Postman', 'Manual Testing', 'C4 Model', 'Mermaid Diagrams', 'Jest', 'Supertest', 'ESLint'],
   },
   {
     label: 'Tooling & IDEs',
-    items: ['Figma', 'VS Code', 'Visual Studio', 'Cursor', 'Eclipse'],
+    items: ['Figma', 'VS Code', 'Visual Studio', 'Cursor', 'Eclipse', 'Unity', 'Blender', 'GitHub', 'Git LFS', 'npm / pnpm', 'Maven'],
   },
 ];
 ---

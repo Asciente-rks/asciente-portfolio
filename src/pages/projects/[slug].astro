@@ -31,8 +31,10 @@ const gallery = project.gallery
 
 const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
 
+const totalTechCount = project.techGroups.reduce((acc, g) => acc + g.items.length, 0);
+
 // Dynamic section numbering based on what data the project has.
-const sectionOrder = ['about', 'architecture'];
+const sectionOrder = ['about', 'stack', 'architecture'];
 if (project.database) sectionOrder.push('data');
 if (project.apiEndpoints && project.apiEndpoints.length > 0) sectionOrder.push('api');
 sectionOrder.push('costs');
@@ -83,7 +85,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         </div>
         <div class="meta-cell">
           <span class="meta-label">Stack</span>
-          <span class="meta-value" style="font-size:0.82rem; line-height:1.4;">{project.tech.length} technologies</span>
+          <span class="meta-value" style="font-size:0.82rem; line-height:1.4;">{totalTechCount} technologies</span>
         </div>
       </div>
 
@@ -122,6 +124,28 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
           </div>
         </>
       )}
+    </section>
+
+    <!-- TECH STACK ========================================== -->
+    <section class="detail-section" id="stack">
+      <div class="section-eyebrow">
+        <span class="section-num">{sectionNum('stack')} · stack</span>
+      </div>
+      <h2>Tech stack</h2>
+      <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
+        {totalTechCount} technologies across {project.techGroups.length} groups — every layer documented, no abstractions hidden.
+      </p>
+
+      <div class="stack-grid" style="margin-top: 1.5rem;">
+        {project.techGroups.map((group) => (
+          <div class="stack-card">
+            <p class="stack-card-label">{group.label}</p>
+            <div class="stack-card-items">
+              {group.items.map((item) => <span class="tech-chip">{item}</span>)}
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
 
     <!-- ARCHITECTURE ========================================= -->
@@ -331,7 +355,6 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
             edgeLabelBackground: '#ffffff',
             clusterBkg: '#f1f5f9',
             clusterBorder: '#0f766e',
-            // ER diagram colors
             attributeBackgroundColorOdd: '#f8fafc',
             attributeBackgroundColorEven: '#f1f5f9',
             relationLabelColor: '#0f172a',
@@ -350,7 +373,6 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
             edgeLabelBackground: '#0a0e1a',
             clusterBkg: '#0f1422',
             clusterBorder: '#5eead4',
-            // ER diagram colors
             attributeBackgroundColorOdd: '#0f1422',
             attributeBackgroundColorEven: '#0a0e1a',
             relationLabelColor: '#e2e8f0',
@@ -358,14 +380,16 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
           },
     });
 
-    await mermaid.run({ querySelector: '.mermaid' });
+    try {
+      await mermaid.run({ querySelector: '.mermaid' });
+    } catch (err) {
+      console.error('Mermaid render error:', err);
+    }
 
     // Re-render diagrams when the user toggles theme
     const observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
         if (m.attributeName === 'class') {
-          // Reload to re-init mermaid with new theme
-          // (cheap and reliable — diagrams are fast to re-render)
           window.location.reload();
         }
       }

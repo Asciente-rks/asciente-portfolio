@@ -1,7 +1,6 @@
 ---
 import { projects } from '../data/projects';
 
-// Surface project list to client-side script
 const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
 ---
 
@@ -54,9 +53,32 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
   const container = document.getElementById('cmd-content');
   let isTyping = false;
   let stopTyping = false;
+  // Whether the terminal has been "interacted with" — only after that do we
+  // actively focus the input. Before that, we never call .focus() which
+  // prevents the browser from auto-scrolling the page when typing finishes.
+  let userHasInteracted = false;
 
   function escapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // Re-focus the input only after the user has shown intent to interact with
+  // the terminal (clicking on it, typing, etc). Always pass preventScroll so
+  // the browser doesn't scroll the page just to bring the input into view.
+  function focusInputSafely(input) {
+    if (!input || typeof input.focus !== 'function') return;
+    if (!userHasInteracted) return;
+    try {
+      input.focus({ preventScroll: true });
+    } catch {
+      input.focus();
+    }
+  }
+
+  // Keep the cmd-body internal scroll pinned to bottom — but only that element,
+  // never the page itself.
+  function scrollTerminalToBottom() {
+    if (container) container.scrollTop = container.scrollHeight;
   }
 
   function createPrompt() {
@@ -71,7 +93,8 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'cmd-input';
-    input.autofocus = true;
+    // Intentionally NOT setting input.autofocus — that triggers page scroll
+    // when the prompt appears. We focus manually only after user interaction.
     input.spellcheck = false;
     input.autocomplete = 'off';
 
@@ -117,12 +140,12 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
         container.innerHTML = '';
         const newPrompt = createPrompt();
         container.appendChild(newPrompt);
-        newPrompt.querySelector('input').focus();
+        focusInputSafely(newPrompt.querySelector('input'));
         return;
       }
 
       if (cmdLower === 'about' || cmdLower === 'stack' || cmdLower === 'contact') {
-        const target = document.getElementById(cmdLower) || document.getElementById(cmdLower + '-section');
+        const target = document.getElementById(cmdLower);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           appendLine(`scrolling to ${cmdLower}…`);
@@ -157,8 +180,8 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
     function nextPrompt() {
       const next = createPrompt();
       container.appendChild(next);
-      next.querySelector('input').focus();
-      container.scrollTop = container.scrollHeight;
+      focusInputSafely(next.querySelector('input'));
+      scrollTerminalToBottom();
     }
 
     prompt.appendChild(input);
@@ -187,9 +210,23 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
 
     isTyping = false;
     target.appendChild(createPrompt());
-    target.scrollTop = target.scrollHeight;
-    target.querySelector('input')?.focus();
+    // Scroll only the cmd-body internally, never the page.
+    scrollTerminalToBottom();
+    // Do NOT focus the input automatically — user hasn't interacted yet.
   }
+
+  // Mark the terminal as "interacted with" the moment the user clicks/touches
+  // it or starts typing inside it. Only then do we begin auto-focusing the
+  // freshest prompt input.
+  function markInteracted() {
+    if (userHasInteracted) return;
+    userHasInteracted = true;
+    const lastInput = container?.querySelector('input.cmd-input:not([disabled])');
+    if (lastInput) focusInputSafely(lastInput);
+  }
+  container?.addEventListener('click', markInteracted);
+  container?.addEventListener('focusin', markInteracted);
+  document.querySelector('.cmd-window')?.addEventListener('click', markInteracted);
 
   setTimeout(() => typeLines(container, intro, 14, 180), 250);
 </script>
