@@ -27,6 +27,18 @@ export type TechGroup = {
   items: string[];
 };
 
+export type GalleryItem = {
+  src: string;
+  caption?: string;
+  type?: 'image' | 'video';
+};
+
+export type RepoEntry = {
+  name: string;
+  url: string;
+  stack: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -38,9 +50,11 @@ export type Project = {
   tech: string[]; // flat list, used on cards
   techGroups: TechGroup[]; // categorized full stack, used on detail page
   liveUrl?: string;
+  liveLabel?: string; // override default "Live Demo" button label
   sourceUrl?: string;
   thumbnail: string;
-  gallery: { src: string; caption?: string }[];
+  gallery: GalleryItem[];
+  featuredVideo?: { src: string; caption?: string }; // rendered at top of detail page
   architecture: {
     mermaid: string;
     notes: string[];
@@ -56,7 +70,7 @@ export type Project = {
     rationale: string[];
   };
   apiEndpoints?: { method: string; path: string; auth?: string; purpose: string }[];
-  repos?: { name: string; url: string; stack: string }[];
+  repos?: RepoEntry[];
 };
 
 // =============================================================================
@@ -72,9 +86,7 @@ const systemPulse: Project = {
   summary:
     'Invite-based onboarding, per-user system access lists, three-tier role model, and a built-in Render wake-up mode for monitoring sleeping free-tier services. Two Lambdas sharing one codebase, single-table DynamoDB, three GSIs.',
   language: 'TypeScript',
-  tech: [
-    'TypeScript', 'Node.js 20', 'AWS Lambda', 'DynamoDB', 'SQS', 'SNS', 'React 18', 'Vite 5', 'Tailwind CSS 4', 'Vercel',
-  ],
+  tech: ['TypeScript', 'Node.js 20', 'AWS Lambda', 'DynamoDB', 'SQS', 'SNS', 'React 18', 'Vite 5', 'Tailwind CSS 4', 'Vercel'],
   techGroups: [
     {
       label: 'Backend',
@@ -93,12 +105,22 @@ const systemPulse: Project = {
       items: ['Vercel (frontend)', 'AWS ap-southeast-1', 'GitHub Actions (idempotent deploy workflow)'],
     },
   ],
-  liveUrl: 'https://system-pulse-brown.vercel.app',
+  liveUrl: 'https://system-pulse-sn3w.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/system-pulse',
   thumbnail: 'SystemPulse/LoginPage_SystemPulse.png',
   gallery: [
     { src: 'SystemPulse/LoginPage_SystemPulse.png', caption: 'Invite-only login' },
     { src: 'SystemPulse/SystemTrigger_SystemPulse.png', caption: 'On-demand health probe' },
+    { src: 'SystemPulse/Logs_SP.png', caption: 'Rolling 30-day probe history' },
+    { src: 'SystemPulse/ManageUsers_SP.png', caption: 'User management — invites + access lists' },
+    { src: 'SystemPulse/EditUser_SP.png', caption: 'Edit user · scope per-system access' },
+  ],
+  repos: [
+    {
+      name: 'system-pulse',
+      url: 'https://github.com/Asciente-rks/system-pulse',
+      stack: 'Monorepo · TypeScript backend (AWS Lambda + DynamoDB) + React + Vite frontend',
+    },
   ],
   architecture: {
     mermaid: `graph TB
@@ -279,10 +301,37 @@ const ascienteHub: Project = {
       items: ['Jest', 'Supertest', 'sequelize-cli', 'GitHub Actions', 'GitHub Releases'],
     },
   ],
-  liveUrl: 'https://github.com/Asciente-rks/ascientehub-frontend/releases',
+  liveUrl: 'https://github.com/Asciente-rks/ascientehub-frontend/releases/download/v1.0.2/ascientehub_0.1.0_x64-setup.exe',
+  liveLabel: 'Download .exe',
   sourceUrl: 'https://github.com/Asciente-rks/ascientehub-backend',
   thumbnail: 'AscienteHub/LoginAscienteHub.png',
-  gallery: [{ src: 'AscienteHub/LoginAscienteHub.png', caption: 'Sign-in screen' }],
+  gallery: [
+    { src: 'AscienteHub/LoginAscienteHub.png', caption: 'Sign-in screen' },
+    { src: 'AscienteHub/Dashboard_AH.png', caption: 'Dashboard · catalog hero' },
+    { src: 'AscienteHub/Games_AH.png', caption: 'Game catalog' },
+    { src: 'AscienteHub/ViewGameDetails_AH.png', caption: 'Game detail · purchase + install' },
+    { src: 'AscienteHub/Cart_AH.png', caption: 'Shopping cart' },
+    { src: 'AscienteHub/3DSTrigger_AH.png', caption: '3-D Secure trigger · PayMongo' },
+    { src: 'AscienteHub/After3DS_AH.png', caption: 'Post-3DS confirmation' },
+    { src: 'AscienteHub/Library_AH.png', caption: 'Library · owned games' },
+    { src: 'AscienteHub/PurchaseHistory_AH.png', caption: 'Purchase history' },
+    { src: 'AscienteHub/ProfileView_AH.png', caption: 'Profile view' },
+    { src: 'AscienteHub/DevApplication_AH.png', caption: 'Developer application gate' },
+    { src: 'AscienteHub/CreateGame_AH.png', caption: 'Developer · upload game' },
+    { src: 'AscienteHub/UserControl_AH.png', caption: 'Admin · user management' },
+  ],
+  repos: [
+    {
+      name: 'ascientehub-frontend',
+      url: 'https://github.com/Asciente-rks/ascientehub-frontend',
+      stack: 'Tauri 2 desktop launcher · Rust shell + React 18 + TypeScript + Tailwind',
+    },
+    {
+      name: 'ascientehub-backend',
+      url: 'https://github.com/Asciente-rks/ascientehub-backend',
+      stack: 'Serverless REST API · Node.js 18 + TypeScript + Express 5 + Sequelize',
+    },
+  ],
   architecture: {
     mermaid: `graph TB
     Tauri["Tauri 2 Desktop<br/>Windows native<br/>Rust shell + React 18"]
@@ -473,18 +522,6 @@ const ascienteHub: Project = {
       'PayMongo over Stripe — local PH provider, lower cards-not-present fees, native PHP currency, no FX conversion.',
     ],
   },
-  repos: [
-    {
-      name: 'ascientehub-frontend',
-      url: 'https://github.com/Asciente-rks/ascientehub-frontend',
-      stack: 'Tauri 2 desktop launcher (Rust shell + React 18 + TypeScript + Tailwind)',
-    },
-    {
-      name: 'ascientehub-backend',
-      url: 'https://github.com/Asciente-rks/ascientehub-backend',
-      stack: 'Serverless REST API (Node.js 18 + TypeScript + Express 5 + Sequelize)',
-    },
-  ],
 };
 
 // =============================================================================
@@ -519,10 +556,24 @@ const serviceTicketSystem: Project = {
       items: ['Render Web Service', 'Vercel (auto-deploy)'],
     },
   ],
-  liveUrl: 'https://service-ticket-system-frontend.vercel.app',
+  liveUrl: 'https://service-ticket-system-frontend.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/service-ticket-system',
   thumbnail: 'ServiceTicket/LoginServiceTicket.png',
-  gallery: [{ src: 'ServiceTicket/LoginServiceTicket.png', caption: 'Login screen' }],
+  gallery: [
+    { src: 'ServiceTicket/LoginServiceTicket.png', caption: 'Login screen' },
+  ],
+  repos: [
+    {
+      name: 'service-ticket-system',
+      url: 'https://github.com/Asciente-rks/service-ticket-system',
+      stack: 'REST API · Express 4 + Sequelize + MySQL + node-cron',
+    },
+    {
+      name: 'service-ticket-system-frontend',
+      url: 'https://github.com/Asciente-rks/service-ticket-system-frontend',
+      stack: 'Web SPA · React 19 + Vite 8 + Tailwind 4',
+    },
+  ],
   architecture: {
     mermaid: `graph TB
     Browser["Browser SPA<br/>React 19 + Vite 8 + Tailwind 4<br/>react-router 7 · jwt-decode"]
@@ -695,10 +746,21 @@ const todoList: Project = {
       items: ['Render Web Service'],
     },
   ],
-  liveUrl: 'https://todo-list-backend-4li8.onrender.com/api',
+  liveUrl: 'https://expo.dev/accounts/asciente-rks/projects/to-do-list-ts-frontend/builds/b3c0fe0b-93d5-4a8d-a56f-7ebd12440418',
+  liveLabel: 'Download APK',
   sourceUrl: 'https://github.com/Asciente-rks/todo-list',
-  thumbnail: 'Todo/TodoList.png',
-  gallery: [{ src: 'Todo/TodoList.png', caption: 'Mobile preview' }],
+  thumbnail: 'Todo/Login_Todo.jpg',
+  gallery: [
+    { src: 'Todo/Login_Todo.jpg', caption: 'Sign-in' },
+    { src: 'Todo/Register_Todo.jpg', caption: 'Register' },
+    { src: 'Todo/Tasks_Todo.jpg', caption: 'Task list with due dates' },
+    { src: 'Todo/ProfileSettings_Todo.jpg', caption: 'Profile settings' },
+    { src: 'Todo/ChangePassword_Todo.jpg', caption: 'Change password' },
+  ],
+  repos: [
+    { name: 'todo-list', url: 'https://github.com/Asciente-rks/todo-list', stack: 'Express 5 + Sequelize + MySQL + JWT' },
+    { name: 'todo-list-frontend', url: 'https://github.com/Asciente-rks/todo-list-frontend', stack: 'Expo / React Native — Android, iOS, web' },
+  ],
   architecture: {
     mermaid: `graph TB
     Mobile["Mobile / Web<br/>Expo SDK 54 + RN 0.81<br/>AsyncStorage JWT<br/>2-min AbortController"]
@@ -783,10 +845,6 @@ const todoList: Project = {
       '2-min client timeout — Render\'s free-tier cold start can take 30–60s; padding to 2 min covers worst-case wake-up cleanly.',
     ],
   },
-  repos: [
-    { name: 'todo-list', url: 'https://github.com/Asciente-rks/todo-list', stack: 'Express 5 + Sequelize + MySQL + JWT' },
-    { name: 'todo-list-frontend', url: 'https://github.com/Asciente-rks/todo-list-frontend', stack: 'Expo / React Native (Android, iOS, web)' },
-  ],
 };
 
 // =============================================================================
@@ -821,10 +879,27 @@ const swiftRace: Project = {
       items: ['AWS Lambda + API Gateway (ap-southeast-1)', 'Vercel (frontend)'],
     },
   ],
-  liveUrl: 'https://swiftrace.vercel.app',
+  liveUrl: 'https://swiftrace.vercel.app/',
   sourceUrl: 'https://github.com/Asciente-rks/swiftrace',
-  thumbnail: 'SystemPulse/LoginPage_SystemPulse.png',
-  gallery: [],
+  thumbnail: 'Swiftrace/Login_Swiftrace.png',
+  gallery: [
+    { src: 'Swiftrace/Login_Swiftrace.png', caption: 'Login' },
+    { src: 'Swiftrace/Dashboard_Swiftrace.png', caption: 'Dashboard · KPIs + recent shipments' },
+    { src: 'Swiftrace/PlaceOrder_Swiftrace.png', caption: 'Place order · sample order helper' },
+    { src: 'Swiftrace/ManageShipments_Swiftrace.png', caption: 'Manage shipments' },
+    { src: 'Swiftrace/ShipmentDetails_Swiftrace.png', caption: 'Shipment details · history timeline' },
+    { src: 'Swiftrace/EditShipment_Swiftrace.png', caption: 'Edit shipment · update status' },
+    { src: 'Swiftrace/ManageUsers_Swiftrace.png', caption: 'Manage users' },
+    { src: 'Swiftrace/CreateUser_Swiftrace.png', caption: 'Create user' },
+    { src: 'Swiftrace/EditUser_Swiftrace.png', caption: 'Edit user · verify shipper / admin' },
+  ],
+  repos: [
+    {
+      name: 'swiftrace',
+      url: 'https://github.com/Asciente-rks/swiftrace',
+      stack: 'Monorepo · 15 AWS Lambdas (TypeScript) + React 19 + Vite frontend',
+    },
+  ],
   architecture: {
     mermaid: `graph TB
     Browser["Browser<br/>React 19 + Vite + react-router 7"]
@@ -976,9 +1051,22 @@ const judgementCut: Project = {
       items: ['GitHub Actions cron (daily 02:00 PHT)', 'Zyte Scrapy Cloud', 'AWS ap-southeast-1', 'Cloudflare R2', 'Vercel (frontend)'],
     },
   ],
+  liveUrl: 'https://judgement-cut.vercel.app/',
   sourceUrl: 'https://github.com/Asciente-rks/judgement-cut',
-  thumbnail: 'SystemPulse/LoginPage_SystemPulse.png',
-  gallery: [],
+  thumbnail: 'JudgementCut/Login_JC.png',
+  gallery: [
+    { src: 'JudgementCut/Login_JC.png', caption: 'Login' },
+    { src: 'JudgementCut/Dashboard_JC.png', caption: 'Dashboard · daily-refreshed deals' },
+    { src: 'JudgementCut/Search_JC.png', caption: 'Live CheapShark search' },
+    { src: 'JudgementCut/AdminControl_JC.png', caption: 'Admin · platform toggles + heartbeat' },
+  ],
+  repos: [
+    {
+      name: 'judgement-cut',
+      url: 'https://github.com/Asciente-rks/judgement-cut',
+      stack: 'Monorepo · Python Scrapy spider + FastAPI/Lambda + React/Vite frontend',
+    },
+  ],
   architecture: {
     mermaid: `graph TB
     Cron["GitHub Actions cron<br/>02:00 PHT daily"]
@@ -1097,11 +1185,11 @@ const h100Ecolodge: Project = {
   slug: 'h100-ecolodge',
   title: 'H100 Ecolodge',
   role: 'Backend / Full-Stack',
-  status: 'live',
+  status: 'archived',
   tagline:
-    'A commercial booking engine for an ecolodge — built under zero-cost infrastructure constraints as the client requested.',
+    'A commercial booking engine for an ecolodge — built under zero-cost infrastructure constraints as the client requested. Delivered as a school capstone.',
   summary:
-    'Spring Boot + Spring Data JPA backend with MySQL on Aiven, vanilla HTML/CSS/JS on the customer-facing storefront, and a full admin panel for bookings, rooms, halls, catering, payments, and analytics.',
+    'Spring Boot + Spring Data JPA backend with MySQL on Aiven, vanilla HTML/CSS/JS on the customer-facing storefront, and a full admin panel for bookings, rooms, halls, catering, payments, and analytics. No live deployment — handed off to the client.',
   language: 'Java',
   tech: ['Java 17', 'Spring Boot', 'Spring Data JPA', 'Spring Security', 'MySQL', 'Aiven', 'HTML', 'CSS', 'JavaScript', 'Maven'],
   techGroups: [
@@ -1126,9 +1214,11 @@ const h100Ecolodge: Project = {
       items: ['Java host (Render / Railway)', 'Aiven (DB)'],
     },
   ],
+  // No liveUrl — H100 has no live deployment (button stays grayed out).
   sourceUrl: 'https://github.com/Ecolodge-STI/EcoWeb',
-  thumbnail: 'H100/CXUI_Homepage.png',
+  thumbnail: 'H100/ADMIN_Login.png',
   gallery: [
+    { src: 'H100/ADMIN_Login.png', caption: 'Admin login' },
     { src: 'H100/CXUI_Homepage.png', caption: 'Customer homepage' },
     { src: 'H100/CXUI_Hompage2.png', caption: 'Customer homepage — secondary view' },
     { src: 'H100/CXUI_Halls.png', caption: 'Function halls catalog' },
@@ -1137,7 +1227,6 @@ const h100Ecolodge: Project = {
     { src: 'H100/CXUI_BranchSelection.png', caption: 'Branch selection' },
     { src: 'H100/CXUI_Bookings.png', caption: 'Customer bookings' },
     { src: 'H100/CXUI_Bookings2.png', caption: 'Customer bookings — detail view' },
-    { src: 'H100/ADMIN_Login.png', caption: 'Admin login' },
     { src: 'H100/ADMIN_Dashboard.png', caption: 'Admin dashboard' },
     { src: 'H100/ADMIN_Dashboard2.png', caption: 'Admin dashboard — analytics' },
     { src: 'H100/ADMIN_Booking.png', caption: 'Admin bookings' },
@@ -1154,6 +1243,13 @@ const h100Ecolodge: Project = {
     { src: 'H100/ADMIN_ManageUsers2.png', caption: 'Manage users — detail' },
     { src: 'H100/ADMIN_EmployeeManagement.png', caption: 'Employee management' },
     { src: 'H100/ADMIN_Content.png', caption: 'Content management' },
+  ],
+  repos: [
+    {
+      name: 'EcoWeb',
+      url: 'https://github.com/Ecolodge-STI/EcoWeb',
+      stack: 'Spring Boot + Spring Data JPA + MySQL · Customer storefront + admin panel',
+    },
   ],
   architecture: {
     mermaid: `graph TB
@@ -1288,7 +1384,7 @@ const nhcInternalGym: Project = {
   tagline:
     'A custom desktop management solution for an internal gym — focused on high-performance local data handling, time tracking, and member search.',
   summary:
-    '.NET Windows Forms application with SQL Server backend. Built for offline-first internal use where speed and reliability matter more than connectivity.',
+    '.NET Windows Forms application with SQL Server backend. Built for offline-first internal use where speed and reliability matter more than connectivity. Source not on GitHub — delivered as a binary to the client.',
   language: 'C#',
   tech: ['.NET', 'Windows Forms', 'C#', 'SQL Server Express', 'ADO.NET', 'Visual Studio'],
   techGroups: [
@@ -1309,6 +1405,8 @@ const nhcInternalGym: Project = {
       items: ['Visual Studio', 'SQL Server Management Studio'],
     },
   ],
+  // No liveUrl — desktop app, no web demo
+  // No sourceUrl — not on GitHub (per request)
   thumbnail: 'NHC/Login.png',
   gallery: [
     { src: 'NHC/Login.png', caption: 'Sign-in screen' },
@@ -1317,6 +1415,7 @@ const nhcInternalGym: Project = {
     { src: 'NHC/Inventory.png', caption: 'Inventory' },
     { src: 'NHC/Inventory2.png', caption: 'Inventory — detail view' },
   ],
+  // No repos — not on GitHub
   architecture: {
     mermaid: `graph TB
     Forms["Windows Forms · .NET / C#<br/>Sign-in · Search · Time<br/>Inventory · Member CRUD"]
@@ -1440,9 +1539,16 @@ const theLastLight: Project = {
       items: ['Windows Standalone build (.exe)'],
     },
   ],
+  // No live web URL — this is a Windows game. The "Live Demo" slot is filled
+  // by the demonstration video instead (see featuredVideo + gallery).
   sourceUrl: 'https://github.com/Asciente-rks/the-last-light',
   thumbnail: 'TheLastLight/MainMenu.png',
+  featuredVideo: {
+    src: 'TheLastLight/ShortClip.mp4',
+    caption: 'Short gameplay demonstration',
+  },
   gallery: [
+    { src: 'TheLastLight/ShortClip.mp4', caption: 'Gameplay demonstration', type: 'video' },
     { src: 'TheLastLight/MainMenu.png', caption: 'Main menu' },
     { src: 'TheLastLight/InGame.png', caption: 'In-game — exterior' },
     { src: 'TheLastLight/InGame2.png', caption: 'In-game — interior' },
@@ -1451,6 +1557,13 @@ const theLastLight: Project = {
     { src: 'TheLastLight/EditorSample.png', caption: 'Unity editor — scene view' },
     { src: 'TheLastLight/EditorSample2.png', caption: 'Unity editor — second scene' },
     { src: 'TheLastLight/Settings.png', caption: 'Settings + accessibility' },
+  ],
+  repos: [
+    {
+      name: 'the-last-light',
+      url: 'https://github.com/Asciente-rks/the-last-light',
+      stack: 'Unity 3D project · C# scripts + Blender assets',
+    },
   ],
   architecture: {
     mermaid: `graph TB

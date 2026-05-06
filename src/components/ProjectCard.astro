@@ -11,6 +11,7 @@ interface Props {
 const { project, thumbSrc, index = 0 } = Astro.props;
 const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
 const projectNumber = String(index + 1).padStart(2, '0');
+const liveLabel = project.liveLabel ?? 'live demo';
 
 // Choose accent for placeholder gradient based on slug hash
 function hashStr(s: string) {
@@ -60,24 +61,50 @@ const [c1] = palette[hashStr(project.slug) % palette.length];
     </div>
 
     <div class="project-card-actions" onclick="event.stopPropagation()">
-      <span
-        class="action-btn is-disabled"
-        role="button"
-        aria-disabled="true"
-        title="Coming soon"
-      >
-        <span>source</span>
-        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-      </span>
-      <span
-        class="action-btn is-disabled"
-        role="button"
-        aria-disabled="true"
-        title="Coming soon"
-      >
-        <span>live demo</span>
-        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-      </span>
+      {project.sourceUrl ? (
+        <a
+          class="action-btn"
+          href={project.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onclick="event.stopPropagation()"
+        >
+          <span>source</span>
+          <span style="color:var(--accent); font-size:0.7rem">↗</span>
+        </a>
+      ) : (
+        <span
+          class="action-btn is-disabled"
+          aria-disabled="true"
+          title="Source not on GitHub"
+          onclick="event.stopPropagation()"
+        >
+          <span>source</span>
+          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+        </span>
+      )}
+      {project.liveUrl ? (
+        <a
+          class="action-btn"
+          href={project.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onclick="event.stopPropagation()"
+        >
+          <span>{liveLabel.toLowerCase()}</span>
+          <span style="color:var(--accent); font-size:0.7rem">↗</span>
+        </a>
+      ) : (
+        <span
+          class="action-btn is-disabled"
+          aria-disabled="true"
+          title="No live deployment"
+          onclick="event.stopPropagation()"
+        >
+          <span>live demo</span>
+          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+        </span>
+      )}
     </div>
   </div>
 </a>

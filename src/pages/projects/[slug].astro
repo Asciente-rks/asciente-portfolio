@@ -16,22 +16,41 @@ if (!project) {
   return Astro.redirect('/');
 }
 
-// Glob all asset images for the gallery
-const assetModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
+// Glob image assets for the gallery + thumbnail
+const imageModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
 
-function getAsset(rel: string | undefined): ImageMetadata | undefined {
+// Glob video assets — Vite resolves these to URL strings via `?url`
+const videoModules = import.meta.glob<string>('../../assets/**/*.mp4', { eager: true, query: '?url', import: 'default' });
+
+function getImageAsset(rel: string | undefined): ImageMetadata | undefined {
   if (!rel) return undefined;
   const key = `../../assets/${rel}`;
-  return assetModules[key]?.default;
+  return imageModules[key]?.default;
 }
 
+function getVideoUrl(rel: string | undefined): string | undefined {
+  if (!rel) return undefined;
+  const key = `../../assets/${rel}`;
+  return videoModules[key];
+}
+
+// Resolve gallery items, distinguishing images from videos by either explicit
+// type or file extension.
 const gallery = project.gallery
-  .map((g) => ({ ...g, asset: getAsset(g.src) }))
-  .filter((g) => g.asset);
+  .map((g) => {
+    const isVideo = g.type === 'video' || /\.mp4$/i.test(g.src);
+    if (isVideo) {
+      return { ...g, kind: 'video' as const, url: getVideoUrl(g.src) };
+    }
+    return { ...g, kind: 'image' as const, asset: getImageAsset(g.src) };
+  })
+  .filter((g) => (g.kind === 'image' ? !!g.asset : !!g.url));
+
+const featuredVideoUrl = project.featuredVideo ? getVideoUrl(project.featuredVideo.src) : undefined;
 
 const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
-
 const totalTechCount = project.techGroups.reduce((acc, g) => acc + g.items.length, 0);
+const liveLabel = project.liveLabel ?? 'Live Demo';
 
 // Dynamic section numbering based on what data the project has.
 const sectionOrder = ['about', 'stack', 'architecture'];
@@ -90,16 +109,56 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       </div>
 
       <div class="detail-actions">
-        <a class="action-btn is-disabled" href="#" onclick="event.preventDefault();" aria-disabled="true" title="Coming soon">
-          <span>source code</span>
-          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-        </a>
-        <a class="action-btn is-disabled" href="#" onclick="event.preventDefault();" aria-disabled="true" title="Coming soon">
-          <span>live demo</span>
-          <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-        </a>
+        {project.sourceUrl ? (
+          <a class="action-btn" href={project.sourceUrl} target="_blank" rel="noopener noreferrer">
+            <span>source code</span>
+            <span style="color:var(--accent); font-size:0.7rem">↗</span>
+          </a>
+        ) : (
+          <span class="action-btn is-disabled" aria-disabled="true" title="Source not on GitHub">
+            <span>source code</span>
+            <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+          </span>
+        )}
+        {project.liveUrl ? (
+          <a class="action-btn" href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+            <span>{liveLabel.toLowerCase()}</span>
+            <span style="color:var(--accent); font-size:0.7rem">↗</span>
+          </a>
+        ) : (
+          <span class="action-btn is-disabled" aria-disabled="true" title="No live deployment">
+            <span>live demo</span>
+            <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
+          </span>
+        )}
       </div>
     </section>
+
+    <!-- FEATURED VIDEO (only for projects with featuredVideo set) -->
+    {featuredVideoUrl && (
+      <section class="detail-section" id="demo-video">
+        <div class="section-eyebrow">
+          <span class="section-num">▶ · demo</span>
+        </div>
+        <h2>Gameplay demonstration</h2>
+        {project.featuredVideo?.caption && (
+          <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
+            {project.featuredVideo.caption}
+          </p>
+        )}
+        <div class="featured-video-frame">
+          <video
+            controls
+            preload="metadata"
+            playsinline
+            poster={getImageAsset('TheLastLight/MainMenu.png')?.src}
+          >
+            <source src={featuredVideoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </section>
+    )}
 
     <!-- SUMMARY ============================================== -->
     <section class="detail-section" id="summary">
@@ -111,13 +170,23 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         {project.summary}
       </p>
 
-      {project.repos && project.repos.length > 1 && (
+      {project.repos && project.repos.length > 0 && (
         <>
           <h3>Repositories</h3>
           <div class="repos-strip">
             {project.repos.map((repo) => (
               <a href={repo.url} target="_blank" rel="noopener noreferrer" class="repo-card">
-                <span class="name">{repo.name}</span>
+                <span class="repo-card-row">
+                  <span class="name">
+                    <span class="repo-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1-.02-1.96-3.2.69-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.16 1.18.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.2-1.49 3.16-1.18 3.16-1.18.62 1.57.23 2.73.11 3.02.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.21 0 .31.21.68.8.56C20.71 21.39 24 17.08 24 12 24 5.65 18.85.5 12 .5z" />
+                      </svg>
+                    </span>
+                    {repo.name}
+                  </span>
+                  <span class="repo-arrow">↗</span>
+                </span>
                 <span class="stack">{repo.stack}</span>
               </a>
             ))}
@@ -308,15 +377,24 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         </div>
         <h2>Gallery</h2>
         <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
-          Click any image to expand.
+          Click any image to expand. Videos play inline.
         </p>
 
         <div class="gallery-grid">
           {gallery.map((g) => (
-            <div class="gallery-item" data-zoom={g.asset!.src} data-caption={g.caption || ''}>
-              <Image src={g.asset!} width={1280} alt={g.caption || project.title} format="avif" quality={85} />
-              {g.caption && <div class="gallery-caption">{g.caption}</div>}
-            </div>
+            g.kind === 'image' && g.asset ? (
+              <div class="gallery-item" data-zoom={g.asset.src} data-caption={g.caption || ''}>
+                <Image src={g.asset} width={1280} alt={g.caption || project.title} format="avif" quality={85} />
+                {g.caption && <div class="gallery-caption">{g.caption}</div>}
+              </div>
+            ) : (
+              <div class="gallery-item is-video">
+                <video controls preload="metadata" playsinline>
+                  <source src={g.url} type="video/mp4" />
+                </video>
+                {g.caption && <div class="gallery-caption">{g.caption}</div>}
+              </div>
+            )
           ))}
         </div>
       </section>
@@ -386,7 +464,6 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       console.error('Mermaid render error:', err);
     }
 
-    // Re-render diagrams when the user toggles theme
     const observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
         if (m.attributeName === 'class') {
@@ -398,12 +475,12 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
   </script>
 
   <script>
-    // Gallery lightbox
+    // Gallery lightbox (images only)
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
     const closeBtn = document.querySelector('.lightbox-close');
 
-    document.querySelectorAll('.gallery-item').forEach((item) => {
+    document.querySelectorAll('.gallery-item:not(.is-video)').forEach((item) => {
       item.addEventListener('click', () => {
         const src = (item as HTMLElement).dataset.zoom;
         const caption = (item as HTMLElement).dataset.caption;

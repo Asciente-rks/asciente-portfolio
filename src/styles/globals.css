@@ -1449,7 +1449,7 @@ body {
 .repos-strip {
   margin-top: 1.5rem;
   display: grid;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .repo-card {
@@ -1459,15 +1459,24 @@ body {
   background: var(--bg-elev);
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.45rem;
   text-decoration: none;
   color: var(--fg);
-  transition: border-color 0.2s, transform 0.2s;
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  position: relative;
 }
 
 .repo-card:hover {
   border-color: var(--accent);
   transform: translateY(-2px);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
+}
+
+.repo-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .repo-card .name {
@@ -1475,11 +1484,97 @@ body {
   font-weight: 600;
   font-size: 0.95rem;
   color: var(--fg);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.repo-card .repo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+}
+
+.repo-card .repo-arrow {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.repo-card:hover .repo-arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
 }
 
 .repo-card .stack {
   font-size: 0.84rem;
   color: var(--fg-muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.01em;
+}
+
+/* ----------------------------------------------------------
+   FEATURED VIDEO (project detail · The Last Light)
+   ----------------------------------------------------------*/
+.featured-video-frame {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16 / 9;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+}
+
+.featured-video-frame video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
+
+/* ----------------------------------------------------------
+   GALLERY VIDEO ITEM
+   ----------------------------------------------------------*/
+.gallery-item.is-video {
+  cursor: default;
+  background: #000;
+}
+
+.gallery-item.is-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+.gallery-item.is-video::before {
+  content: '▶';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(10, 14, 26, 0.78);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
 }
 
 /* ----------------------------------------------------------
