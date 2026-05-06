@@ -1,7 +1,16 @@
 ---
 import { projects } from '../data/projects';
+import {
+  terminalIntro,
+  terminalToolkit,
+  terminalToolkitFooter,
+  terminalPromptPrefix,
+  terminalWindowTitle,
+  terminalHelp,
+} from '../data/terminal';
 
 const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
+const promptPrefix = terminalPromptPrefix;
 ---
 
 <div class="terminal-stack">
@@ -12,7 +21,7 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
         <span class="cmd-btn" style="background:#ffbd2e"></span>
         <span class="cmd-btn" style="background:#27c93f"></span>
       </div>
-      <div class="cmd-title">~/ralph-sonio — bash</div>
+      <div class="cmd-title">{terminalWindowTitle}</div>
       <div style="width:36px"></div>
     </div>
     <div class="cmd-body">
@@ -22,49 +31,31 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
 
   <aside class="terminal-tip">
     <h4>quick toolkit</h4>
-    <p><strong>ls</strong> · list every project</p>
-    <p><strong>cd &lt;name&gt;</strong> · open a case study</p>
-    <p><strong>↑ / ↓</strong> · cycle through projects</p>
-    <p><strong>about</strong> / <strong>stack</strong> / <strong>contact</strong></p>
-    <p style="margin-top:0.85rem"><kbd>⌘</kbd> <kbd>K</kbd> · open the full palette</p>
+    {terminalToolkit.map((entry) => (
+      <p><strong>{entry.command}</strong> · {entry.description}</p>
+    ))}
+    <p style="margin-top:0.85rem" set:html={terminalToolkitFooter}></p>
   </aside>
 </div>
 
-<script type="module" define:vars={{ projectIndex }}>
+<script type="module" define:vars={{ projectIndex, terminalIntro, terminalHelp, promptPrefix }}>
   const projects = projectIndex;
   const projectRoutes = Object.fromEntries(projects.map((p) => [p.label.toLowerCase(), `/projects/${p.slug}`]));
   const projectNames = projects.map((p) => p.label);
   let selectedProjectIndex = -1;
 
-  const intro = [
-    'whoami',
-    'ralph kenneth f. sonio · cloud-native backend & qa tester',
-    '',
-    '--check-status',
-    'currently shipping: System Pulse · AscienteHub · SwiftRace [live]',
-    'currently building: Judgement Cut [in-dev]',
-    '',
-    'tech stack: AWS Lambda · DynamoDB · TiDB · React · Tauri · Expo',
-    'principle: every project ships at $0/month on free tiers — designed, not stitched.',
-    '',
-    "type 'ls' to list projects · 'cd <name>' to open one"
-  ];
+  const intro = terminalIntro;
+  const helpLines = terminalHelp;
 
   const container = document.getElementById('cmd-content');
   let isTyping = false;
   let stopTyping = false;
-  // Whether the terminal has been "interacted with" — only after that do we
-  // actively focus the input. Before that, we never call .focus() which
-  // prevents the browser from auto-scrolling the page when typing finishes.
   let userHasInteracted = false;
 
   function escapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  // Re-focus the input only after the user has shown intent to interact with
-  // the terminal (clicking on it, typing, etc). Always pass preventScroll so
-  // the browser doesn't scroll the page just to bring the input into view.
   function focusInputSafely(input) {
     if (!input || typeof input.focus !== 'function') return;
     if (!userHasInteracted) return;
@@ -75,8 +66,6 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
     }
   }
 
-  // Keep the cmd-body internal scroll pinned to bottom — but only that element,
-  // never the page itself.
   function scrollTerminalToBottom() {
     if (container) container.scrollTop = container.scrollHeight;
   }
@@ -87,14 +76,12 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
 
     const prefix = document.createElement('span');
     prefix.className = 'prompt-prefix';
-    prefix.textContent = '~/ralph-sonio $ ';
+    prefix.textContent = promptPrefix;
     prompt.appendChild(prefix);
 
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'cmd-input';
-    // Intentionally NOT setting input.autofocus — that triggers page scroll
-    // when the prompt appears. We focus manually only after user interaction.
     input.spellcheck = false;
     input.autocomplete = 'off';
 
@@ -119,13 +106,7 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
       const cmdLower = command.toLowerCase();
 
       if (cmdLower === '' || cmdLower === 'help') {
-        appendLine('available commands:');
-        appendLine('  ls            list projects');
-        appendLine('  cd <project>  open project case study');
-        appendLine('  about         scroll to about');
-        appendLine('  stack         scroll to stack');
-        appendLine('  contact       scroll to contact');
-        appendLine('  clear         clear the terminal');
+        helpLines.forEach((line) => appendLine(line));
         nextPrompt();
         return;
       }
@@ -210,14 +191,9 @@ const projectIndex = projects.map((p) => ({ slug: p.slug, label: p.title }));
 
     isTyping = false;
     target.appendChild(createPrompt());
-    // Scroll only the cmd-body internally, never the page.
     scrollTerminalToBottom();
-    // Do NOT focus the input automatically — user hasn't interacted yet.
   }
 
-  // Mark the terminal as "interacted with" the moment the user clicks/touches
-  // it or starts typing inside it. Only then do we begin auto-focusing the
-  // freshest prompt input.
   function markInteracted() {
     if (userHasInteracted) return;
     userHasInteracted = true;

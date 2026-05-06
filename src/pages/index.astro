@@ -4,6 +4,8 @@ import Terminal from '../components/Terminal.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { Image } from 'astro:assets';
 import { projects } from '../data/projects';
+import { siteConfig } from '../data/site';
+import { stackGroups } from '../data/stack';
 import GradPicSrc from '../assets/GradPic_Sonio.jpg';
 
 // Lazy-resolved imports for project thumbnails.
@@ -17,111 +19,50 @@ function getThumb(rel: string | undefined): ImageMetadata | undefined {
 
 const liveProjects = projects.filter((p) => p.status === 'live');
 const totalProjects = projects.length;
+const inDevProjects = projects.filter((p) => p.status === 'in-dev');
+const totalStackEntries = stackGroups.reduce((acc, group) => acc + group.items.length, 0);
 
-// Real skills, sourced from author's GitHub bio + augmented with everything
-// actually used across the portfolio's projects. 9 categories.
-const stackGroups = [
-  {
-    label: 'Backend & Logic',
-    items: [
-      'REST APIs', 'RESTful Design', 'Webhooks', 'Microservices', 'Single-table Design',
-      'Node.js', 'Express', 'Fastify', 'Sequelize', 'ASP.NET Core', 'Spring Boot', 'Spring MVC', 'Spring Data JPA', 'Hibernate',
-      'Tauri', 'Serverless Framework', 'FastAPI', 'Mangum', 'Scrapy', 'node-cron', '@vendia/serverless-express',
-      'Multer', 'Nodemailer', 'Resend', 'helmet', 'CORS',
-    ],
-  },
-  {
-    label: 'Languages',
-    items: ['TypeScript', 'JavaScript', 'C# (.NET)', 'Java', 'Python', 'Rust', 'HTML', 'CSS', 'SQL'],
-  },
-  {
-    label: 'Frontend & Mobile',
-    items: [
-      'React 18/19', 'React Native (Expo)', 'Tailwind CSS', 'Astro', 'Vite',
-      'react-router-dom', 'axios', 'fetch', 'AsyncStorage', 'jwt-decode', 'lucide-react', 'lucide-react-native',
-    ],
-  },
-  {
-    label: 'AWS Ecosystem',
-    items: [
-      'Lambda', 'Lambda Function URLs', 'DynamoDB', 'S3', 'SQS', 'SQS DLQ', 'SNS',
-      'CloudWatch', 'CloudFormation', 'Amplify', 'API Gateway', 'IAM', 'KMS',
-      '@aws-sdk/lib-dynamodb v3', '@aws-sdk/client-s3',
-    ],
-  },
-  {
-    label: 'Database & Storage',
-    items: [
-      'TiDB Cloud (Serverless)', 'DynamoDB (single-table)', 'Aiven', 'MySQL', 'MongoDB',
-      'SQL Server Express', 'PostgreSQL', 'Cloudflare R2', 'S3',
-      'mysql2', 'ioredis', 'Upstash Redis', 'ADO.NET',
-    ],
-  },
-  {
-    label: 'Security & Auth',
-    items: ['JWT (jsonwebtoken)', 'Bcrypt', 'bcryptjs', 'scrypt', 'RBAC', 'Spring Security', 'OAuth', '3-D Secure', 'Yup', 'Session-based auth'],
-  },
-  {
-    label: 'Deployment & Ops',
-    items: [
-      'AWS', 'Render', 'Vercel', 'EAS Build', 'GitHub Actions', 'GitHub Releases', 'Cloudflare', 'Aiven', 'Zyte Scrapy Cloud',
-      'PayMongo', 'Ngrok', 'Idempotent CI/CD',
-    ],
-  },
-  {
-    label: 'QA & Architecture',
-    items: ['ISO/IEC 25010', 'Postman', 'Manual Testing', 'C4 Model', 'Mermaid Diagrams', 'Jest', 'Supertest', 'ESLint'],
-  },
-  {
-    label: 'Tooling & IDEs',
-    items: ['Figma', 'VS Code', 'Visual Studio', 'Cursor', 'Eclipse', 'Unity', 'Blender', 'GitHub', 'Git LFS', 'npm / pnpm', 'Maven'],
-  },
-];
+const heroBio = `${siteConfig.hero.bioHtml} ${totalProjects} projects total · ${liveProjects.length} live in production · every one of them runs at <strong style="color: var(--accent)">$0/month</strong>.`;
 ---
 
-<MainLayout
-  title="Ralph Sonio · Cloud-Native Backend & QA Engineer"
-  description="Cloud-Native Backend Engineer & Quality Assurance Tester. Selected work, architecture notes, and case studies."
->
+<MainLayout title={siteConfig.meta.title} description={siteConfig.meta.description}>
   <!-- HERO ===================================================== -->
   <section class="hero" id="about">
     <div class="hero-grid">
       <div class="profile-card">
-        <Image src={GradPicSrc} width={400} alt="Ralph Sonio" class="profile-img" format="avif" quality={88} />
+        <Image src={GradPicSrc} width={400} alt={siteConfig.identity.fullName} class="profile-img" format="avif" quality={85} loading="eager" decoding="async" />
         <div class="profile-meta">
           <div class="profile-meta-row">
             <span>name</span>
-            <strong>R. K. F. Sonio</strong>
+            <strong>{siteConfig.identity.shortName}</strong>
           </div>
           <div class="profile-meta-row">
             <span>role</span>
-            <strong>Backend · QA</strong>
+            <strong>{siteConfig.identity.role}</strong>
           </div>
           <div class="profile-meta-row">
             <span>focus</span>
-            <strong>Cloud Native</strong>
+            <strong>{siteConfig.identity.focus}</strong>
           </div>
           <div class="profile-meta-row">
             <span>status</span>
             <span style="color: var(--status-live); display:inline-flex; align-items:center; gap:0.4rem;">
               <span class="status-dot live" style="position:relative; display:inline-block;"></span>
-              Available
+              {siteConfig.identity.statusLabel}
             </span>
           </div>
         </div>
       </div>
 
       <div>
-        <p class="eyebrow">~/portfolio · v2.0</p>
+        <p class="eyebrow">{siteConfig.hero.eyebrow}</p>
         <h1 class="hero-name" style="margin-top: 1rem;">
-          Ralph Kenneth<br />Sonio
+          {siteConfig.hero.nameLine1}<br />{siteConfig.hero.nameLine2}
         </h1>
         <p class="hero-tagline">
-          Cloud-Native Backend Engineer · Quality Assurance Tester
+          {siteConfig.hero.tagline}
         </p>
-        <p class="hero-bio">
-          I architect <strong style="color: var(--fg)">scalable, type-safe systems</strong> and enforce <strong style="color: var(--fg)">high-availability standards</strong> through rigorous Quality Assurance. My focus is on cloud-native infrastructure, event-driven architecture, and production-grade stability. {totalProjects} projects total · {liveProjects.length} live in production · every one of them runs at <strong style="color: var(--accent)">$0/month</strong>.
-        </p>
+        <p class="hero-bio" set:html={heroBio}></p>
 
         <div style="margin-top: 1rem;">
           <Terminal />
@@ -136,7 +77,7 @@ const stackGroups = [
       <p class="eyebrow">02 · technical expertise</p>
       <h2 class="section-title">The toolkit, opinionated.</h2>
       <div class="meta-line">
-        <span>{`stack.json :: ${stackGroups.length} categories · ${stackGroups.reduce((a, g) => a + g.items.length, 0)} entries`}</span>
+        <span>{`stack.json :: ${stackGroups.length} categories · ${totalStackEntries} entries`}</span>
         <span style="color: var(--accent);">production-grade stability</span>
       </div>
     </div>
@@ -159,7 +100,7 @@ const stackGroups = [
       <p class="eyebrow">03 · projects</p>
       <h2 class="section-title">Selected work.</h2>
       <div class="meta-line">
-        <span>{`projects.ls :: ${totalProjects} entries · ${liveProjects.length} live · ${projects.filter((p) => p.status === 'in-dev').length} in development`}</span>
+        <span>{`projects.ls :: ${totalProjects} entries · ${liveProjects.length} live · ${inDevProjects.length} in development`}</span>
         <span>last_updated: {new Date().getFullYear()}</span>
       </div>
     </div>

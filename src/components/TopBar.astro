@@ -1,12 +1,12 @@
 ---
-import { projects } from '../data/projects';
+import { siteConfig } from '../data/site';
 ---
 
 <header class="topbar">
   <div class="topbar-inner">
     <a href="/" class="topbar-brand" aria-label="Home">
-      <span class="glyph">~</span>
-      <span>~/ralph-sonio</span>
+      <span class="glyph">{siteConfig.brand.glyph}</span>
+      <span>{siteConfig.brand.short}</span>
     </a>
 
     <nav class="topbar-nav">
