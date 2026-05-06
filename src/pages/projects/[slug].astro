@@ -1,7 +1,7 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import { Image } from 'astro:assets';
-import { projects, projectBySlug } from '../../data/projects';
+import { projects } from '../../data/projects';
 
 export async function getStaticPaths() {
   return projects.map((p) => ({
@@ -25,7 +25,6 @@ function getAsset(rel: string | undefined): ImageMetadata | undefined {
   return assetModules[key]?.default;
 }
 
-const thumb = getAsset(project.thumbnail);
 const gallery = project.gallery
   .map((g) => ({ ...g, asset: getAsset(g.src) }))
   .filter((g) => g.asset);
@@ -53,7 +52,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         <span>back to projects</span>
       </a>
 
-      <div class="reveal">
+      <div>
         <span class="detail-status-pill">
           <span class={`status-dot ${project.status}`}></span>
           <span>{statusLabel}</span>
@@ -66,7 +65,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         <p class="detail-tagline">{project.tagline}</p>
       </div>
 
-      <div class="detail-meta-strip reveal">
+      <div class="detail-meta-strip">
         <div class="meta-cell">
           <span class="meta-label">Status</span>
           <span class="meta-value">
@@ -88,7 +87,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         </div>
       </div>
 
-      <div class="detail-actions reveal">
+      <div class="detail-actions">
         <a class="action-btn is-disabled" href="#" onclick="event.preventDefault();" aria-disabled="true" title="Coming soon">
           <span>source code</span>
           <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
@@ -101,7 +100,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     </section>
 
     <!-- SUMMARY ============================================== -->
-    <section class="detail-section reveal" id="summary">
+    <section class="detail-section" id="summary">
       <div class="section-eyebrow">
         <span class="section-num">{sectionNum('about')} · about</span>
       </div>
@@ -126,14 +125,22 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     </section>
 
     <!-- ARCHITECTURE ========================================= -->
-    <section class="detail-section reveal" id="architecture">
+    <section class="detail-section" id="architecture">
       <div class="section-eyebrow">
         <span class="section-num">{sectionNum('architecture')} · architecture</span>
       </div>
       <h2>System architecture</h2>
 
-      <div class="diagram-block">
-        <pre>{project.architecture.diagram}</pre>
+      <div class="diagram-frame">
+        <div class="diagram-frame-header">
+          <span class="dot" style="background:#ff5f56"></span>
+          <span class="dot" style="background:#ffbd2e"></span>
+          <span class="dot" style="background:#27c93f"></span>
+          <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.architecture.mmd</span>
+        </div>
+        <div class="mermaid-container">
+          <pre class="mermaid">{project.architecture.mermaid}</pre>
+        </div>
       </div>
 
       {project.architecture.notes.length > 0 && (
@@ -150,7 +157,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
 
     <!-- DATABASE DESIGN ===================================== -->
     {project.database && (
-      <section class="detail-section reveal" id="database">
+      <section class="detail-section" id="database">
         <div class="section-eyebrow">
           <span class="section-num">{sectionNum('data')} · data</span>
         </div>
@@ -159,36 +166,53 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
           {project.database.blurb}
         </p>
 
-        {project.database.tables.map((table) => (
-          <div class="db-table" style="margin-top: 1.5rem;">
-            <div class="db-table-header">
-              <span class="db-table-name">
-                <span class="accent">▸</span> {table.name}
-              </span>
-              {table.description && <span class="db-table-desc">{table.description}</span>}
-            </div>
-            <div class="db-rows">
-              <div class="head" style="grid-column: 1 / -1; display:grid; grid-template-columns: minmax(160px, 1fr) minmax(120px, auto) 2fr; padding: 0.6rem 1.2rem; background: color-mix(in srgb, var(--bg) 50%, var(--bg-elev)); border-top: none; font-family:'JetBrains Mono', monospace; font-size:0.7rem; text-transform: uppercase; letter-spacing:0.16em; color: var(--fg-muted);">
-                <span>Column</span>
-                <span>Type</span>
-                <span>Notes</span>
-              </div>
-              {table.columns.map((col) => (
-                <>
-                  <div class="col-name">{col.name}</div>
-                  <div class="col-type">{col.type}</div>
-                  <div>{col.notes || ''}</div>
-                </>
-              ))}
-            </div>
+        <div class="diagram-frame" style="margin-top: 1.5rem;">
+          <div class="diagram-frame-header">
+            <span class="dot" style="background:#ff5f56"></span>
+            <span class="dot" style="background:#ffbd2e"></span>
+            <span class="dot" style="background:#27c93f"></span>
+            <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.schema.mmd</span>
           </div>
-        ))}
+          <div class="mermaid-container">
+            <pre class="mermaid">{project.database.mermaid}</pre>
+          </div>
+        </div>
+
+        {project.database.tables && project.database.tables.length > 0 && (
+          <>
+            <h3>Selected table reference</h3>
+            {project.database.tables.map((table) => (
+              <div class="db-table" style="margin-top: 1.5rem;">
+                <div class="db-table-header">
+                  <span class="db-table-name">
+                    <span class="accent">▸</span> {table.name}
+                  </span>
+                  {table.description && <span class="db-table-desc">{table.description}</span>}
+                </div>
+                <div class="db-rows">
+                  <div class="head" style="grid-column: 1 / -1; display:grid; grid-template-columns: minmax(160px, 1fr) minmax(120px, auto) 2fr; padding: 0.6rem 1.2rem; background: color-mix(in srgb, var(--bg) 50%, var(--bg-elev)); border-top: none; font-family:'JetBrains Mono', monospace; font-size:0.7rem; text-transform: uppercase; letter-spacing:0.16em; color: var(--fg-muted);">
+                    <span>Column</span>
+                    <span>Type</span>
+                    <span>Notes</span>
+                  </div>
+                  {table.columns.map((col) => (
+                    <>
+                      <div class="col-name">{col.name}</div>
+                      <div class="col-type">{col.type}</div>
+                      <div>{col.notes || ''}</div>
+                    </>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </section>
     )}
 
     <!-- API REFERENCE ===================================== -->
     {project.apiEndpoints && project.apiEndpoints.length > 0 && (
-      <section class="detail-section reveal" id="api">
+      <section class="detail-section" id="api">
         <div class="section-eyebrow">
           <span class="section-num">{sectionNum('api')} · api</span>
         </div>
@@ -213,7 +237,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     )}
 
     <!-- COST ============================================== -->
-    <section class="detail-section reveal" id="cost">
+    <section class="detail-section" id="cost">
       <div class="section-eyebrow">
         <span class="section-num">{sectionNum('costs')} · costs</span>
       </div>
@@ -254,7 +278,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
 
     <!-- GALLERY ========================================== -->
     {gallery.length > 0 && (
-      <section class="detail-section reveal" id="gallery">
+      <section class="detail-section" id="gallery">
         <div class="section-eyebrow">
           <span class="section-num">{sectionNum('gallery')} · gallery</span>
         </div>
@@ -280,6 +304,74 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     <button class="lightbox-close" aria-label="Close">×</button>
     <img id="lightbox-img" src="" alt="" />
   </div>
+
+  <!-- MERMAID INITIALIZATION -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs';
+
+    const isLight = document.documentElement.classList.contains('theme-light');
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      securityLevel: 'loose',
+      fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+      themeVariables: isLight
+        ? {
+            primaryColor: '#f1f5f9',
+            primaryTextColor: '#0f172a',
+            primaryBorderColor: '#0f766e',
+            lineColor: '#0f766e',
+            secondaryColor: '#e2e8f0',
+            tertiaryColor: '#f8fafc',
+            background: '#ffffff',
+            mainBkg: '#f1f5f9',
+            secondBkg: '#e2e8f0',
+            tertiaryBkg: '#f8fafc',
+            edgeLabelBackground: '#ffffff',
+            clusterBkg: '#f1f5f9',
+            clusterBorder: '#0f766e',
+            // ER diagram colors
+            attributeBackgroundColorOdd: '#f8fafc',
+            attributeBackgroundColorEven: '#f1f5f9',
+            relationLabelColor: '#0f172a',
+          }
+        : {
+            primaryColor: '#0f1422',
+            primaryTextColor: '#e2e8f0',
+            primaryBorderColor: '#5eead4',
+            lineColor: '#5eead4',
+            secondaryColor: '#0a0e1a',
+            tertiaryColor: '#0f1422',
+            background: 'transparent',
+            mainBkg: '#0f1422',
+            secondBkg: '#0a0e1a',
+            tertiaryBkg: '#1e293b',
+            edgeLabelBackground: '#0a0e1a',
+            clusterBkg: '#0f1422',
+            clusterBorder: '#5eead4',
+            // ER diagram colors
+            attributeBackgroundColorOdd: '#0f1422',
+            attributeBackgroundColorEven: '#0a0e1a',
+            relationLabelColor: '#e2e8f0',
+            relationLabelBackground: '#0a0e1a',
+          },
+    });
+
+    await mermaid.run({ querySelector: '.mermaid' });
+
+    // Re-render diagrams when the user toggles theme
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.attributeName === 'class') {
+          // Reload to re-init mermaid with new theme
+          // (cheap and reliable — diagrams are fast to re-render)
+          window.location.reload();
+        }
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true });
+  </script>
 
   <script>
     // Gallery lightbox

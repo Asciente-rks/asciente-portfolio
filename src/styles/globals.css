@@ -8,11 +8,13 @@
 :root {
   --bg: #0a0e1a;
   --bg-elev: #0f1422;
+  --bg-elev-2: #14192b;
   --fg: #e2e8f0;
   --fg-muted: #94a3b8;
   --fg-soft: #64748b;
   --accent: #5eead4;
   --accent-soft: rgba(94, 234, 212, 0.16);
+  --accent-strong: rgba(94, 234, 212, 0.32);
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.18);
   --status-live: #34d399;
@@ -24,11 +26,13 @@
 :root.theme-light {
   --bg: #ffffff;
   --bg-elev: #f8fafc;
+  --bg-elev-2: #f1f5f9;
   --fg: #0f172a;
   --fg-muted: #475569;
   --fg-soft: #64748b;
   --accent: #0f766e;
   --accent-soft: rgba(15, 118, 110, 0.12);
+  --accent-strong: rgba(15, 118, 110, 0.28);
   --border: rgba(15, 23, 42, 0.08);
   --border-strong: rgba(15, 23, 42, 0.18);
   color-scheme: light;
@@ -91,6 +95,26 @@ body {
   background:
     radial-gradient(800px 480px at 80% -10%, var(--accent-soft), transparent 60%),
     radial-gradient(700px 420px at -10% 30%, rgba(99, 102, 241, 0.08), transparent 60%);
+}
+
+@keyframes gridShift {
+  from { transform: translate3d(0,0,0); }
+  to { transform: translate3d(-40px, -40px, 0); }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50.1%, 100% { opacity: 0; }
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.45; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ----------------------------------------------------------
@@ -370,11 +394,11 @@ body {
   font-size: 1.05rem;
   line-height: 1.6;
   color: var(--fg-muted);
-  max-width: 56ch;
+  max-width: 64ch;
 }
 
 /* ----------------------------------------------------------
-   TERMINAL (cmd window) — preserved + enhanced
+   TERMINAL (cmd window)
    ----------------------------------------------------------*/
 .terminal-stack {
   margin-top: 2rem;
@@ -555,6 +579,57 @@ body {
 }
 
 /* ----------------------------------------------------------
+   STACK (technical expertise) GRID
+   ----------------------------------------------------------*/
+.stack-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .stack-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stack-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stack-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  background: var(--bg-elev);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.stack-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.stack-card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--fg-muted);
+}
+
+.stack-card-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* ----------------------------------------------------------
    PROJECTS GRID
    ----------------------------------------------------------*/
 .projects-section {
@@ -588,6 +663,7 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
+  align-items: stretch;
 }
 
 @media (min-width: 768px) {
@@ -616,6 +692,8 @@ body {
     box-shadow 0.3s ease;
   text-decoration: none;
   color: var(--fg);
+  height: 100%; /* fill grid cell */
+  min-height: 480px; /* consistent visual baseline */
 }
 
 .project-card::before {
@@ -644,6 +722,7 @@ body {
   overflow: hidden;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .project-card-cover img {
@@ -657,6 +736,34 @@ body {
 
 .project-card:hover .project-card-cover img {
   transform: scale(1.04);
+}
+
+.cover-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  color: #f1f5f9;
+}
+
+.cover-placeholder-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.cover-placeholder-title {
+  font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  text-align: center;
+  max-width: 240px;
 }
 
 .project-card-overlay-tag {
@@ -677,6 +784,7 @@ body {
   color: #f1f5f9;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  z-index: 2;
 }
 
 .status-dot {
@@ -685,6 +793,7 @@ body {
   height: 8px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .status-dot::after {
@@ -723,6 +832,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -744,6 +854,10 @@ body {
   line-height: 1.5;
   color: var(--fg-muted);
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .project-card-tech {
@@ -765,6 +879,7 @@ body {
   font-size: 0.72rem;
   letter-spacing: -0.01em;
   transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
 }
 
 .tech-chip:hover {
@@ -775,7 +890,7 @@ body {
 .project-card-actions {
   display: flex;
   gap: 0.6rem;
-  padding-top: 0.75rem;
+  padding-top: 0.85rem;
   border-top: 1px solid var(--border);
   margin-top: 0.5rem;
 }
@@ -929,9 +1044,6 @@ body {
   min-width: 160px;
 }
 
-/* ----------------------------------------------------------
-   PROJECT SECTIONS (architecture / db / cost / gallery)
-   ----------------------------------------------------------*/
 .detail-section {
   position: relative;
   z-index: 1;
@@ -970,7 +1082,7 @@ body {
 }
 
 .detail-section h3 {
-  margin-top: 1.4rem;
+  margin-top: 1.6rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.78rem;
   text-transform: uppercase;
@@ -978,30 +1090,90 @@ body {
   color: var(--fg-muted);
 }
 
-.diagram-block {
+/* ----------------------------------------------------------
+   MERMAID DIAGRAM FRAME (renders SVG with editor-like chrome)
+   ----------------------------------------------------------*/
+.diagram-frame {
   margin-top: 1.5rem;
-  background: linear-gradient(180deg, #050708 0%, #0a0e1a 100%);
-  color: #cbd5e1;
   border: 1px solid var(--border-strong);
   border-radius: 14px;
-  padding: 1.5rem;
-  overflow: auto;
+  overflow: hidden;
+  background: var(--bg-elev);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
 }
 
-.diagram-block pre {
-  margin: 0;
+:root.theme-light .diagram-frame {
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+}
+
+.diagram-frame-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: color-mix(in srgb, var(--bg) 50%, var(--bg-elev));
+  border-bottom: 1px solid var(--border);
+}
+
+.diagram-frame-header .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.diagram-frame-title {
+  margin-left: 0.4rem;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.82rem;
-  line-height: 1.6;
+  font-size: 0.78rem;
+  color: var(--fg-muted);
+  letter-spacing: -0.01em;
+}
+
+.mermaid-container {
+  padding: 2rem 1.5rem;
+  background: var(--bg);
+  overflow-x: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mermaid-container .mermaid {
+  font-family: 'JetBrains Mono', monospace !important;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  /* hide the raw text until mermaid renders it as SVG */
+  visibility: visible;
+}
+
+.mermaid-container .mermaid svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* mermaid raw text fallback before render */
+.mermaid:not([data-processed="true"]) {
   white-space: pre;
-  color: #e2e8f0;
+  font-size: 0.78rem;
+  color: var(--fg-muted);
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.6;
+}
+
+.mermaid[data-processed="true"] {
+  opacity: 1;
 }
 
 .notes-list {
   margin-top: 1.5rem;
   display: grid;
   gap: 0.85rem;
+  padding: 0;
 }
 
 .notes-list li {
@@ -1023,6 +1195,9 @@ body {
   font-weight: 700;
 }
 
+/* ----------------------------------------------------------
+   DB TABLE REFERENCE
+   ----------------------------------------------------------*/
 .db-table {
   margin-top: 1rem;
   border: 1px solid var(--border);
@@ -1039,6 +1214,7 @@ body {
   padding: 1rem 1.2rem;
   border-bottom: 1px solid var(--border);
   background: color-mix(in srgb, var(--bg) 50%, var(--bg-elev));
+  flex-wrap: wrap;
 }
 
 .db-table-name {
@@ -1080,6 +1256,9 @@ body {
   color: var(--accent);
 }
 
+/* ----------------------------------------------------------
+   COST BREAKDOWN
+   ----------------------------------------------------------*/
 .cost-summary {
   margin-top: 1.5rem;
   display: grid;
@@ -1148,6 +1327,9 @@ body {
   font-weight: 400;
 }
 
+/* ----------------------------------------------------------
+   API TABLE
+   ----------------------------------------------------------*/
 .api-table {
   margin-top: 1rem;
   border: 1px solid var(--border);
@@ -1207,6 +1389,9 @@ body {
   color: #fb7185;
 }
 
+/* ----------------------------------------------------------
+   GALLERY
+   ----------------------------------------------------------*/
 .gallery-grid {
   margin-top: 1.5rem;
   display: grid;
@@ -1354,7 +1539,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   COMMAND-PALETTE OVERLAY (Cmd+K)
+   COMMAND PALETTE OVERLAY
    ----------------------------------------------------------*/
 .cmdk-overlay {
   position: fixed;
@@ -1462,52 +1647,6 @@ body {
 }
 
 /* ----------------------------------------------------------
-   SCROLL-TRIGGERED REVEAL
-   ----------------------------------------------------------*/
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* Stagger children */
-.stagger > * {
-  opacity: 0;
-  transform: translateY(16px);
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.stagger > *:nth-child(1) {
-  animation-delay: 0.05s;
-}
-.stagger > *:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.stagger > *:nth-child(3) {
-  animation-delay: 0.15s;
-}
-.stagger > *:nth-child(4) {
-  animation-delay: 0.2s;
-}
-.stagger > *:nth-child(5) {
-  animation-delay: 0.25s;
-}
-.stagger > *:nth-child(6) {
-  animation-delay: 0.3s;
-}
-.stagger > *:nth-child(7) {
-  animation-delay: 0.35s;
-}
-.stagger > *:nth-child(8) {
-  animation-delay: 0.4s;
-}
-
-/* ----------------------------------------------------------
    LIGHTBOX
    ----------------------------------------------------------*/
 .lightbox {
@@ -1551,7 +1690,7 @@ body {
 }
 
 /* ----------------------------------------------------------
-   LIGHT MODE OVERRIDES (additive)
+   LIGHT MODE OVERRIDES
    ----------------------------------------------------------*/
 :root.theme-light .bg-decor::before {
   opacity: 0.3;
@@ -1563,13 +1702,9 @@ body {
   border-color: rgba(15, 23, 42, 0.15);
 }
 
+/* terminal stays dark even in light mode for contrast */
 :root.theme-light .cmd-window {
   background: linear-gradient(180deg, #050708 0%, #0a0e1a 100%) !important;
-  /* terminal stays dark even in light mode for contrast */
-}
-
-:root.theme-light .diagram-block {
-  background: linear-gradient(180deg, #0a0e1a 0%, #1e293b 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {

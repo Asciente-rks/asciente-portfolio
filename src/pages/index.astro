@@ -7,7 +7,6 @@ import { projects } from '../data/projects';
 import GradPicSrc from '../assets/GradPic_Sonio.jpg';
 
 // Lazy-resolved imports for project thumbnails.
-// Returns ImageMetadata for use with the <Image /> component.
 const thumbModules = import.meta.glob<{ default: ImageMetadata }>('../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
 
 function getThumb(rel: string | undefined): ImageMetadata | undefined {
@@ -16,43 +15,58 @@ function getThumb(rel: string | undefined): ImageMetadata | undefined {
   return thumbModules[key]?.default;
 }
 
-// Groupings for the projects strip
 const liveProjects = projects.filter((p) => p.status === 'live');
 const totalProjects = projects.length;
 
-// Tech stack list for the "stack" section
+// Real skills, sourced from author's GitHub bio. 9 categories.
 const stackGroups = [
   {
-    label: 'Cloud + Serverless',
-    items: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'SQS', 'SNS', 'Cloudflare R2', 'Vercel'],
+    label: 'Backend & Logic',
+    items: ['Node.js', 'Express', 'Sequelize', 'ASP.NET Core', 'Spring Boot', 'Spring Data JPA', 'Tauri', 'Serverless Framework', 'Fastify'],
   },
   {
-    label: 'Languages + Runtime',
-    items: ['TypeScript', 'Node.js', 'Python', 'Java', 'C#', 'Rust (Tauri)'],
+    label: 'Languages',
+    items: ['TypeScript', 'JavaScript', 'C# (.NET)', 'Java', 'Python', 'Rust'],
   },
   {
-    label: 'Web + Mobile',
-    items: ['React 18/19', 'Vite', 'Tailwind 3/4', 'Astro', 'React Native (Expo)', 'Tauri 2'],
+    label: 'Frontend & Mobile',
+    items: ['React', 'React Native (Expo)', 'Tailwind CSS', 'Astro'],
   },
   {
-    label: 'Data',
-    items: ['TiDB Cloud', 'MySQL', 'DynamoDB single-table', 'Sequelize', 'Redis (Upstash)'],
+    label: 'AWS Ecosystem',
+    items: ['Lambda', 'DynamoDB', 'S3', 'SQS', 'SNS', 'CloudWatch', 'CloudFormation', 'Amplify', 'API Gateway'],
   },
   {
-    label: 'Tooling + CI/CD',
-    items: ['GitHub Actions', 'Serverless Framework', 'EAS Build', 'Scrapy', 'node-cron'],
+    label: 'Database & Storage',
+    items: ['TiDB Cloud', 'DynamoDB', 'Aiven', 'MySQL', 'MongoDB', 'Cloudflare R2', 'S3'],
+  },
+  {
+    label: 'Security & Auth',
+    items: ['JWT', 'Bcrypt', 'RBAC', 'Spring Security', 'OAuth'],
+  },
+  {
+    label: 'Deployment & Ops',
+    items: ['EAS', 'Render', 'Vercel', 'AWS', 'Ngrok'],
+  },
+  {
+    label: 'QA & Architecture',
+    items: ['ISO/IEC 25010', 'Postman', 'Manual Testing', 'C4 Model'],
+  },
+  {
+    label: 'Tooling & IDEs',
+    items: ['Figma', 'VS Code', 'Visual Studio', 'Cursor', 'Eclipse'],
   },
 ];
 ---
 
 <MainLayout
   title="Ralph Sonio · Cloud-Native Backend & QA Engineer"
-  description="Selected work, architecture notes, and case studies — every project ships at $0/month on free tiers."
+  description="Cloud-Native Backend Engineer & Quality Assurance Tester. Selected work, architecture notes, and case studies."
 >
   <!-- HERO ===================================================== -->
   <section class="hero" id="about">
     <div class="hero-grid">
-      <div class="profile-card reveal">
+      <div class="profile-card">
         <Image src={GradPicSrc} width={400} alt="Ralph Sonio" class="profile-img" format="avif" quality={88} />
         <div class="profile-meta">
           <div class="profile-meta-row">
@@ -78,18 +92,18 @@ const stackGroups = [
       </div>
 
       <div>
-        <p class="eyebrow reveal">~/portfolio · v2.0</p>
-        <h1 class="hero-name reveal" style="margin-top: 1rem;">
+        <p class="eyebrow">~/portfolio · v2.0</p>
+        <h1 class="hero-name" style="margin-top: 1rem;">
           Ralph Kenneth<br />Sonio
         </h1>
-        <p class="hero-tagline reveal">
-          ./cloud-native-backend.run · ./quality-assurance-tester.run
+        <p class="hero-tagline">
+          Cloud-Native Backend Engineer · Quality Assurance Tester
         </p>
-        <p class="hero-bio reveal">
-          I design serverless backends and ship them on free tiers. {totalProjects} projects total · {liveProjects.length} live in production · every one of them runs at <strong style="color: var(--accent)">$0/month</strong>. AWS Lambda, DynamoDB, TiDB, Tauri, and React are my daily kit.
+        <p class="hero-bio">
+          I architect <strong style="color: var(--fg)">scalable, type-safe systems</strong> and enforce <strong style="color: var(--fg)">high-availability standards</strong> through rigorous Quality Assurance. My focus is on cloud-native infrastructure, event-driven architecture, and production-grade stability. {totalProjects} projects total · {liveProjects.length} live in production · every one of them runs at <strong style="color: var(--accent)">$0/month</strong>.
         </p>
 
-        <div class="reveal" style="margin-top: 1rem;">
+        <div style="margin-top: 1rem;">
           <Terminal />
         </div>
       </div>
@@ -98,22 +112,20 @@ const stackGroups = [
 
   <!-- STACK ==================================================== -->
   <section class="projects-section" id="stack" style="margin-top: 6rem;">
-    <div class="projects-header reveal">
-      <p class="eyebrow">02 · stack</p>
+    <div class="projects-header">
+      <p class="eyebrow">02 · technical expertise</p>
       <h2 class="section-title">The toolkit, opinionated.</h2>
       <div class="meta-line">
-        <span>{`stack.json :: ${stackGroups.reduce((a, g) => a + g.items.length, 0)} entries`}</span>
-        <span style="color: var(--accent);">$0/month forever</span>
+        <span>{`stack.json :: ${stackGroups.length} categories · ${stackGroups.reduce((a, g) => a + g.items.length, 0)} entries`}</span>
+        <span style="color: var(--accent);">production-grade stability</span>
       </div>
     </div>
 
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+    <div class="stack-grid">
       {stackGroups.map((group) => (
-        <div class="reveal" style="border:1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.4rem; background: var(--bg-elev);">
-          <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; text-transform:uppercase; letter-spacing: 0.18em; color: var(--fg-muted); margin-bottom: 0.85rem;">
-            {group.label}
-          </p>
-          <div style="display:flex; flex-wrap: wrap; gap: 0.4rem;">
+        <div class="stack-card">
+          <p class="stack-card-label">{group.label}</p>
+          <div class="stack-card-items">
             {group.items.map((item) => <span class="tech-chip">{item}</span>)}
           </div>
         </div>
@@ -123,7 +135,7 @@ const stackGroups = [
 
   <!-- PROJECTS ================================================= -->
   <section class="projects-section" id="projects">
-    <div class="projects-header reveal">
+    <div class="projects-header">
       <p class="eyebrow">03 · projects</p>
       <h2 class="section-title">Selected work.</h2>
       <div class="meta-line">
@@ -132,7 +144,7 @@ const stackGroups = [
       </div>
     </div>
 
-    <div class="projects-grid stagger">
+    <div class="projects-grid">
       {projects.map((project, i) => (
         <ProjectCard project={project} thumbSrc={getThumb(project.thumbnail)} index={i} />
       ))}

@@ -25,17 +25,17 @@ const palette = [
   ['#0369a1', '#7dd3fc'],
   ['#a16207', '#fcd34d'],
 ];
-const [c1, c2] = palette[hashStr(project.slug) % palette.length];
+const [c1] = palette[hashStr(project.slug) % palette.length];
 ---
 
-<a class="project-card reveal" href={`/projects/${project.slug}`} aria-label={`Open ${project.title}`}>
+<a class="project-card" href={`/projects/${project.slug}`} aria-label={`Open ${project.title}`}>
   <div class="project-card-cover" style={!thumbSrc ? `background: linear-gradient(135deg, ${c1} 0%, #0a0e1a 80%);` : ''}>
     {thumbSrc ? (
       <Image src={thumbSrc} width={1280} alt={`${project.title} thumbnail`} format="avif" quality={85} />
     ) : (
-      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; padding:1.5rem; color:#f1f5f9; font-family:'Instrument Serif', serif;">
-        <span style="font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.24em; text-transform:uppercase; opacity:0.6;">no preview yet</span>
-        <span style="font-size:1.6rem; line-height:1.1; text-align:center; max-width:240px;">{project.title}</span>
+      <div class="cover-placeholder">
+        <span class="cover-placeholder-eyebrow">No preview yet</span>
+        <span class="cover-placeholder-title">{project.title}</span>
       </div>
     )}
     <div class="project-card-overlay-tag">
@@ -60,26 +60,24 @@ const [c1, c2] = palette[hashStr(project.slug) % palette.length];
     </div>
 
     <div class="project-card-actions" onclick="event.stopPropagation()">
-      <a
+      <span
         class="action-btn is-disabled"
-        href="#"
-        onclick="event.preventDefault(); event.stopPropagation();"
+        role="button"
         aria-disabled="true"
         title="Coming soon"
       >
         <span>source</span>
         <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-      </a>
-      <a
+      </span>
+      <span
         class="action-btn is-disabled"
-        href="#"
-        onclick="event.preventDefault(); event.stopPropagation();"
+        role="button"
         aria-disabled="true"
         title="Coming soon"
       >
         <span>live demo</span>
         <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-      </a>
+      </span>
     </div>
   </div>
 </a>

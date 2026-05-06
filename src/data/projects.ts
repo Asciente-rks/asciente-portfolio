@@ -1,5 +1,5 @@
 // Project metadata used by the homepage cards and the dynamic project detail pages.
-// Architecture, database, and cost sections are sourced from the READMEs of each repo.
+// Architecture and database design are rendered as Mermaid diagrams in the detail page.
 
 export type ProjectStatus = 'live' | 'in-dev' | 'archived';
 
@@ -33,14 +33,15 @@ export type Project = {
   tech: string[];
   liveUrl?: string;
   sourceUrl?: string;
-  thumbnail: string; // resolved by import.meta.glob in [slug].astro
+  thumbnail: string;
   gallery: { src: string; caption?: string }[];
   architecture: {
-    diagram: string; // ASCII or codeblock
+    mermaid: string;
     notes: string[];
   };
   database?: {
     blurb: string;
+    mermaid: string;
     tables: DbTable[];
   };
   cost: {
@@ -53,9 +54,9 @@ export type Project = {
 };
 
 export const projects: Project[] = [
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // SYSTEM PULSE
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'system-pulse',
     title: 'System Pulse',
@@ -75,25 +76,34 @@ export const projects: Project[] = [
       { src: 'SystemPulse/SystemTrigger_SystemPulse.png', caption: 'On-demand health probe' },
     ],
     architecture: {
-      diagram: `Browser (React + Vite SPA, Vercel)
-   │ HTTPS / REST + JWT
-   ▼
-AWS Lambda Function URL
-system-pulse-{stage}-api          ← single-Lambda router
-   │           │             │
-   ▼           ▼             ▼
-SMTP /     DynamoDB        SQS queue
-nodemailer single table     │
-(invites)  + 3 GSIs         ▼
-           + 30-day TTL    AWS Lambda
-                          system-pulse-{stage}-health-worker
-                           • probes monitored URLs
-                           • persists status + log
-                           • optional SNS publish`,
+      mermaid: `graph TB
+    Browser["Browser<br/>React + Vite + Tailwind"]
+    LambdaAPI["AWS Lambda<br/>system-pulse-api<br/>custom HTTP router"]
+    LambdaWorker["AWS Lambda<br/>health-worker<br/>async probes"]
+    SQS[("SQS Queue<br/>+ Dead-Letter Queue")]
+    SNS["SNS Topic<br/>(opt-in alerts)"]
+    DDB[("DynamoDB single table<br/>USER · SYSTEM · HEALTH_LOG<br/>3 GSIs · 30-day TTL")]
+    SMTP["SMTP / nodemailer<br/>invites + reset"]
+    Target["Monitored URL<br/>(any service)"]
+
+    Browser -->|REST + JWT| LambdaAPI
+    LambdaAPI --> SMTP
+    LambdaAPI --> DDB
+    LambdaAPI -->|"sqs OR<br/>lambda-direct"| SQS
+    LambdaAPI -.direct invoke.-> LambdaWorker
+    SQS --> LambdaWorker
+    LambdaWorker -->|"GET /health<br/>fallback GET /"| Target
+    LambdaWorker --> DDB
+    LambdaWorker -.optional.-> SNS
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Browser,LambdaAPI,LambdaWorker,SMTP,SNS,Target edge
+    class SQS,DDB store`,
       notes: [
         'Two Lambdas, one shared codebase. The api Lambda handles all incoming HTTP; the health-worker Lambda runs probes async — invoked either directly or via SQS by setting HEALTH_TRIGGER_TRANSPORT.',
         'Custom HTTP router (~150 LOC). No Express, no serverless-express. Saves cold-start time and node_modules weight.',
-        'Probing strategy: worker tries GET <url>/health first, falls back to GET <url>. 2xx = UP; otherwise DOWN.',
+        'Probing strategy: worker tries GET /health first, falls back to GET /. 2xx = UP; otherwise DOWN.',
         'Single-table DynamoDB design. Entity discriminators on every row enable type-aware queries via EntityTypeIndex.',
         'TTL on expiresAt auto-purges health logs after 30 days. Zero ops cost, no cron needed.',
       ],
@@ -101,6 +111,39 @@ nodemailer single table     │
     database: {
       blurb:
         'DynamoDB single-table design. One table holds users, systems, invites, password-reset tokens, and health logs, distinguished by an entityType attribute and PK/SK prefixes. Three GSIs cover the read patterns.',
+      mermaid: `erDiagram
+    USER ||--o{ SYSTEM : "allowedSystemIds"
+    SYSTEM ||--o{ HEALTH_LOG : "logs"
+
+    USER {
+        string id PK
+        string email UK
+        string role "superadmin/admin/tester"
+        string status "Active/Pending/Suspended"
+        string passwordHash "scrypt"
+        list allowedSystemIds
+        string inviteToken "GSI"
+        string resetToken "GSI"
+    }
+    SYSTEM {
+        string id PK
+        string name
+        string url
+        string deploymentMode "render/standard"
+        string status "UP/DOWN/UNKNOWN"
+        string lastChecked
+        number responseTimeMs
+    }
+    HEALTH_LOG {
+        string systemId FK
+        string status
+        string checkedAt
+        number responseCode
+        number responseTimeMs
+        number attempt
+        string triggerSource
+        number expiresAt "TTL · 30 days"
+    }`,
       tables: [
         {
           name: 'USER',
@@ -175,9 +218,9 @@ nodemailer single table     │
     ],
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // ASCIENTE HUB
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'asciente-hub',
     title: 'AscienteHub',
@@ -192,25 +235,31 @@ nodemailer single table     │
     liveUrl: 'https://github.com/Asciente-rks/ascientehub-frontend/releases',
     sourceUrl: 'https://github.com/Asciente-rks/ascientehub-backend',
     thumbnail: 'AscienteHub/LoginAscienteHub.png',
-    gallery: [
-      { src: 'AscienteHub/LoginAscienteHub.png', caption: 'Sign-in screen' },
-    ],
+    gallery: [{ src: 'AscienteHub/LoginAscienteHub.png', caption: 'Sign-in screen' }],
     architecture: {
-      diagram: `Windows Desktop (Tauri 2)
- │  • Rust shell (~5 MB binary)
- │  • React 18 SPA inside
- │  • Tailwind 3
- ▼ HTTPS (axios + JWT)
+      mermaid: `graph TB
+    Tauri["Tauri 2 Desktop<br/>Windows native<br/>Rust shell + React 18"]
+    Lambda["AWS Lambda<br/>ascientehub-backend<br/>Express 5 + Sequelize"]
+    R2["Cloudflare R2<br/>installers · trailers · media"]
+    TiDB[("TiDB Cloud Serverless<br/>MySQL-compatible")]
+    Redis[("Redis · Upstash<br/>1h cache + rate limit")]
+    Resend["Resend / nodemailer<br/>OTP email"]
+    PayMongo["PayMongo API<br/>3DS card payments"]
+    AppData["%APPDATA%/games/&lt;slug&gt;/<br/>extract + spawn .exe"]
 
-AWS Lambda Function URL
-ascientehub-backend
-Express 5 via @vendia/serverless-express
-   │      │      │      │      │
-   ▼      ▼      ▼      ▼      ▼
-Resend  PayMongo  R2 (S3 SDK)  Redis  TiDB Cloud
-(OTP)   3DS card  • thumbnails  ioredis  MySQL-compat
-                 • trailers           • 5 GB free
-                 • installer ZIPs     • SSL`,
+    Tauri -->|"HTTPS + JWT (axios)"| Lambda
+    Lambda --> Resend
+    Lambda --> PayMongo
+    Lambda --> Redis
+    Lambda --> TiDB
+    Lambda --> R2
+    Tauri -.download zip directly.-> R2
+    Tauri --> AppData
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Tauri,Lambda,Resend,PayMongo,AppData edge
+    class R2,TiDB,Redis store`,
       notes: [
         'Lambda cold-start hardened in src/lambda.ts: OPTIONS preflights short-circuit before DB init, the Sequelize connection is cached at module scope, and ensureGameSchema() adds optional columns idempotently on cold starts.',
         'Public-GET cache (Redis, 1h TTL) on /api/public/*, /api/games, and /api/games/:id — only when no auth headers are present, so authenticated users always see fresh data.',
@@ -221,6 +270,35 @@ Resend  PayMongo  R2 (S3 SDK)  Redis  TiDB Cloud
     database: {
       blurb:
         'All primary keys are UUID v4. Relationships wired in src/models/associations.ts. Schema managed by Sequelize sync() plus a defensive ensureGameSchema() step on cold start.',
+      mermaid: `erDiagram
+    ROLE ||--o{ USER : assigned
+    USER ||--o{ GAME : develops
+    USER ||--o{ LIBRARY : owns
+    USER ||--o{ CART : has
+    USER ||--o{ TRANSACTION : made
+    USER ||--o{ REVIEW : wrote
+    USER ||--o{ PAYMENT_METHOD : saves
+    USER ||--o| SUBSCRIPTION : "pay-to-publish"
+    USER ||--o{ OTP : verifies
+    CATEGORY ||--o{ GAME : categorizes
+    GAME ||--o{ GAME_MEDIA : has
+    GAME ||--o{ LIBRARY : "owned in"
+    GAME ||--o{ CART : "in cart"
+    GAME ||--o{ TRANSACTION : purchased
+    GAME ||--o{ REVIEW : has
+
+    ROLE { uuid id PK; string name UK }
+    USER { uuid id PK; string email UK; string passwordHash; uuid roleId FK; bool isVerified; string status }
+    CATEGORY { uuid id PK; string name UK; string slug UK }
+    GAME { uuid id PK; string slug UK; decimal basePrice; decimal salePrice; uuid developerId FK; uuid categoryId FK; string status; string thumbnailUrl; text installerUrl }
+    GAME_MEDIA { uuid id PK; uuid gameId FK; string url; string type; bool isFeatured }
+    LIBRARY { uuid id PK; uuid userId FK; uuid gameId FK; datetime purchaseDate }
+    CART { uuid id PK; uuid userId FK; uuid gameId FK }
+    TRANSACTION { uuid id PK; uuid userId FK; uuid gameId FK; decimal amount; string status }
+    REVIEW { uuid id PK; uuid userId FK; uuid gameId FK; tinyint rating; text comment }
+    PAYMENT_METHOD { uuid id PK; uuid userId FK; string paymongoId UK; string brand; string last4 }
+    SUBSCRIPTION { uuid id PK; uuid developerId FK; string status; datetime nextBillingDate }
+    OTP { uuid id PK; string email; string code; string type; datetime expiresAt }`,
       tables: [
         {
           name: 'users',
@@ -258,7 +336,6 @@ Resend  PayMongo  R2 (S3 SDK)  Redis  TiDB Cloud
             { name: 'id', type: 'UUID (PK)' },
             { name: 'userId', type: 'UUID (FK)' },
             { name: 'paymongoId', type: 'VARCHAR', notes: 'unique, PayMongo payment-method ID' },
-            { name: 'type', type: 'VARCHAR', notes: "'card', etc." },
             { name: 'brand', type: 'VARCHAR', notes: "'visa', 'mastercard', etc." },
             { name: 'last4', type: 'VARCHAR' },
           ],
@@ -296,9 +373,9 @@ Resend  PayMongo  R2 (S3 SDK)  Redis  TiDB Cloud
     ],
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // SERVICE TICKET SYSTEM
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'service-ticket-system',
     title: 'Service Ticket System',
@@ -313,29 +390,23 @@ Resend  PayMongo  R2 (S3 SDK)  Redis  TiDB Cloud
     liveUrl: 'https://service-ticket-system-frontend.vercel.app',
     sourceUrl: 'https://github.com/Asciente-rks/service-ticket-system',
     thumbnail: 'ServiceTicket/LoginServiceTicket.png',
-    gallery: [
-      { src: 'ServiceTicket/LoginServiceTicket.png', caption: 'Login screen' },
-    ],
+    gallery: [{ src: 'ServiceTicket/LoginServiceTicket.png', caption: 'Login screen' }],
     architecture: {
-      diagram: `Browser (React 19 + Vite)
- │  • Vercel-hosted SPA
- │  • react-router 7
- │  • Tailwind 4
- │  • jwt-decode (client role parsing)
- ▼ REST + JWT (Bearer) via axios
+      mermaid: `graph TB
+    Browser["Browser SPA<br/>React 19 + Vite 8 + Tailwind 4<br/>react-router 7 · jwt-decode"]
+    Express["Express 4 API<br/>helmet · CORS · Sequelize 6<br/>routes: /auth /users /tickets /notifications"]
+    Cron["node-cron in-process<br/>SLA reminders · stale-ticket scan"]
+    MySQL[("MySQL · free-tier hosted<br/>users · roles · tickets<br/>statuses · approvals · notifications")]
 
-Express 4 API
- │  • helmet + CORS
- │  • routes: /auth /users /tickets /notifications
- │  • /health liveness
- ▼
+    Browser -->|REST + JWT (axios)| Express
+    Express --> MySQL
+    Express -.spawn on boot.- Cron
+    Cron --> MySQL
 
-  ┌─────────────────┐    ┌──────────────────┐
-  │ MySQL           │ ◄──│ node-cron        │
-  │ (free-tier      │    │ • SLA reminders  │
-  │  hosted)        │    │ • stale-ticket   │
-  │                 │    │   scan           │
-  └─────────────────┘    └──────────────────┘`,
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Browser,Express,Cron edge
+    class MySQL store`,
       notes: [
         'Single Express process — no queue, no worker. helmet, cors, express.json, route mounts, /health probe. On startup: connectDB() → defineAssociations() → initCronJobs() → listen.',
         'Cron co-located with the API — saves an additional service. node-cron fires inside the same Node process; the trade-off is that scaling horizontally requires either a leader-election strategy or moving cron to a dedicated worker.',
@@ -345,7 +416,25 @@ Express 4 API
     },
     database: {
       blurb:
-        'Seven Sequelize models. All primary keys are UUID v4. DB columns are snake_case (reported_by, assigned_to, status_id); model attributes are camelCase, mapped via Sequelize field.',
+        'Seven Sequelize models. All primary keys are UUID v4. DB columns are snake_case; model attributes are camelCase, mapped via Sequelize field.',
+      mermaid: `erDiagram
+    ROLE ||--o{ USER : assigned
+    TICKET_STATUS ||--o{ TICKET : labels
+    USER ||--o{ TICKET : "reports (reported_by)"
+    USER ||--o{ TICKET : "assigned (assigned_to)"
+    USER ||--o{ APPROVAL : approves
+    TICKET ||--o{ APPROVAL : "audited by"
+    USER ||--|| NOTIFICATION_SETTINGS : has
+    USER ||--o{ NOTIFICATION : receives
+    TICKET ||--o{ NOTIFICATION : about
+
+    ROLE { uuid id PK; string name UK "SUPER_ADMIN / ADMIN / TESTER / DEVELOPER" }
+    USER { uuid id PK; string email UK; uuid roleId FK; string password "bcryptjs" }
+    TICKET_STATUS { uuid id PK; string name UK "OPEN / IN_PROGRESS / READY_FOR_QA / ERROR_PERSISTS / RESOLVED / CLOSED" }
+    TICKET { uuid id PK; string title; text description; uuid reportedBy FK; uuid assignedTo FK; uuid statusId FK; string priority "LOW/MEDIUM/HIGH/CRITICAL" }
+    APPROVAL { uuid id PK; uuid ticketId FK; uuid approverId FK; enum status "Approved/Rejected"; text comment; datetime approvedAt }
+    NOTIFICATION { uuid id PK; uuid userId FK; string message; bool read; uuid ticketId FK }
+    NOTIFICATION_SETTINGS { uuid id PK; uuid userId FK; bool notifyAssignedTicket; bool notifyTicketApproved; bool notifyTicketRejected }`,
       tables: [
         {
           name: 'tickets',
@@ -357,14 +446,6 @@ Express 4 API
             { name: 'assigned_to', type: 'UUID (FK → users.id)', notes: 'nullable' },
             { name: 'status_id', type: 'UUID (FK → ticket_statuses.id)' },
             { name: 'priority', type: 'VARCHAR', notes: "free-form ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')" },
-          ],
-        },
-        {
-          name: 'ticket_statuses',
-          description: 'Six statuses seeded with hardcoded UUIDs in src/config/statuses.ts',
-          columns: [
-            { name: 'id', type: 'UUID (PK)', notes: 'hardcoded' },
-            { name: 'name', type: 'VARCHAR', notes: "OPEN | IN_PROGRESS | READY_FOR_QA | ERROR_PERSISTS | RESOLVED | CLOSED" },
           ],
         },
         {
@@ -408,9 +489,9 @@ Express 4 API
     },
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // TODO LIST
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'todo-list-app',
     title: 'To-Do List App',
@@ -427,30 +508,22 @@ Express 4 API
     thumbnail: 'Todo/TodoList.png',
     gallery: [{ src: 'Todo/TodoList.png', caption: 'Mobile preview' }],
     architecture: {
-      diagram: `Mobile / Web (Expo)
- │  • React Native + TypeScript
- │  • Expo SDK 54 + RN 0.81
- │  • AsyncStorage (token, userId)
- │  • Custom fetch wrapper:
- │    - 2-min AbortController timeout
- │    - JWT auto-attach
- │    - retry wrapper for cold-start
- ▼ HTTPS + JWT (Bearer)
+      mermaid: `graph TB
+    Mobile["Mobile / Web<br/>Expo SDK 54 + RN 0.81<br/>AsyncStorage JWT<br/>2-min AbortController"]
+    Express["Express 5 backend<br/>Render Web Service<br/>Sequelize 6 + mysql2"]
+    MySQL[("MySQL · free-tier provider<br/>users · todos<br/>indexed FK on userId")]
+    EAS["EAS Build (Expo)"]
+    Outputs["Android APK · iOS · Web"]
 
-Express 5 backend (Render Web Service)
- │  • CORS: origin "*"
- │  • request logging middleware
- │  • /, /api, /health liveness
- │  • /api/users/* + /api/todos/*
- │  • 404 + global error handler
- ▼
+    Mobile -->|"HTTPS + JWT<br/>retry on cold start"| Express
+    Express --> MySQL
+    EAS --> Outputs
+    Mobile -.- EAS
 
-MySQL (free-tier provider)
- │  • users + todos tables
- │  • indexed FK on todos.userId
-
-EAS Build ──▶ Android APK + iOS + web
-              (preview / production profiles)`,
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Mobile,Express,EAS,Outputs edge
+    class MySQL store`,
       notes: [
         'Render free tier for the backend — sleeps after 15 min idle. The mobile app handles this gracefully: 2-minute request timeout (covers cold start) + WakeUpNotice banner + retry wrapper.',
         'JWT in AsyncStorage — works the same on Android, iOS, and web. No platform-specific secure storage needed at this scale.',
@@ -459,6 +532,27 @@ EAS Build ──▶ Android APK + iOS + web
     },
     database: {
       blurb: 'Two tables. Both keyed by UUID v4. Simple 1-to-many: one user → many todos.',
+      mermaid: `erDiagram
+    USER ||--o{ TODO : owns
+
+    USER {
+        uuid id PK
+        string username UK
+        string email UK
+        string password "bcrypt"
+        datetime createdAt
+        datetime updatedAt
+    }
+    TODO {
+        uuid id PK
+        string title
+        string description
+        bool completed "default false"
+        datetime dueDate
+        uuid userId FK "indexed"
+        datetime createdAt
+        datetime updatedAt
+    }`,
       tables: [
         {
           name: 'users',
@@ -486,9 +580,9 @@ EAS Build ──▶ Android APK + iOS + web
       monthlyTotal: '$0/month',
       rows: [
         { service: 'Render Web Service', freeTier: '750 hours/mo, sleeps after 15 min', weUse: 'always-on under monitoring', headroom: 'within limits' },
-        { service: 'MySQL (Aiven / FreeSQLDatabase / Filess.io)', freeTier: '5 GB / 1 GB depending on provider', weUse: '<50 MB', headroom: '95%+' },
+        { service: 'MySQL (Aiven / Filess.io)', freeTier: '5 GB / 1 GB depending on provider', weUse: '<50 MB', headroom: '95%+' },
         { service: 'EAS Build (Expo)', freeTier: '30 builds/mo on free', weUse: '<5 builds/mo', headroom: '80%+' },
-        { service: 'GitHub Releases (APK distribution)', freeTier: 'unlimited public assets', weUse: '<50 MB total', headroom: 'unlimited' },
+        { service: 'GitHub Releases (APK)', freeTier: 'unlimited public assets', weUse: '<50 MB total', headroom: 'unlimited' },
       ],
       rationale: [
         'Render over a long-running VPS — auto-deploys on push, free SSL, free tier includes managed Postgres or external MySQL.',
@@ -503,9 +597,9 @@ EAS Build ──▶ Android APK + iOS + web
     ],
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // SWIFTRACE
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'swiftrace',
     title: 'SwiftRace',
@@ -519,36 +613,31 @@ EAS Build ──▶ Android APK + iOS + web
     tech: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'Serverless Framework', 'React 19', 'Vite', 'Vercel'],
     liveUrl: 'https://swiftrace.vercel.app',
     sourceUrl: 'https://github.com/Asciente-rks/swiftrace',
-    thumbnail: 'SystemPulse/LoginPage_SystemPulse.png', // placeholder until SwiftRace screenshots exist
+    thumbnail: 'SystemPulse/LoginPage_SystemPulse.png',
     gallery: [],
     architecture: {
-      diagram: `Browser (React 19 + Vite)
- │  • Vercel-hosted SPA
- │  • react-router 7
- ▼ REST + JWT (Bearer)
+      mermaid: `graph TB
+    Browser["Browser<br/>React 19 + Vite + react-router 7"]
+    APIGW["AWS API Gateway · REST<br/>ap-southeast-1"]
+    UserFns["5 User Lambdas<br/>create / login / update<br/>delete / getByRole"]
+    ShipFns["7 Shipment Lambdas<br/>create / update / track<br/>history / sample / email"]
+    DevFns["2 Dev Lambdas<br/>seed / clear DB"]
+    DDB[("DynamoDB single table<br/>USER · SHIPMENT · HISTORY<br/>4 GSIs")]
+    SMTP["nodemailer / SMTP<br/>tracking emails"]
 
-AWS API Gateway (REST)
-ap-southeast-1
- │ per-route HTTP integration
- ▼
+    Browser -->|REST + JWT| APIGW
+    APIGW --> UserFns
+    APIGW --> ShipFns
+    APIGW --> DevFns
+    UserFns --> DDB
+    ShipFns --> DDB
+    DevFns --> DDB
+    ShipFns --> SMTP
 
-15 Lambda functions
- │  Users:
- │   • createUser, loginUser, updateUser,
- │     deleteUser, getUserByRole
- │  Shipments:
- │   • createShipment, updateShipment,
- │     getShipmentByTracking,
- │     getShipmentByStatus,
- │     getShipmentHistory,
- │     placeSampleOrder, sendTrackingEmail
- │  Dev:
- │   • seedDatabase, clearDatabase
- ▼
-
-DynamoDB single table
- + 4 GSIs (role / status /
-   shipmentId / trackingNumber)`,
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Browser,APIGW,UserFns,ShipFns,DevFns,SMTP edge
+    class DDB store`,
       notes: [
         '15 independent Lambdas rather than one router-Lambda — each function does one thing. serverless.yml declares route, IAM, and timeout per function. Rollbacks are per-function.',
         'Single-table DynamoDB with PK/SK prefixes. Four GSIs cover the read patterns the API needs.',
@@ -559,6 +648,33 @@ DynamoDB single table
     database: {
       blurb:
         'DynamoDB single-table design. One table stores users, shipments, and shipment history events; four GSIs cover the read patterns.',
+      mermaid: `erDiagram
+    USER ||--o{ SHIPMENT : "places (customer)"
+    SHIPMENT ||--o{ HISTORY : "tracked by"
+
+    USER {
+        string user_id PK
+        string email UK
+        string role "customer / shipper / admin"
+        string verification_status "pending / verified / rejected"
+        string password_hash "scrypt"
+    }
+    SHIPMENT {
+        string tracking_number PK
+        string shipment_id
+        string customer_id FK
+        string origin
+        string destination
+        string status "STATUS prefix in storage"
+    }
+    HISTORY {
+        string tracking_number FK
+        string history_id
+        string history_type "created / picked_up / in_transit / out_for_delivery / delivered"
+        string history_at
+        bool admin_verified "internal"
+        string verified_at "internal"
+    }`,
       tables: [
         {
           name: 'USER',
@@ -610,9 +726,9 @@ DynamoDB single table
     },
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // JUDGEMENT CUT
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'judgement-cut',
     title: 'Judgement Cut',
@@ -625,25 +741,30 @@ DynamoDB single table
     language: 'Python',
     tech: ['Scrapy', 'Zyte Scrapy Cloud', 'AWS Lambda', 'FastAPI', 'TiDB Cloud', 'Cloudflare R2', 'React', 'Vite', 'Tailwind'],
     sourceUrl: 'https://github.com/Asciente-rks/judgement-cut',
-    thumbnail: 'SystemPulse/LoginPage_SystemPulse.png', // placeholder until project screenshots exist
+    thumbnail: 'SystemPulse/LoginPage_SystemPulse.png',
     gallery: [],
     architecture: {
-      diagram: `GitHub Actions cron ──▶ Zyte Scrapy Cloud
-daily 02:00 PHT          (1 spider scrapes 4 storefronts)
-                            │ batched POST /internal/ingest
-                            ▼
-Cloudflare R2  ◄────  AWS Lambda (FastAPI + Mangum)
-thumbnail mirror      ap-southeast-1, 256 MB, 30s
-                       • 5-way parallel Steam regional API
-                       • title-search fallback for missing
-                         steamAppIDs
-                       • 3-phase finalize: re-enrich, mark
-                         stale, delete inactive
-                       │ JWT-protected reads
-                       ▼
-                       TiDB Cloud Serverless
-                       • MySQL-compatible
-                       • 5 GB free tier`,
+      mermaid: `graph TB
+    Cron["GitHub Actions cron<br/>02:00 PHT daily"]
+    Zyte["Zyte Scrapy Cloud<br/>1 spider · 4 storefronts<br/>Steam · GOG · Humble · Epic"]
+    Lambda["AWS Lambda<br/>FastAPI + Mangum<br/>ap-southeast-1 · 256 MB"]
+    SteamAPI["Steam Regional API<br/>cc=PH (5-way semaphore)"]
+    R2["Cloudflare R2<br/>thumbnail mirror"]
+    TiDB[("TiDB Cloud Serverless<br/>5 GB free")]
+    Frontend["React + Vite SPA<br/>Tailwind"]
+
+    Cron -->|run.json| Zyte
+    Zyte -->|"POST /internal/ingest<br/>batched 25 items"| Lambda
+    Lambda -->|enrich PHP price| SteamAPI
+    Lambda --> TiDB
+    Lambda --> R2
+    Frontend -->|JWT GET| Lambda
+    Frontend -.thumbnails.-> R2
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Cron,Zyte,Lambda,SteamAPI,Frontend edge
+    class R2,TiDB store`,
       notes: [
         'No API Gateway — the Lambda exposes a Function URL directly. Saves ~$3.50/M after the API Gateway free tier expires.',
         '5-way parallel Steam enrichment with a semaphore — keeps regional API calls within Steam\'s rate limits while finishing a 480-item crawl in seconds, not minutes.',
@@ -654,6 +775,42 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
     database: {
       blurb:
         'Five tables on TiDB. featured_deals is wiped down to the latest crawl on every spider run via the finalize step.',
+      mermaid: `erDiagram
+    FEATURED_DEAL ||--o{ PRICE_HISTORY : "tracked"
+    PLATFORM ||--o{ FEATURED_DEAL : "filters"
+
+    USER {
+        int id PK
+        string username UK
+        string passwordHash "bcrypt"
+        bool isAdmin
+    }
+    FEATURED_DEAL {
+        string deal_id PK "CheapShark dealID"
+        string title
+        string store_id "1=Steam / 7=GOG / 11=Humble / 25=Epic"
+        float price
+        float normal_price
+        float price_php "native Steam PH price"
+        string steam_app_id
+        bool is_active "wiped to latest crawl"
+        datetime synced_at
+    }
+    PRICE_HISTORY {
+        int id PK
+        string deal_id FK
+        float price "USD at observation"
+        datetime recorded_at
+    }
+    PLATFORM {
+        int id PK
+        string name UK
+        bool is_enabled "dashboard toggle"
+    }
+    CRAWLER_SETTINGS {
+        string key PK
+        string value "heartbeat / FX rates"
+    }`,
       tables: [
         {
           name: 'featured_deals',
@@ -673,7 +830,7 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
           columns: [
             { name: 'deal_id', type: 'VARCHAR(100)', notes: 'foreign reference (no FK constraint)' },
             { name: 'price', type: 'FLOAT', notes: 'USD price at time of observation' },
-            { name: 'recorded_at', type: 'DATETIME' },
+            { name: 'recorded_at', type: 'DATETIME', notes: 'observation time' },
           ],
         },
       ],
@@ -697,9 +854,9 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
     },
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // H100 ECOLODGE
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'h100-ecolodge',
     title: 'H100 Ecolodge',
@@ -708,9 +865,9 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
     tagline:
       'A commercial booking engine for an ecolodge — built under zero-cost infrastructure constraints as the client requested.',
     summary:
-      'Spring Boot + Spring Data JPA backend with MySQL on Aiven, vanilla HTML/CSS/JS on the customer-facing storefront, and a full admin panel for bookings, rooms, payments, and analytics.',
+      'Spring Boot + Spring Data JPA backend with MySQL on Aiven, vanilla HTML/CSS/JS on the customer-facing storefront, and a full admin panel for bookings, rooms, halls, catering, payments, and analytics.',
     language: 'Java',
-    tech: ['Spring Boot', 'Spring Data JPA', 'MySQL', 'Aiven', 'HTML', 'CSS', 'JavaScript'],
+    tech: ['Spring Boot', 'Spring Data JPA', 'Spring Security', 'MySQL', 'Aiven', 'HTML', 'CSS', 'JavaScript'],
     sourceUrl: 'https://github.com/Ecolodge-STI/EcoWeb',
     thumbnail: 'H100/CXUI_Homepage.png',
     gallery: [
@@ -741,36 +898,61 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
       { src: 'H100/ADMIN_Content.png', caption: 'Content management' },
     ],
     architecture: {
-      diagram: `Customer Browser            Admin Browser
- │ vanilla HTML/CSS/JS       │ admin panel UI
- │                           │
- ▼ HTTPS (REST + session)    ▼
- ──────────────────────────────────
- Spring Boot (Java)
-  • Spring MVC controllers
-  • Spring Data JPA repositories
-  • Service layer + DTOs
-  • Auth (session-based)
- ──────────────────────────────────
-                │
-                ▼
-         MySQL (Aiven free tier)
-          • bookings + rooms + halls
-          • catering + branches
-          • payments + payment_logs
-          • reservation_logs + system_logs
-          • users + employees`,
+      mermaid: `graph TB
+    Customer["Customer Browser<br/>Vanilla HTML/CSS/JS<br/>storefront + bookings"]
+    Admin["Admin Browser<br/>Admin Panel<br/>operations console"]
+    Spring["Spring Boot · Java<br/>Spring MVC + Spring Data JPA<br/>Spring Security session auth"]
+    MySQL[("MySQL · Aiven free tier<br/>bookings · rooms · halls<br/>catering · payments<br/>+ audit logs")]
+
+    Customer -->|REST + Session| Spring
+    Admin -->|REST + Session| Spring
+    Spring --> MySQL
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Customer,Admin,Spring edge
+    class MySQL store`,
       notes: [
-        'Zero-cost infrastructure constraint — chosen Aiven\'s free MySQL tier and a free-tier-friendly Java host instead of paid cloud DBs.',
+        'Zero-cost infrastructure constraint — chose Aiven\'s free MySQL tier and a free-tier-friendly Java host instead of paid cloud DBs.',
         'Customer-facing storefront served as static HTML/CSS/JS — fast, no SPA build pipeline, easy to maintain for the client.',
         'Admin panel is a complete operations console: bookings, rooms, halls, catering, payments, payment logs, reservation logs, system logs, employee management, data analytics.',
         'Audit-trail tables (payment_logs, reservation_logs, system_logs) preserve every state change for forensic review.',
       ],
     },
+    database: {
+      blurb:
+        'Relational schema across bookings, branches, rooms, halls, catering, users, employees, payments, and three audit-trail tables.',
+      mermaid: `erDiagram
+    BRANCH ||--o{ ROOM : has
+    BRANCH ||--o{ HALL : has
+    BRANCH ||--o{ CATERING : has
+    USER ||--o{ BOOKING : makes
+    ROOM ||--o{ BOOKING : "in"
+    HALL ||--o{ BOOKING : "in"
+    CATERING ||--o{ BOOKING : "in"
+    BOOKING ||--o{ PAYMENT : has
+    PAYMENT ||--o{ PAYMENT_LOG : audits
+    BOOKING ||--o{ RESERVATION_LOG : audits
+    USER ||--o| EMPLOYEE : "is staff"
+    EMPLOYEE ||--o{ SYSTEM_LOG : creates
+
+    USER { uuid id PK; string email UK; string role; string passwordHash }
+    BRANCH { uuid id PK; string name; string address }
+    ROOM { uuid id PK; uuid branchId FK; string type; decimal price }
+    HALL { uuid id PK; uuid branchId FK; int capacity; decimal price }
+    CATERING { uuid id PK; uuid branchId FK; string menu; decimal pricePerHead }
+    BOOKING { uuid id PK; uuid userId FK; date checkIn; date checkOut; string status }
+    PAYMENT { uuid id PK; uuid bookingId FK; decimal amount; string method }
+    PAYMENT_LOG { uuid id PK; uuid paymentId FK; string action; datetime at }
+    RESERVATION_LOG { uuid id PK; uuid bookingId FK; string action; datetime at }
+    SYSTEM_LOG { uuid id PK; uuid actorId FK; string event; datetime at }
+    EMPLOYEE { uuid id PK; uuid userId FK; string position; date hiredAt }`,
+      tables: [],
+    },
     cost: {
       monthlyTotal: '$0/month',
       rows: [
-        { service: 'Java host (Render / Railway / Aiven app)', freeTier: 'free-tier with sleep behavior', weUse: 'within free tier', headroom: 'within limits' },
+        { service: 'Java host (Render / Railway)', freeTier: 'free-tier with sleep behavior', weUse: 'within free tier', headroom: 'within limits' },
         { service: 'MySQL (Aiven)', freeTier: 'Free DB tier', weUse: '<100 MB', headroom: '95%+' },
         { service: 'Static frontend hosting', freeTier: 'unlimited bandwidth on most providers', weUse: '<1 GB/mo', headroom: '99%' },
       ],
@@ -782,9 +964,9 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
     },
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // NHC INTERNAL GYM
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'nhc-internal-gym',
     title: 'NHC Internal Gym',
@@ -795,7 +977,7 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
     summary:
       '.NET Windows Forms application with SQL Server backend. Built for offline-first internal use where speed and reliability matter more than connectivity.',
     language: 'C#',
-    tech: ['.NET Windows Forms', 'SQL Server', 'C#'],
+    tech: ['.NET Windows Forms', 'SQL Server', 'C#', 'ADO.NET'],
     thumbnail: 'NHC/Login.png',
     gallery: [
       { src: 'NHC/Login.png', caption: 'Sign-in screen' },
@@ -805,28 +987,46 @@ thumbnail mirror      ap-southeast-1, 256 MB, 30s
       { src: 'NHC/Inventory2.png', caption: 'Inventory — detail view' },
     ],
     architecture: {
-      diagram: `.NET Windows Forms (C#)
- │  • Sign-in / member search
- │  • Time tracking
- │  • Inventory management
- │  • Member CRUD
- ▼ ADO.NET / EF Core
+      mermaid: `graph TB
+    Forms["Windows Forms (.NET / C#)<br/>Sign-in · Search · Time<br/>Inventory · Member CRUD"]
+    SQL[("SQL Server Express<br/>local instance · sub-ms queries<br/>members · time_logs · inventory")]
 
-SQL Server (local instance)
- • members + membership_plans
- • time_logs + sessions
- • inventory + categories
- • employees + audit_logs`,
+    Forms -->|ADO.NET| SQL
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4;
+    class Forms edge
+    class SQL store`,
       notes: [
         'Offline-first by design — internal gym workflow tolerates no network downtime, so the entire stack runs locally.',
-        'Direct SQL access via ADO.NET / EF Core for sub-millisecond local queries.',
+        'Direct SQL access via ADO.NET for sub-millisecond local queries.',
         'Modular form architecture — each operations area (members, time, inventory) is its own form module, easy to maintain.',
       ],
+    },
+    database: {
+      blurb: 'Local SQL Server schema covering members, plans, time logs, sessions, inventory, employees, and an audit log.',
+      mermaid: `erDiagram
+    MEMBERSHIP_PLAN ||--o{ MEMBER : subscribes
+    MEMBER ||--o{ TIME_LOG : logs
+    MEMBER ||--o{ SESSION : attends
+    EMPLOYEE ||--o{ TIME_LOG : verifies
+    EMPLOYEE ||--o{ AUDIT_LOG : creates
+    INVENTORY_CATEGORY ||--o{ INVENTORY : categorizes
+
+    MEMBER { int id PK; string firstName; string lastName; date joinDate; int planId FK }
+    MEMBERSHIP_PLAN { int id PK; string name UK; decimal price; int durationDays }
+    TIME_LOG { int id PK; int memberId FK; datetime checkIn; datetime checkOut; int verifiedBy FK }
+    SESSION { int id PK; int memberId FK; datetime startTime; string activity }
+    INVENTORY { int id PK; string name; int quantity; int categoryId FK }
+    INVENTORY_CATEGORY { int id PK; string name UK }
+    EMPLOYEE { int id PK; string name; string role; string passwordHash }
+    AUDIT_LOG { int id PK; int employeeId FK; string action; datetime timestamp }`,
+      tables: [],
     },
     cost: {
       monthlyTotal: 'On-prem',
       rows: [
-        { service: '.NET runtime (free)', freeTier: 'free, redistributable', weUse: 'embedded', headroom: 'n/a' },
+        { service: '.NET runtime', freeTier: 'free, redistributable', weUse: 'embedded', headroom: 'n/a' },
         { service: 'SQL Server Express', freeTier: '10 GB DB size', weUse: '<500 MB', headroom: '95%' },
         { service: 'Windows host', freeTier: 'on-prem hardware', weUse: 'existing internal machine', headroom: 'n/a' },
       ],
@@ -837,9 +1037,9 @@ SQL Server (local instance)
     },
   },
 
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   // THE LAST LIGHT
-  // ------------------------------------------------------------------------------------
+  // =============================================================================
   {
     slug: 'the-last-light',
     title: 'The Last Light',
@@ -850,7 +1050,7 @@ SQL Server (local instance)
     summary:
       'Built on User1 Productions\' Unity 3D series. Extensions include a second enemy archetype, expanded HUD, options menu with rebindable controls, accessibility toggles, and a custom SFX/music pass.',
     language: 'C#',
-    tech: ['Unity', 'Blender', 'VS Code'],
+    tech: ['Unity', 'Blender', 'C#', 'VS Code'],
     sourceUrl: 'https://github.com/Asciente-rks/the-last-light',
     thumbnail: 'TheLastLight/MainMenu.png',
     gallery: [
@@ -864,19 +1064,23 @@ SQL Server (local instance)
       { src: 'TheLastLight/Settings.png', caption: 'Settings + accessibility' },
     ],
     architecture: {
-      diagram: `Unity 3D Project
- │  • C# scripts (player, AI, UI)
- │  • Prefabs (enemies, props)
- │  • ScriptableObjects (config)
- │  • Animator state machines
- ▼
+      mermaid: `graph TB
+    Unity["Unity 3D Project<br/>C# scripts + ScriptableObjects<br/>Animator FSMs"]
+    Player["Player Controller<br/>movement + interaction"]
+    AI["Enemy AI<br/>2 archetypes incl. zombie"]
+    UI["HUD + Options<br/>accessibility toggles"]
+    Assets["Asset Pipeline<br/>Blender models · SFX · music"]
+    Build["Windows Standalone .exe"]
 
-Assets pipeline
- • Blender: zombie + props
- • Unity: textures, lighting, sound
- • Custom UI canvas + accessibility toggles
+    Unity --> Player
+    Unity --> AI
+    Unity --> UI
+    Unity --> Assets
+    Assets -.imports.-> Unity
+    Unity --> Build
 
-Build target: Windows standalone .exe`,
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0;
+    class Unity,Player,AI,UI,Assets,Build edge`,
       notes: [
         'Originally a tutorial project from User1 Productions — extended with second enemy archetype, expanded HUD, accessibility toggles, and a custom audio pass.',
         'C# component scripts for player, AI, and UI; ScriptableObjects for game config; Animator state machines for character animation.',
