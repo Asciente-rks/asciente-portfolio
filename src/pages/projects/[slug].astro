@@ -54,6 +54,7 @@ const liveLabel = project.liveLabel ?? 'Live Demo';
 
 // Dynamic section numbering based on what data the project has.
 const sectionOrder = ['about', 'stack', 'architecture'];
+if (project.conversion) sectionOrder.push('conversion');
 if (project.database) sectionOrder.push('data');
 if (project.apiEndpoints && project.apiEndpoints.length > 0) sectionOrder.push('api');
 sectionOrder.push('costs');
@@ -247,6 +248,60 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         </>
       )}
     </section>
+
+    <!-- CONVERSION ========================================== -->
+    {project.conversion && (
+      <section class="detail-section" id="conversion">
+        <div class="section-eyebrow">
+          <span class="section-num">{sectionNum('conversion')} · conversion</span>
+        </div>
+        <h2>Migration · before → after</h2>
+        <p style="margin-top: 1rem; max-width: 72ch; color: var(--fg-muted); line-height: 1.6;">
+          {project.conversion.summary}
+        </p>
+
+        <div class="diagram-frame" style="margin-top: 1.5rem;">
+          <div class="diagram-frame-header">
+            <span class="dot" style="background:#ff5f56"></span>
+            <span class="dot" style="background:#ffbd2e"></span>
+            <span class="dot" style="background:#27c93f"></span>
+            <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.conversion.mmd</span>
+          </div>
+          <div class="mermaid-container">
+            <pre class="mermaid">{project.conversion.mermaid}</pre>
+          </div>
+        </div>
+
+        {project.conversion.changes.length > 0 && (
+          <>
+            <h3>What changed</h3>
+            <div class="api-table" style="margin-top: 1rem;">
+              <div class="api-row head" style="grid-template-columns: 1fr 1fr;">
+                <div>Before</div>
+                <div>After</div>
+              </div>
+              {project.conversion.changes.map((c) => (
+                <div class="api-row" style="grid-template-columns: 1fr 1fr;">
+                  <div style="color: var(--fg-muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--fg-muted) 50%, transparent);">{c.before}</div>
+                  <div style="color: var(--accent);">{c.after}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {project.conversion.notes.length > 0 && (
+          <>
+            <h3>Why &amp; how</h3>
+            <ul class="notes-list">
+              {project.conversion.notes.map((note) => (
+                <li>{note}</li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+    )}
 
     <!-- DATABASE DESIGN ===================================== -->
     {project.database && (

@@ -5,6 +5,10 @@ import type { Project } from "./types";
 // Edit the fields below to update what shows on the home card and the
 // /projects/<slug> detail page. Architecture / database mermaid diagrams
 // live in the same object below for editor-friendly co-location.
+//
+// 2026-05 — migrated from Serverless Framework + API Gateway + S3 deploy
+//           bucket + CloudFormation to GitHub Actions → Lambda Function URL
+//           + DynamoDB. See `conversion` block at the bottom of this file.
 // =============================================================================
 
 export const swiftRace: Project = {
@@ -15,17 +19,21 @@ export const swiftRace: Project = {
   tagline:
     'A serverless logistics tracking platform — customers place sample orders, shippers progress them through a four-stage delivery lifecycle, admins verify status changes.',
   summary:
-    '15 independent AWS Lambdas behind API Gateway, DynamoDB single-table design, React 19 + Vite frontend, immutable history timeline.',
+    'A single AWS Lambda exposed via Function URL, internally fanning out to 14 handler functions, DynamoDB single-table design, React 19 + Vite frontend, and an immutable history timeline. Deployed straight from GitHub Actions to Lambda — no API Gateway, no S3 deploy bucket, no CloudFormation. $0/month forever, no 12-month timer.',
   language: 'TypeScript',
-  tech: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'Serverless Framework', 'React 19', 'Vite', 'Vercel', 'Nodemailer'],
+  tech: ['AWS Lambda', 'Lambda Function URL', 'DynamoDB', 'GitHub Actions', 'esbuild', 'React 19', 'Vite', 'Vercel', 'Nodemailer'],
   techGroups: [
     {
       label: 'Backend',
-      items: ['Node.js 20', 'TypeScript 5', 'Serverless Framework v3', 'AWS Lambda (15 functions)', 'aws-sdk v2 DocumentClient', 'JWT (jsonwebtoken)', 'scrypt', 'Yup', 'nodemailer + SMTP', 'serverless-dotenv-plugin'],
+      items: ['Node.js 20', 'TypeScript 5', 'esbuild (bundler)', 'AWS Lambda (1 function · internal router)', 'aws-sdk v2 DocumentClient', 'JWT (jsonwebtoken)', 'scrypt', 'Yup', 'nodemailer + SMTP'],
     },
     {
       label: 'Cloud · AWS',
-      items: ['AWS API Gateway REST', 'AWS Lambda', 'DynamoDB (single-table + 4 GSIs)', 'CloudWatch Logs', 'IAM (per-function scope)', 'ap-southeast-1'],
+      items: ['AWS Lambda + Function URL (no API Gateway)', 'DynamoDB (single-table + 4 GSIs)', 'CloudWatch Logs', 'IAM (single execution role, scoped inline policy)', 'ap-southeast-1'],
+    },
+    {
+      label: 'CI/CD',
+      items: ['GitHub Actions', 'aws-actions/configure-aws-credentials', 'aws-cli (lambda update-function-code, dynamodb create-table, iam create-role)', 'idempotent bash deploy script'],
     },
     {
       label: 'Frontend',
@@ -33,7 +41,7 @@ export const swiftRace: Project = {
     },
     {
       label: 'Hosting',
-      items: ['AWS Lambda + API Gateway (ap-southeast-1)', 'Vercel (frontend)'],
+      items: ['AWS Lambda Function URL (ap-southeast-1)', 'Vercel (frontend)'],
     },
   ],
   liveUrl: 'https://swiftrace.vercel.app/',
@@ -54,34 +62,42 @@ export const swiftRace: Project = {
     {
       name: 'swiftrace',
       url: 'https://github.com/Asciente-rks/swiftrace',
-      stack: 'Monorepo · 15 AWS Lambdas (TypeScript) + React 19 + Vite frontend',
+      stack: 'Monorepo · single AWS Lambda (TypeScript, esbuild) + React 19 + Vite frontend',
     },
   ],
   architecture: {
     mermaid: `graph TB
     Browser["Browser<br/>React 19 + Vite + react-router 7"]
-    APIGW["AWS API Gateway · REST<br/>ap-southeast-1"]
-    UserFns["5 User Lambdas<br/>create / login / update<br/>delete / getByRole"]
-    ShipFns["7 Shipment Lambdas<br/>create / update / track<br/>history / sample / email"]
-    DevFns["2 Dev Lambdas<br/>seed / clear DB"]
-    DDB[("DynamoDB single table<br/>USER · SHIPMENT · HISTORY<br/>4 GSIs")]
+    FuncURL["Lambda Function URL<br/>https://*.lambda-url.ap-southeast-1.on.aws"]
+    Router["swiftrace-api · single Lambda<br/>router.ts (pattern-matches 14 routes)<br/>adaptEvent(v2 → v1)"]
+    UserFns["5 user handlers<br/>create / login / update<br/>delete / getByRole"]
+    ShipFns["7 shipment handlers<br/>create / update / track<br/>history / sample / email"]
+    DevFns["2 dev handlers<br/>seed / clear DB"]
+    DDB[("DynamoDB single table<br/>USER · SHIPMENT · HISTORY<br/>4 GSIs · PAY_PER_REQUEST")]
     SMTP["nodemailer + SMTP<br/>tracking emails"]
+    GHA["GitHub Actions<br/>esbuild → zip → aws lambda<br/>update-function-code"]
 
-    Browser -->|REST + JWT| APIGW
-    APIGW --> UserFns
-    APIGW --> ShipFns
-    APIGW --> DevFns
+    Browser -->|fetch + JWT| FuncURL
+    FuncURL --> Router
+    Router --> UserFns
+    Router --> ShipFns
+    Router --> DevFns
     UserFns --> DDB
     ShipFns --> DDB
     DevFns --> DDB
     ShipFns --> SMTP
+    GHA -.deploy.-> Router
 
     classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0
     classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4
-    class Browser,APIGW,UserFns,ShipFns,DevFns,SMTP edge
-    class DDB store`,
+    classDef ci fill:#0a0e1a,stroke:#94a3b8,color:#94a3b8,stroke-dasharray:4 3
+    class Browser,FuncURL,Router,UserFns,ShipFns,DevFns,SMTP edge
+    class DDB store
+    class GHA ci`,
     notes: [
-      '15 independent Lambdas rather than one router-Lambda — each function does one thing. serverless.yml declares route, IAM, and timeout per function. Rollbacks are per-function.',
+      'Single-Lambda router fan-out, not 14 separate Lambdas. router.ts pattern-matches the rawPath + HTTP method and dispatches to the matching handler under src/functions/**.',
+      'Function URL replaces API Gateway entirely — perpetual free tier, no per-request fee after month 12.',
+      'event-adapter.ts translates Function URL events (payload v2.0) into the APIGatewayProxyEvent (v1.0) shape every handler was originally written against — zero handler-code churn.',
       'Single-table DynamoDB with PK/SK prefixes. Four GSIs cover the read patterns the API needs.',
       'Tracking number as the partition key — every customer-facing read is "look up shipment X by tracking" — public reads need zero GSI hops.',
       'History events sit under the same partition as the parent shipment — a single Query returns the full timeline.',
@@ -89,7 +105,7 @@ export const swiftRace: Project = {
   },
   database: {
     blurb:
-      'DynamoDB single-table design. One table stores users, shipments, and shipment history events; four GSIs cover the read patterns.',
+      'DynamoDB single-table design. One table stores users, shipments, and shipment history events; four GSIs cover the read patterns. The same schema is provisioned on first deploy by `aws dynamodb create-table` inside scripts/deploy.sh — no Serverless / CloudFormation involvement.',
     mermaid: `erDiagram
     USER ||--o{ SHIPMENT : places
     SHIPMENT ||--o{ HISTORY : tracked
@@ -154,16 +170,74 @@ export const swiftRace: Project = {
   cost: {
     monthlyTotal: '$0/month',
     rows: [
-      { service: 'AWS Lambda', freeTier: '1M invocations/mo + 400K GB-s', weUse: '~5K invocations/mo', headroom: '99.5%' },
-      { service: 'API Gateway REST', freeTier: '1M requests/mo (12 months)', weUse: '~5K requests/mo', headroom: '99.5%' },
+      { service: 'AWS Lambda', freeTier: '1M invocations/mo + 400K GB-s (perpetual)', weUse: '~5K invocations/mo', headroom: '99.5%' },
+      { service: 'Lambda Function URL', freeTier: 'included with Lambda invocations', weUse: 'same', headroom: '99.5%' },
       { service: 'DynamoDB (PAY_PER_REQUEST)', freeTier: '25 GB storage + 25 R/W units (perpetual)', weUse: '<100 MB', headroom: '99%+' },
+      { service: 'CloudWatch Logs', freeTier: '5 GB ingestion/mo (perpetual)', weUse: '<50 MB', headroom: '99%' },
+      { service: 'GitHub Actions', freeTier: 'unlimited minutes (public repo)', weUse: '<2 min/deploy', headroom: 'unlimited' },
       { service: 'Vercel Hobby', freeTier: '100 GB bandwidth, unlimited deploys', weUse: '<500 MB/mo', headroom: '99.5%' },
     ],
     rationale: [
+      'Lambda Function URL over API Gateway — eliminates the $3.50/M request fee that kicked in after the 12-month free tier.',
+      'aws-cli direct upload over Serverless Framework — no S3 deploy bucket (which leaves the perpetual free tier after 12 months) and no CloudFormation churn.',
       'DynamoDB over RDS — 25 GB free perpetually, single-digit ms latency, no cold start.',
-      'Per-function Lambdas over a router-Lambda — granular cold starts, isolated failures, IAM scoped per route.',
-      'Serverless Framework over CDK / SAM — simpler YAML, mature ecosystem, faster onboarding.',
+      'Single-Lambda router over per-route Lambdas — one cold start per warm container instead of 14, simpler IAM, same $0 bill.',
       'Public history responses use a stripped variant (ShipmentHistoryResponse) that hides admin_verified — customers never see internal moderation metadata.',
+    ],
+  },
+  conversion: {
+    summary:
+      'In May 2026, SwiftRace was migrated off Serverless Framework + API Gateway + a Serverless-managed S3 deploy bucket + CloudFormation, and onto a thinner GitHub Actions → AWS Lambda Function URL pipeline. Every handler kept its source unchanged; the conversion lives entirely in router.ts (single Lambda fan-out), event-adapter.ts (v2 → v1 event shape), scripts/deploy.sh (idempotent provisioning), and the new .github/workflows/deploy-backend.yml.',
+    mermaid: `flowchart LR
+    subgraph BEFORE["BEFORE · Serverless Framework"]
+      direction TB
+      B1["Browser"]
+      B2["AWS API Gateway · REST<br/>billed per request after month 12"]
+      B3["14 × Lambda<br/>per-route IAM"]
+      B4[("DynamoDB<br/>single table")]
+      B5[/"S3 deploy bucket<br/>(serverless artifacts)"/]
+      B6["CloudFormation stack"]
+      B1 --> B2 --> B3 --> B4
+      B6 -.manages.-> B2
+      B6 -.manages.-> B3
+      B6 -.uses.-> B5
+    end
+
+    subgraph AFTER["AFTER · GitHub Actions + Lambda Function URL"]
+      direction TB
+      A1["Browser"]
+      A2["Lambda Function URL<br/>perpetual free tier"]
+      A3["1 × Lambda<br/>router.ts → 14 handlers<br/>event-adapter v2 → v1"]
+      A4[("DynamoDB<br/>single table · same schema")]
+      A5["GitHub Actions<br/>aws lambda update-function-code"]
+      A1 --> A2 --> A3 --> A4
+      A5 -.deploy zip.-> A3
+    end
+
+    BEFORE ==>|migrated 2026-05| AFTER
+
+    classDef before fill:#1e1b1b,stroke:#a78bfa,color:#e2e8f0
+    classDef after fill:#0a0e1a,stroke:#5eead4,color:#e2e8f0
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4
+    class B1,B2,B3,B5,B6 before
+    class B4 store
+    class A1,A2,A3,A5 after
+    class A4 store`,
+    changes: [
+      { before: 'Serverless Framework v3 + serverless.yml', after: 'GitHub Actions workflow + scripts/deploy.sh' },
+      { before: 'AWS API Gateway REST (per-route)', after: 'AWS Lambda Function URL (single)' },
+      { before: '14 separate Lambda functions', after: '1 Lambda + internal router (router.ts)' },
+      { before: 'CloudFormation stack', after: 'Direct aws-cli calls (idempotent)' },
+      { before: 'Serverless-managed S3 bucket for code', after: 'aws lambda update-function-code --zip-file (no S3)' },
+      { before: 'serverless-dotenv-plugin → Lambda env', after: 'GitHub Secrets/Variables → workflow env → Lambda env' },
+      { before: 'Per-function CloudWatch log groups', after: 'Single CloudWatch log group for swiftrace-api' },
+      { before: 'API Gateway free tier expires after 12 months', after: 'All free tiers perpetual ($0 forever)' },
+    ],
+    notes: [
+      'Why the change · API Gateway and the Serverless-managed S3 bucket both leave their free tiers at month 12. Replacing them with Lambda Function URL + direct aws-cli upload pushes the perpetual-free promise from "12 months" to "as long as AWS keeps the free tier."',
+      'How handler code stayed the same · The router builds an APIGatewayProxyEvent (v1.0) from the Function URL event (v2.0) before delegating. Every file under src/functions/** still reads event.pathParameters / event.body the original way.',
+      'Single-Lambda fan-out · One cold start per warm container instead of 14. Memory and timeout tuned once. IAM is one inline policy on one role instead of 14 separate scopings.',
+      'Idempotent provisioning · scripts/deploy.sh checks each resource (table, role, function, URL) with describe-* / get-* before creating it, so re-runs are safe and the "first deploy creates everything" path is the same code as the "1000th deploy updates code" path.',
     ],
   },
 };

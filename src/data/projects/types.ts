@@ -36,6 +36,17 @@ export type RepoEntry = {
   stack: string;
 };
 
+export type ConversionDetails = {
+  /** Short summary above the diagram. */
+  summary: string;
+  /** Mermaid diagram (typically a left-to-right "before → after" flow). */
+  mermaid: string;
+  /** Bulleted line items shown as the "what changed" table. Pairs are `before -> after`. */
+  changes: { before: string; after: string }[];
+  /** Free-form bullets shown under the diagram explaining motivation. */
+  notes: string[];
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -68,4 +79,6 @@ export type Project = {
   };
   apiEndpoints?: { method: string; path: string; auth?: string; purpose: string }[];
   repos?: RepoEntry[];
+  /** Optional history of an infra/architecture migration this project went through. */
+  conversion?: ConversionDetails;
 };
