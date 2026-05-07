@@ -275,15 +275,17 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         {project.conversion.changes.length > 0 && (
           <>
             <h3>What changed</h3>
-            <div class="api-table" style="margin-top: 1rem;">
-              <div class="api-row head" style="grid-template-columns: 1fr 1fr;">
+            <div class="changes-table" style="margin-top: 1rem;">
+              <div class="changes-row head">
                 <div>Before</div>
+                <div class="arrow" aria-hidden="true">→</div>
                 <div>After</div>
               </div>
               {project.conversion.changes.map((c) => (
-                <div class="api-row" style="grid-template-columns: 1fr 1fr;">
-                  <div style="color: var(--fg-muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--fg-muted) 50%, transparent);">{c.before}</div>
-                  <div style="color: var(--accent);">{c.after}</div>
+                <div class="changes-row">
+                  <div class="before">{c.before}</div>
+                  <div class="arrow" aria-hidden="true">→</div>
+                  <div class="after">{c.after}</div>
                 </div>
               ))}
             </div>
@@ -338,16 +340,14 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
                   {table.description && <span class="db-table-desc">{table.description}</span>}
                 </div>
                 <div class="db-rows">
-                  <div class="head" style="grid-column: 1 / -1; display:grid; grid-template-columns: minmax(160px, 1fr) minmax(120px, auto) 2fr; padding: 0.6rem 1.2rem; background: color-mix(in srgb, var(--bg) 50%, var(--bg-elev)); border-top: none; font-family:'JetBrains Mono', monospace; font-size:0.7rem; text-transform: uppercase; letter-spacing:0.16em; color: var(--fg-muted);">
-                    <span>Column</span>
-                    <span>Type</span>
-                    <span>Notes</span>
-                  </div>
+                  <div class="db-head">Column</div>
+                  <div class="db-head">Type</div>
+                  <div class="db-head">Notes</div>
                   {table.columns.map((col) => (
                     <>
-                      <div class="col-name">{col.name}</div>
-                      <div class="col-type">{col.type}</div>
-                      <div>{col.notes || ''}</div>
+                      <div class="col-name" data-label="Column">{col.name}</div>
+                      <div class="col-type" data-label="Type">{col.type}</div>
+                      <div class="col-notes" data-label="Notes">{col.notes || ''}</div>
                     </>
                   ))}
                 </div>
