@@ -38,23 +38,17 @@ export const serviceTicketSystem: Project = {
   ],
   liveUrl: 'https://service-ticket-system-frontend.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/service-ticket-system',
-  thumbnail: 'ServiceTicket/LoginServiceTicket.png',
-  // Gallery: Astro auto-filters images that don't exist on disk (see the
-  // glob filter in src/pages/projects/[slug].astro), so unmatched entries
-  // are silent no-ops. Drop new screenshots into src/assets/ServiceTicket/
-  // with the filenames below and they'll appear automatically on the
-  // next build — no code change needed.
+  thumbnail: 'ServiceTicket/Login_STS.png',
   gallery: [
-    { src: 'ServiceTicket/LoginServiceTicket.png', caption: 'Login' },
-    { src: 'ServiceTicket/Dashboard_ServiceTicket.png', caption: 'Dashboard · KPIs + recent tickets' },
-    { src: 'ServiceTicket/Tickets_ServiceTicket.png', caption: 'All tickets · status & priority filters' },
-    { src: 'ServiceTicket/CreateTicket_ServiceTicket.png', caption: 'Create ticket · tester submits a defect' },
-    { src: 'ServiceTicket/TicketDetail_ServiceTicket.png', caption: 'Ticket detail · history timeline' },
-    { src: 'ServiceTicket/EditTicket_ServiceTicket.png', caption: 'Edit ticket · update status / assignee' },
-    { src: 'ServiceTicket/Approvals_ServiceTicket.png', caption: 'Approvals queue · approver signs off' },
-    { src: 'ServiceTicket/Notifications_ServiceTicket.png', caption: 'Notification preferences · per-user settings' },
-    { src: 'ServiceTicket/Users_ServiceTicket.png', caption: 'Users & roles · super admin view' },
-    { src: 'ServiceTicket/Profile_ServiceTicket.png', caption: 'Profile · password reset' },
+    { src: 'ServiceTicket/Login_STS.png', caption: 'Login' },
+    { src: 'ServiceTicket/Dashboard_STS.png', caption: 'Dashboard · KPIs + recent tickets' },
+    { src: 'ServiceTicket/CreateTicket_STS.png', caption: 'Create ticket · tester submits a defect' },
+    { src: 'ServiceTicket/ViewTicket_STS.png', caption: 'View ticket · approval & history timeline' },
+    { src: 'ServiceTicket/EditTicket_STS.png', caption: 'Edit ticket · update status / assignee' },
+    { src: 'ServiceTicket/UserManagement_STS.png', caption: 'User management · super admin view' },
+    { src: 'ServiceTicket/CreateUser_STS.png', caption: 'Create user · invite tester / developer / approver' },
+    { src: 'ServiceTicket/NotificationSettings_STS.png', caption: 'Notification preferences · per-user settings' },
+    { src: 'ServiceTicket/Profile_STS.png', caption: 'Profile · password reset' },
   ],
   repos: [
     {

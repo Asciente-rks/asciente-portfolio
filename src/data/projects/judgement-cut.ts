@@ -11,7 +11,7 @@ export const judgementCut: Project = {
   slug: 'judgement-cut',
   title: 'Judgement Cut',
   role: 'Cloud Native Backend',
-  status: 'in-dev',
+  status: 'live',
   tagline:
     'A daily-refreshing dashboard of game deals across Steam, GOG, Humble, and Epic — with native Steam Philippine peso pricing so the numbers match what you actually pay.',
   summary:
