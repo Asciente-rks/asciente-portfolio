@@ -16,19 +16,12 @@ import { siteConfig } from '../data/site';
     </nav>
 
     <div class="topbar-actions">
-      <!-- Desktop: pill with the ⌘K hint. Hidden on mobile by globals.css. -->
+      <!-- Same ⌘K pill at every breakpoint. Mobile shrinks it via CSS but
+           it stays clickable and behaves the same as desktop. -->
       <button class="kbd-hint" data-cmdk-trigger aria-label="Open command palette">
-        <span>command</span>
+        <span class="kbd-hint-label">command</span>
         <span class="kbd">⌘</span>
         <span class="kbd">K</span>
-      </button>
-
-      <!-- Mobile: icon-only command palette button. Hidden on desktop. -->
-      <button class="cmdk-icon-btn" data-cmdk-trigger aria-label="Open command palette">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
       </button>
 
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">

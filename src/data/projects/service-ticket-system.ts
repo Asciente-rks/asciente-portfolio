@@ -39,8 +39,22 @@ export const serviceTicketSystem: Project = {
   liveUrl: 'https://service-ticket-system-frontend.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/service-ticket-system',
   thumbnail: 'ServiceTicket/LoginServiceTicket.png',
+  // Gallery: Astro auto-filters images that don't exist on disk (see the
+  // glob filter in src/pages/projects/[slug].astro), so unmatched entries
+  // are silent no-ops. Drop new screenshots into src/assets/ServiceTicket/
+  // with the filenames below and they'll appear automatically on the
+  // next build — no code change needed.
   gallery: [
-    { src: 'ServiceTicket/LoginServiceTicket.png', caption: 'Login screen' },
+    { src: 'ServiceTicket/LoginServiceTicket.png', caption: 'Login' },
+    { src: 'ServiceTicket/Dashboard_ServiceTicket.png', caption: 'Dashboard · KPIs + recent tickets' },
+    { src: 'ServiceTicket/Tickets_ServiceTicket.png', caption: 'All tickets · status & priority filters' },
+    { src: 'ServiceTicket/CreateTicket_ServiceTicket.png', caption: 'Create ticket · tester submits a defect' },
+    { src: 'ServiceTicket/TicketDetail_ServiceTicket.png', caption: 'Ticket detail · history timeline' },
+    { src: 'ServiceTicket/EditTicket_ServiceTicket.png', caption: 'Edit ticket · update status / assignee' },
+    { src: 'ServiceTicket/Approvals_ServiceTicket.png', caption: 'Approvals queue · approver signs off' },
+    { src: 'ServiceTicket/Notifications_ServiceTicket.png', caption: 'Notification preferences · per-user settings' },
+    { src: 'ServiceTicket/Users_ServiceTicket.png', caption: 'Users & roles · super admin view' },
+    { src: 'ServiceTicket/Profile_ServiceTicket.png', caption: 'Profile · password reset' },
   ],
   repos: [
     {

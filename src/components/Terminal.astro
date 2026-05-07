@@ -81,6 +81,15 @@ const promptPrefix = terminalPromptPrefix;
     const container = document.getElementById('cmd-content');
     if (!container) return;
 
+    // Idempotency guard: init() runs both synchronously on script load AND
+    // again from astro:page-load (Astro fires it on every page mount,
+    // including the very first one). Without this guard the first load
+    // double-runs runIntro() against the same container — the first run is
+    // mid-typing when the second one starts, and they interleave into the
+    // same DOM, producing the duplicated intro text the user reported.
+    if (container.dataset.terminalInit === 'true') return;
+    container.dataset.terminalInit = 'true';
+
     const projects = readJsonAttr<ProjectEntry[]>(dataEl, 'data-projects', []);
     const intro = readJsonAttr<string[]>(dataEl, 'data-intro', []);
     const helpLines = readJsonAttr<string[]>(dataEl, 'data-help', []);
@@ -172,6 +181,17 @@ const promptPrefix = terminalPromptPrefix;
       input.setAttribute('autocorrect', 'off');
       input.setAttribute('inputmode', 'text');
       input.setAttribute('enterkeyhint', 'go');
+
+      // Mobile keyboard fix: when the virtual keyboard pops up it covers
+      // the bottom of the viewport. Scroll the focused input into view
+      // *after* the keyboard animation finishes (~300ms on iOS / Android).
+      input.addEventListener('focus', () => {
+        const isTouch = window.matchMedia('(pointer: coarse)').matches;
+        if (!isTouch) return;
+        setTimeout(() => {
+          input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }, 320);
+      });
 
       input.addEventListener('keydown', (event) => {
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
