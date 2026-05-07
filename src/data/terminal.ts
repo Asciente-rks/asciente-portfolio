@@ -6,13 +6,11 @@
 // =============================================================================
 
 export const terminalIntro: string[] = [
-  "whoami",
-  "ralph kenneth f. sonio · cloud-native backend & qa tester",
+  "ralph kenneth f. sonio · cloud-native backend engineer & qa tester",
   "",
   "--check-status",
-  "currently shipping: System Pulse · AscienteHub · SwiftRace · Judgement Cut [live]",
+  "currently shipping: All systems shipped",
   "",
-  "tech stack: AWS Lambda · DynamoDB · TiDB · React · Tauri · Expo",
   "principle: every project ships at $0/month on free tiers — designed, not stitched.",
   "",
   "type 'ls' to list projects · 'cd <name>' to open one",
@@ -56,5 +54,4 @@ export const terminalScrollMessage = (target: string): string =>
 export const terminalSectionMissing = (target: string): string =>
   `section "${target}" not found`;
 
-export const terminalOpening = (target: string): string =>
-  `opening ${target}…`;
+export const terminalOpening = (target: string): string => `opening ${target}…`;
