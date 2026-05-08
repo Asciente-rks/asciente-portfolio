@@ -1,16 +1,5 @@
 import type { Project } from "./types";
 
-// =============================================================================
-// SwiftRace
-// Edit the fields below to update what shows on the home card and the
-// /projects/<slug> detail page. Architecture / database mermaid diagrams
-// live in the same object below for editor-friendly co-location.
-//
-// 2026-05 — migrated from Serverless Framework + API Gateway + S3 deploy
-//           bucket + CloudFormation to GitHub Actions → Lambda Function URL
-//           + DynamoDB. See `conversion` block at the bottom of this file.
-// =============================================================================
-
 export const swiftRace: Project = {
   slug: 'swiftrace',
   title: 'SwiftRace',

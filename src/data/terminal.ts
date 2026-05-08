@@ -1,10 +1,3 @@
-// =============================================================================
-// TERMINAL CONTENT
-// Anything that prints inside the home-page command prompt lives here. Edit
-// these arrays / strings and the terminal updates - no need to touch the
-// component itself.
-// =============================================================================
-
 export const terminalIntro: string[] = [
   "ralph kenneth f. sonio · cloud-native backend engineer & qa tester",
   "",

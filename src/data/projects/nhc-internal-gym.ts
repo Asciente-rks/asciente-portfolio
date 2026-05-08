@@ -1,12 +1,5 @@
 import type { Project } from "./types";
 
-// =============================================================================
-// NHC Internal Gym
-// Edit the fields below to update what shows on the home card and the
-// /projects/<slug> detail page. Architecture / database mermaid diagrams
-// live in the same object below for editor-friendly co-location.
-// =============================================================================
-
 export const nhcInternalGym: Project = {
   slug: 'nhc-internal-gym',
   title: 'NHC Internal Gym',
@@ -36,8 +29,7 @@ export const nhcInternalGym: Project = {
       items: ['Visual Studio', 'SQL Server Management Studio'],
     },
   ],
-  // No liveUrl — desktop app, no web demo
-  // No sourceUrl — not on GitHub (per request)
+
   thumbnail: 'NHC/Login.png',
   gallery: [
     { src: 'NHC/Login.png', caption: 'Sign-in screen' },
@@ -46,7 +38,7 @@ export const nhcInternalGym: Project = {
     { src: 'NHC/Inventory.png', caption: 'Inventory' },
     { src: 'NHC/Inventory2.png', caption: 'Inventory — detail view' },
   ],
-  // No repos — not on GitHub
+
   architecture: {
     mermaid: `graph TB
     Forms["Windows Forms · .NET / C#<br/>Sign-in · Search · Time<br/>Inventory · Member CRUD"]

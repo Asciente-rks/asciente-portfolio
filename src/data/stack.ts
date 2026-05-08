@@ -1,9 +1,3 @@
-// =============================================================================
-// TECHNICAL STACK
-// Edit these groups to change what shows in the "stack" section on the home
-// page. Each group becomes one card; each item becomes one chip.
-// =============================================================================
-
 export interface StackGroup {
   label: string;
   items: string[];

@@ -1,12 +1,5 @@
 import type { Project } from "./types";
 
-// =============================================================================
-// Judgement Cut
-// Edit the fields below to update what shows on the home card and the
-// /projects/<slug> detail page. Architecture / database mermaid diagrams
-// live in the same object below for editor-friendly co-location.
-// =============================================================================
-
 export const judgementCut: Project = {
   slug: 'judgement-cut',
   title: 'Judgement Cut',

@@ -1,12 +1,5 @@
 import type { Project } from "./types";
 
-// =============================================================================
-// H100 Ecolodge
-// Edit the fields below to update what shows on the home card and the
-// /projects/<slug> detail page. Architecture / database mermaid diagrams
-// live in the same object below for editor-friendly co-location.
-// =============================================================================
-
 export const h100Ecolodge: Project = {
   slug: 'h100-ecolodge',
   title: 'H100 Ecolodge',
@@ -40,7 +33,7 @@ export const h100Ecolodge: Project = {
       items: ['Java host (Render / Railway)', 'Aiven (DB)'],
     },
   ],
-  // No liveUrl — H100 has no live deployment (button stays grayed out).
+
   sourceUrl: 'https://github.com/Ecolodge-STI/EcoWeb',
   thumbnail: 'H100/ADMIN_Login.png',
   gallery: [

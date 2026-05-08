@@ -37,13 +37,9 @@ export type RepoEntry = {
 };
 
 export type ConversionDetails = {
-  /** Short summary above the diagram. */
   summary: string;
-  /** Mermaid diagram (typically a left-to-right "before → after" flow). */
   mermaid: string;
-  /** Bulleted line items shown as the "what changed" table. Pairs are `before -> after`. */
   changes: { before: string; after: string }[];
-  /** Free-form bullets shown under the diagram explaining motivation. */
   notes: string[];
 };
 
@@ -55,14 +51,14 @@ export type Project = {
   tagline: string;
   summary: string;
   language: string;
-  tech: string[]; // flat list, used on cards
-  techGroups: TechGroup[]; // categorized full stack, used on detail page
+  tech: string[];
+  techGroups: TechGroup[];
   liveUrl?: string;
-  liveLabel?: string; // override default "Live Demo" button label
+  liveLabel?: string;
   sourceUrl?: string;
   thumbnail: string;
   gallery: GalleryItem[];
-  featuredVideo?: { src: string; caption?: string }; // rendered at top of detail page
+  featuredVideo?: { src: string; caption?: string };
   architecture: {
     mermaid: string;
     notes: string[];
@@ -79,6 +75,5 @@ export type Project = {
   };
   apiEndpoints?: { method: string; path: string; auth?: string; purpose: string }[];
   repos?: RepoEntry[];
-  /** Optional history of an infra/architecture migration this project went through. */
   conversion?: ConversionDetails;
 };

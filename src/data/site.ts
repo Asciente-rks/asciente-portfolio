@@ -1,9 +1,3 @@
-// =============================================================================
-// SITE CONFIG
-// One stop for everything that's "yours" on the site - identity, contact links,
-// SEO meta, hero copy. Edit this file to change anything that isn't a project.
-// =============================================================================
-
 export const siteConfig = {
   brand: {
     short: "~/ralph-sonio",

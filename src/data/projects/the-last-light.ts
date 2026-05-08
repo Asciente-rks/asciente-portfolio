@@ -1,12 +1,5 @@
 import type { Project } from "./types";
 
-// =============================================================================
-// The Last Light
-// Edit the fields below to update what shows on the home card and the
-// /projects/<slug> detail page. Architecture / database mermaid diagrams
-// live in the same object below for editor-friendly co-location.
-// =============================================================================
-
 export const theLastLight: Project = {
   slug: 'the-last-light',
   title: 'The Last Light',
@@ -36,8 +29,7 @@ export const theLastLight: Project = {
       items: ['Windows Standalone build (.exe)'],
     },
   ],
-  // No live web URL — this is a Windows game. The "Live Demo" slot is filled
-  // by the demonstration video instead (see featuredVideo + gallery).
+
   sourceUrl: 'https://github.com/Asciente-rks/the-last-light',
   thumbnail: 'TheLastLight/MainMenu.png',
   featuredVideo: {

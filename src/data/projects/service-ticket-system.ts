@@ -1,12 +1,5 @@
 import type { Project } from "./types";
 
-// =============================================================================
-// Service Ticket System
-// Edit the fields below to update what shows on the home card and the
-// /projects/<slug> detail page. Architecture / database mermaid diagrams
-// live in the same object below for editor-friendly co-location.
-// =============================================================================
-
 export const serviceTicketSystem: Project = {
   slug: 'service-ticket-system',
   title: 'Service Ticket System',

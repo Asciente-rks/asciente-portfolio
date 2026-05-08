@@ -1,6 +1,3 @@
-// To re-order the homepage cards, just rearrange the entries in the
-// `projects` array at the bottom of this file.
-
 import { judgementCut } from "./judgement-cut";
 import { swiftRace } from "./swiftrace";
 import { systemPulse } from "./system-pulse";
