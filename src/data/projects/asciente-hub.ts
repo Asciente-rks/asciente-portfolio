@@ -93,6 +93,130 @@ export const ascienteHub: Project = {
       'Public-GET cache (Redis, 1h TTL) on /api/public/*, /api/games, and /api/games/:id — only when no auth headers are present, so authenticated users always see fresh data.',
       'CORS headers force-injected on every response (including 5xx), so the desktop client never sees a missing-CORS error.',
       'Direct R2 uploads capped at 50 MB — larger installers should be uploaded out-of-band to R2.',
+      'Direct R2 download from Rust — game ZIPs are fetched by the Tauri shell with reqwest straight from Cloudflare R2 (zero egress), not proxied through Lambda. Keeps Lambda compute near zero for large binary transfers.',
+      'Tauri 2 over Electron — Rust shell is ~5 MB vs. 200+ MB for an Electron bundle. OS calls (download, extract, spawn) are native async Tokio tasks.',
+    ],
+    flows: [
+      {
+        title: 'Role hierarchy',
+        blurb:
+          'Three primary roles plus two pseudo-states (pending developer, banned user). Developers are gated by an explicit admin approval — no self-promotion. Bans are reversible.',
+        mermaid: `flowchart LR
+    admin["Admin<br/>platform moderator<br/>full approval reach"]
+    developer["Developer<br/>gated by admin approval<br/>own games only"]
+    user["Player / User<br/>browse · buy · install<br/>review + library"]
+    pending["Pending Developer<br/>application submitted<br/>awaiting review"]
+    banned["Banned User<br/>login blocked"]
+
+    admin -->|approve / reject application| pending
+    pending -->|approved| developer
+    admin -->|approve / reject games| developer
+    admin -->|ban / unban| user
+    user -->|apply| pending
+    user -.->|banned| banned
+
+    classDef tier fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef warn fill:#1a0f0f,stroke:#f87171,color:#fecaca
+    class admin,developer,user,pending tier
+    class banned warn`,
+        notes: [
+          'Admin: full cross-platform reach — moderates games + developers + users. Seeded via provision.ts.',
+          'Developer: own-games CRUD only. Cannot moderate; cannot see other developers\' drafts.',
+          'User (player): browse, purchase, library, reviews, profile. Self-registers + email-OTP-verifies.',
+        ],
+      },
+      {
+        title: 'Self-registration · email OTP',
+        blurb:
+          'Registration is intentionally two-step: email + password creates an unverified record, a 6-digit OTP confirms ownership of the email, and only then does the account become loginable. No auto-login after verify — the user must authenticate with their new password.',
+        mermaid: `sequenceDiagram
+    autonumber
+    actor User
+    participant SPA as Tauri / React SPA
+    participant API as Lambda /api/auth/*
+    participant TiDB as TiDB Cloud
+    participant Email as Resend / nodemailer
+
+    User->>SPA: Submit username + email + password
+    SPA->>API: POST /api/auth/register
+    API->>TiDB: INSERT INTO otps (type='verification', expiresAt)
+    API->>Email: 6-digit OTP email
+    Email-->>User: OTP code
+    User->>SPA: Enter OTP
+    SPA->>API: POST /api/auth/verify
+    API->>TiDB: UPDATE users SET isVerified=true
+    API-->>SPA: 200 + success
+    SPA-->>User: "Account verified — sign in"
+    Note right of SPA: NO auto-login. User authenticates with their new password.`,
+        notes: [
+          'OTPs are keyed by email, not userId — verification works before the user record is fully loginable.',
+          '6-character codes with expiresAt enforced on every read; brute-force attempts capped at the rate-limit middleware.',
+        ],
+      },
+      {
+        title: '3-D Secure payment flow',
+        blurb:
+          'Cart checkout drives a single PayMongo charge with 3DS automatic. The redirect URL opens in the system browser via webbrowser::open (Rust) or window.open (web), the webhook lands on Lambda, and the SPA polls /api/payments/status until the success state lands.',
+        mermaid: `flowchart LR
+    Cart["Cart.tsx<br/>checkout button"]
+    PS["paymentService.ts<br/>POST /api/payments/checkout"]
+    Lambda["Lambda<br/>create PaymentIntent<br/>+ attach method"]
+    DS["3-D Secure check"]
+    Redirect["webbrowser::open<br/>or window.open<br/>3DS URL in browser"]
+    Webhook["Lambda webhook<br/>settle transaction<br/>add to library"]
+    Poll["Cart.tsx<br/>poll /api/payments/status"]
+    Done["Success screen<br/>games added to library"]
+
+    Cart --> PS
+    PS --> Lambda
+    Lambda --> DS
+    DS -->|3DS required| Redirect
+    Redirect -.user completes 3DS.-> Webhook
+    Webhook --> Poll
+    Poll --> Done
+    DS -->|not required| Webhook
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4
+    class Cart,PS,Lambda,DS,Redirect,Poll,Done edge
+    class Webhook store`,
+        notes: [
+          'PayMongo handles card tokenization on its hosted page — no PAN ever reaches the React layer.',
+          'Saved cards store only the PayMongo paymentMethodId, brand, and last-4 digits; deleting a card removes the local row only — the PayMongo handle is detached server-side.',
+          'Webhook signature is verified in payment.controller.ts before any DB mutation.',
+        ],
+      },
+      {
+        title: 'Install & launch · Tauri Rust shell',
+        blurb:
+          'When a user clicks Install in the library, the React layer invokes a Tauri IPC command. The Rust shell downloads the ZIP straight from Cloudflare R2 (zero egress, no Lambda hop), extracts to %APPDATA%, and on Launch finds the first .exe under the slug directory and spawns it natively.',
+        mermaid: `flowchart TD
+    LibraryPage["Library.tsx<br/>Install button"]
+    TauriCmd["tauriRuntime.ts<br/>invoke('download_and_install', { url, slug })"]
+    RustDL["Rust: reqwest GET<br/>R2 presigned URL → ZIP bytes"]
+    RustExtract["Rust: zip::ZipArchive<br/>extract to %APPDATA%/ascientehub/games/slug"]
+    InstallDone["Library.tsx<br/>Install state → installed<br/>Launch button enabled"]
+    LaunchCmd["tauriRuntime.ts<br/>invoke('launch_game', { slug })"]
+    RustWalk["Rust: walkdir<br/>find first .exe under slug dir"]
+    Spawn["Rust: Command::new(exe_path).spawn()"]
+
+    LibraryPage --> TauriCmd
+    TauriCmd --> RustDL
+    RustDL --> RustExtract
+    RustExtract --> InstallDone
+    InstallDone --> LaunchCmd
+    LaunchCmd --> RustWalk
+    RustWalk --> Spawn
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef rust fill:#1f0f22,stroke:#a978ff,color:#e2c8ff
+    class LibraryPage,TauriCmd,InstallDone,LaunchCmd edge
+    class RustDL,RustExtract,RustWalk,Spawn rust`,
+        notes: [
+          'tauriRuntime.ts detects Tauri (window.__TAURI_INTERNALS__) — same SPA runs in browser dev mode with install/launch buttons disabled.',
+          'Installed state checks for the slug directory via a separate IPC command — no server round-trip required to know if a game is local.',
+        ],
+      },
     ],
   },
   database: {
@@ -254,4 +378,23 @@ export const ascienteHub: Project = {
       'PayMongo over Stripe — local PH provider, lower cards-not-present fees, native PHP currency, no FX conversion.',
     ],
   },
+  apiEndpoints: [
+    { method: 'POST', path: '/api/auth/register', auth: 'none', purpose: 'Register + send 6-digit OTP' },
+    { method: 'POST', path: '/api/auth/verify', auth: 'OTP', purpose: 'Verify email → isVerified: true (no auto-login)' },
+    { method: 'POST', path: '/api/auth/login', auth: 'none', purpose: 'Email + password → JWT' },
+    { method: 'POST', path: '/api/auth/forgot-password', auth: 'none', purpose: 'Email a password-reset OTP' },
+    { method: 'POST', path: '/api/auth/reset-password', auth: 'OTP', purpose: 'Set new password using the reset OTP' },
+    { method: 'GET', path: '/api/public/games', auth: 'none', purpose: 'Browse the catalog (Redis-cached 1h)' },
+    { method: 'GET', path: '/api/games/:id', auth: 'JWT', purpose: 'Game detail · auth bypasses cache' },
+    { method: 'POST', path: '/api/cart', auth: 'JWT', purpose: 'Add a game to cart' },
+    { method: 'POST', path: '/api/payments/sources', auth: 'JWT', purpose: 'Tokenize card → PayMongo source' },
+    { method: 'POST', path: '/api/payments/checkout', auth: 'JWT', purpose: 'Checkout entire cart in one PayMongo charge (3DS automatic)' },
+    { method: 'POST', path: '/api/payments/complete', auth: 'JWT', purpose: 'Finalize 3DS-authorized payment + add games to library' },
+    { method: 'GET', path: '/api/payments/methods', auth: 'JWT', purpose: 'List saved cards (paymongoId + brand + last4 only)' },
+    { method: 'POST', path: '/api/payments/webhook', auth: 'PUBLIC (signed)', purpose: 'PayMongo webhook callbacks · signature verified' },
+    { method: 'POST', path: '/api/developer/apply', auth: 'JWT', purpose: 'Submit developer application (admin-gated)' },
+    { method: 'POST', path: '/api/uploads', auth: 'JWT', purpose: 'Multipart upload → Cloudflare R2 (≤ 50 MB per file)' },
+    { method: 'POST', path: '/api/admin/games/:id/approve', auth: 'JWT (admin)', purpose: 'Approve a submitted game' },
+    { method: 'POST', path: '/api/admin/users/:id/ban', auth: 'JWT (admin)', purpose: 'Ban a user (login blocked)' },
+  ],
 };
