@@ -152,7 +152,7 @@ export const systemPulse: Project = {
     FailedOnce --> FailedTwice: wrong password
     FailedTwice --> Locked: 3rd wrong password<br/>sets lockedAt
     Locked --> Locked: any login returns 423
-    Locked --> Active: admin POST /users/:id/unlock<br/>actor password confirm`,
+    Locked --> Active: admin unlock endpoint<br/>actor password confirm`,
       },
       {
         title: 'Demo mode · ephemeral sessions from editable templates',
@@ -371,3 +371,4 @@ export const systemPulse: Project = {
     { method: 'GET', path: '/systems/:id/logs', auth: 'canViewLogs', purpose: 'Recent probe history (auto-refreshing in UI)' },
   ],
 };
+
