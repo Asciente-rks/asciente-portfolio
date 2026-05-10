@@ -81,6 +81,56 @@ export const judgementCut: Project = {
       '3-phase finalize at the end of every crawl: re-enrich any deals still missing price_php, mark deals not seen this run as is_active = 0, then delete the inactive rows so the table = latest crawl.',
       'Title-search fallback — for the few percent of CheapShark deals missing steamAppID, we search Steam\'s storesearch API and persist the recovered ID so subsequent runs skip the lookup.',
     ],
+    flows: [
+      {
+        title: 'Pricing accuracy flow',
+        blurb:
+          'How a CheapShark deal becomes a Philippine-peso price the user can trust. Spider POSTs in batches of 25, the Lambda enriches against Steam\'s regional API behind a 5-way semaphore, and a 3-phase finalize step prunes the table down to the current crawl.',
+        mermaid: `sequenceDiagram
+    autonumber
+    participant Spider as Scrapy Spider
+    participant Lambda as AWS Lambda
+    participant Steam as Steam appdetails?cc=PH
+    participant TiDB as TiDB Cloud
+
+    Spider->>Lambda: POST /internal/ingest [{deal_id, title, store_id, price, steamAppID?}, ...]
+    Lambda->>TiDB: Upsert batch into featured_deals
+    Lambda->>Steam: GET appdetails?appids=...&cc=PH (5-way semaphore)
+    Steam-->>Lambda: {success: true, data: {price_overview: {final: ...}}}
+    Lambda->>TiDB: UPDATE price_php, normal_price_php
+    Note over Lambda,TiDB: If Steam returns success=false or times out, retry x3 with backoff. price_php stays NULL → frontend shows amber "USD est." badge.
+    Spider->>Lambda: POST /internal/finalize
+    Lambda->>TiDB: Phase 1 — re-enrich deals still missing price_php (up to 50)
+    Lambda->>TiDB: Phase 2 — UPDATE is_active=0 WHERE last_seen_at < run start
+    Lambda->>TiDB: Phase 3 — DELETE WHERE is_active=0`,
+        notes: [
+          'Native PHP from Steam beats USD × FX every time — checkout-page accuracy without any rate-conversion drift.',
+          'Honest pricing badges: green "Steam PH price" when we have native PHP, amber "USD est." when we fall back to FX (open.er-api.com, 24h cached).',
+          'Finalize runs once per crawl. featured_deals row count == current crawl, no stale accumulation.',
+        ],
+      },
+      {
+        title: 'Title-search fallback',
+        blurb:
+          'A small fraction of CheapShark deals ship without a steamAppID. Instead of silently leaving those rows without PHP pricing, the Lambda searches Steam\'s storesearch API by title, persists the recovered ID, and proceeds to enrichment. Subsequent runs skip the lookup.',
+        mermaid: `flowchart LR
+    Deal["Deal from CheapShark<br/>no steamAppID"]
+    Search["GET Steam storesearch<br/>?term=title"]
+    Match{"title substring<br/>match?"}
+    Persist["UPDATE steam_app_id<br/>in featured_deals"]
+    Enrich["Proceed to regional<br/>API enrichment"]
+    Skip["Leave price_php NULL<br/>amber badge"]
+
+    Deal --> Search
+    Search --> Match
+    Match -->|yes| Persist
+    Persist --> Enrich
+    Match -->|no| Skip
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    class Deal,Search,Match,Persist,Enrich,Skip edge`,
+      },
+    ],
   },
   database: {
     blurb:
@@ -162,4 +212,18 @@ export const judgementCut: Project = {
       'Lambda Function URL over API Gateway — Function URLs are free; API Gateway has its own pricing tier after the 12-month new-account window.',
     ],
   },
+  apiEndpoints: [
+    { method: 'POST', path: '/auth/login', auth: 'none', purpose: 'Username + password → JWT access token' },
+    { method: 'POST', path: '/auth/register', auth: 'none', purpose: 'Create admin account (first-run / seeded use)' },
+    { method: 'GET', path: '/v1/deals', auth: 'JWT', purpose: 'Paginated, filterable deal list with PHP prices' },
+    { method: 'GET', path: '/v1/admin/users', auth: 'JWT (admin)', purpose: 'List users' },
+    { method: 'POST', path: '/v1/admin/users', auth: 'JWT (admin)', purpose: 'Create user' },
+    { method: 'PATCH', path: '/v1/admin/users/:id', auth: 'JWT (admin)', purpose: 'Update user' },
+    { method: 'DELETE', path: '/v1/admin/users/:id', auth: 'JWT (admin)', purpose: 'Delete user' },
+    { method: 'GET', path: '/v1/admin/platforms', auth: 'JWT (admin)', purpose: 'List per-storefront enabled toggles' },
+    { method: 'PATCH', path: '/v1/admin/platforms/:id', auth: 'JWT (admin)', purpose: 'Enable / disable a storefront' },
+    { method: 'GET', path: '/v1/admin/crawler', auth: 'JWT (admin)', purpose: 'Scraper heartbeat + last-run metadata' },
+    { method: 'POST', path: '/internal/ingest', auth: 'X-Scraper-Secret', purpose: 'Spider → Lambda — upsert a batch of 25 deals, enrich PHP prices' },
+    { method: 'POST', path: '/internal/finalize', auth: 'X-Scraper-Secret', purpose: '3-phase crawl finalization — re-enrich, mark inactive, delete' },
+  ],
 };
