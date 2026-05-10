@@ -43,6 +43,13 @@ export type ConversionDetails = {
   notes: string[];
 };
 
+export type ArchitectureFlow = {
+  title: string;
+  blurb?: string;
+  mermaid: string;
+  notes?: string[];
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -62,6 +69,7 @@ export type Project = {
   architecture: {
     mermaid: string;
     notes: string[];
+    flows?: ArchitectureFlow[];
   };
   database?: {
     blurb: string;

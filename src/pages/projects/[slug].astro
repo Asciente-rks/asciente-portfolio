@@ -247,6 +247,37 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
           </ul>
         </>
       )}
+
+      {project.architecture.flows && project.architecture.flows.length > 0 && (
+        <>
+          {project.architecture.flows.map((flow) => (
+            <div style="margin-top: 2.75rem;">
+              <h3 style="font-family: 'Instrument Serif', ui-serif, Georgia, serif; font-weight: 400; font-size: clamp(1.3rem, 1rem + 1vw, 1.7rem); line-height: 1.2; letter-spacing: -0.01em; color: var(--fg); text-transform: none; margin-top: 0;">{flow.title}</h3>
+              {flow.blurb && (
+                <p style="margin-top: 0.6rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">{flow.blurb}</p>
+              )}
+              <div class="diagram-frame">
+                <div class="diagram-frame-header">
+                  <span class="dot" style="background:#ff5f56"></span>
+                  <span class="dot" style="background:#ffbd2e"></span>
+                  <span class="dot" style="background:#27c93f"></span>
+                  <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.{flow.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.mmd</span>
+                </div>
+                <div class="mermaid-container">
+                  <pre class="mermaid">{flow.mermaid}</pre>
+                </div>
+              </div>
+              {flow.notes && flow.notes.length > 0 && (
+                <ul class="notes-list">
+                  {flow.notes.map((note) => (
+                    <li>{note}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </>
+      )}
     </section>
 
     <!-- CONVERSION ========================================== -->
