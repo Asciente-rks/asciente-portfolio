@@ -90,6 +90,105 @@ export const swiftRace: Project = {
       'Single-table DynamoDB with PK/SK prefixes. Four GSIs cover the read patterns the API needs.',
       'Tracking number as the partition key — every customer-facing read is "look up shipment X by tracking" — public reads need zero GSI hops.',
       'History events sit under the same partition as the parent shipment — a single Query returns the full timeline.',
+      'Idempotent provisioning — scripts/deploy.sh checks each resource (describe-table, get-function, etc.) before creating it. Re-runs are safe; the "first deploy creates everything" path is the same code as the "1000th deploy updates code" path.',
+    ],
+    flows: [
+      {
+        title: 'Role hierarchy',
+        blurb:
+          'Three roles with a verification gate on top. Admins create users and set the verification status; shippers progress shipments only when verified; customers place orders and track them.',
+        mermaid: `flowchart LR
+    admin["Admin<br/>manages users<br/>verifies shipment history"]
+    shipper["Shipper<br/>updates shipment status<br/>sends tracking emails"]
+    customer["Customer<br/>places orders<br/>tracks shipments"]
+    verif["verification_status<br/>pending / verified / rejected"]
+
+    admin -->|create / update / delete| shipper
+    admin -->|create / update / delete| customer
+    admin -.sets.-> verif
+    verif -.gates access for.-> shipper
+    shipper -->|update status| customer
+
+    classDef tier fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef meta fill:#0a0e1a,stroke:#5eead4,color:#5eead4
+    class admin,shipper,customer tier
+    class verif meta`,
+        notes: [
+          'verification_status on USER: pending (gated), verified (active shipper), rejected (treated as inactive). Admin-controlled.',
+          'Customers can self-register; shippers and admins are admin-created only.',
+        ],
+      },
+      {
+        title: 'Order placement & lifecycle',
+        blurb:
+          'Sample order placement is a single TransactWrite that creates the SHIPMENT row and the initial HISTORY event together. Subsequent shipper updates append immutable HISTORY events under the same partition key — a single Query returns the whole timeline.',
+        mermaid: `sequenceDiagram
+    autonumber
+    actor Customer
+    participant SPA as React SPA
+    participant API as Lambda /orders/sample
+    participant DDB as DynamoDB
+
+    Customer->>SPA: Fill sample order form
+    SPA->>API: POST /orders/sample (origin, destination, item)
+    API->>DDB: TransactWrite — SHIPMENT (status: created) + HISTORY (historyType: created)
+    API-->>SPA: 201 + tracking_number
+    SPA-->>Customer: "Order placed — tracking: SR-XXXXXX"
+
+    Note over Customer,DDB: Shipper picks up the package
+
+    actor Shipper
+    Shipper->>SPA: Update shipment → picked_up
+    SPA->>API: PUT /shipments/{shipment_id}
+    API->>DDB: UpdateItem SHIPMENT status_ + PutItem HISTORY event
+    API-->>SPA: 200 + updated shipment
+
+    Customer->>SPA: View tracking page
+    SPA->>API: GET /shipments/tracking/{tracking_number}
+    API->>DDB: Query PK=SHIPMENT#<tracking>
+    API-->>SPA: shipment + history array
+    SPA-->>Customer: Timeline: created → picked_up`,
+      },
+      {
+        title: 'Delivery status state machine',
+        blurb:
+          'Five states, strict forward-only transitions. Each transition appends an immutable HISTORY event; the SHIPMENT.status_ field is updated in place so list-by-status reads stay cheap.',
+        mermaid: `stateDiagram-v2
+    [*] --> created : POST /orders/sample\\nor POST /shipments
+    created --> picked_up : Shipper updates status
+    picked_up --> in_transit : Shipper updates status
+    in_transit --> out_for_delivery : Shipper updates status
+    out_for_delivery --> delivered : Shipper updates status
+    delivered --> [*]
+
+    note right of created
+        Each transition appends
+        an immutable HISTORY row.
+        Shipment status_ field
+        is also updated in place.
+    end note`,
+      },
+      {
+        title: 'Admin verification flow',
+        blurb:
+          'Every HISTORY event carries an admin_verified flag for internal moderation. The flag is stored on the row but stripped from public responses by ShipmentHistoryResponse — customers and shippers never see the verification metadata.',
+        mermaid: `flowchart LR
+    HistEvent["HISTORY row<br/>historyType: in_transit<br/>admin_verified: false"]
+    AdminView["Admin reviews<br/>shipment history"]
+    VerifyCall["PUT /shipments/{id}<br/>{ admin_verified: true }"]
+    HistUpdated["HISTORY row<br/>admin_verified: true<br/>verifiedAt: iso"]
+    PublicResp["Public GET /history<br/>strips admin_verified<br/>+ verifiedAt"]
+
+    HistEvent --> AdminView
+    AdminView --> VerifyCall
+    VerifyCall --> HistUpdated
+    HistUpdated --> PublicResp
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4
+    class HistEvent,AdminView,VerifyCall,PublicResp edge
+    class HistUpdated store`,
+      },
     ],
   },
   database: {
@@ -174,6 +273,21 @@ export const swiftRace: Project = {
       'Public history responses use a stripped variant (ShipmentHistoryResponse) that hides admin_verified — customers never see internal moderation metadata.',
     ],
   },
+  apiEndpoints: [
+    { method: 'POST', path: '/auth/login', auth: 'none', purpose: 'Email + password → JWT' },
+    { method: 'POST', path: '/users', auth: 'JWT (admin)', purpose: 'Create a new user account' },
+    { method: 'GET', path: '/users', auth: 'JWT (admin / shipper)', purpose: 'List users filtered by ?role=' },
+    { method: 'PUT', path: '/users/:user_id', auth: 'JWT (admin)', purpose: 'Update user fields, verification status, role' },
+    { method: 'DELETE', path: '/users/:user_id', auth: 'JWT (admin)', purpose: 'Permanently delete user' },
+    { method: 'POST', path: '/shipments', auth: 'JWT (admin / shipper)', purpose: 'Create a shipment manually' },
+    { method: 'PUT', path: '/shipments/:shipment_id', auth: 'JWT (shipper / admin)', purpose: 'Update status — appends a HISTORY event' },
+    { method: 'GET', path: '/shipments/tracking/:tracking_number', auth: 'JWT', purpose: 'Fetch shipment by tracking number (no GSI hop)' },
+    { method: 'GET', path: '/shipments/status/:status_', auth: 'JWT (shipper / admin)', purpose: 'List all shipments with a given status' },
+    { method: 'GET', path: '/shipments/:tracking_number/history', auth: 'JWT', purpose: 'Full history timeline for a shipment' },
+    { method: 'POST', path: '/shipments/tracking/email', auth: 'JWT', purpose: 'Send a tracking email to the customer' },
+    { method: 'POST', path: '/orders/sample', auth: 'JWT (customer)', purpose: 'Place a sample order — TransactWrite SHIPMENT + initial HISTORY' },
+    { method: 'GET', path: '/health', auth: 'none', purpose: 'Lambda health check → { service: "swiftrace-api", message: "ok" }' },
+  ],
   conversion: {
     summary:
       'In May 2026, SwiftRace was migrated off Serverless Framework + API Gateway + a Serverless-managed S3 deploy bucket + CloudFormation, and onto a thinner GitHub Actions → AWS Lambda Function URL pipeline. Every handler kept its source unchanged; the conversion lives entirely in router.ts (single Lambda fan-out), event-adapter.ts (v2 → v1 event shape), scripts/deploy.sh (idempotent provisioning), and the new .github/workflows/deploy-backend.yml.',
