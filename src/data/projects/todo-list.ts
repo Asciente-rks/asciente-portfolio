@@ -69,6 +69,60 @@ export const todoList: Project = {
       'Render free tier for the backend — sleeps after 15 min idle. The mobile app handles this gracefully: 2-minute request timeout (covers cold start) + WakeUpNotice banner + retry wrapper.',
       'JWT in AsyncStorage — works the same on Android, iOS, and web. No platform-specific secure storage needed at this scale.',
       'Single-flag auth state in App.tsx — isAuthenticated + isRegistering toggle which screen renders. No navigation library; keeps the bundle small.',
+      'Repository pattern — controllers delegate persistence to *.repository.ts files; services sit between them. Separation of concerns scales without a DI container.',
+      'Express 5 — async error propagation is built in (rejected promises bubble to the error handler automatically), so try/catch wrappers in controllers are optional.',
+    ],
+    flows: [
+      {
+        title: 'Auth flow · login + protected reads',
+        blurb:
+          'Login is a single round-trip: the API verifies bcrypt against the stored hash, signs a JWT, and the Expo app drops it into AsyncStorage. Every subsequent request attaches the token, the auth middleware verifies it, and the controller scopes its DB query by the verified user id.',
+        mermaid: `sequenceDiagram
+    autonumber
+    actor User
+    participant App as Expo App
+    participant API as Express /api/users
+    participant DB as MySQL
+
+    User->>App: Enter email + password
+    App->>API: POST /api/users/login
+    API->>DB: SELECT user WHERE email
+    DB-->>API: user row
+    API->>API: bcrypt.compare(password, hash)
+    API-->>App: 200 { token, user }
+    App->>App: AsyncStorage.setItem("token", token)
+    App-->>User: Navigate to TodoScreen
+
+    User->>App: Create / read / update / delete todo
+    App->>API: Request + Authorization: Bearer <token>
+    API->>API: auth.middleware verifies JWT
+    API->>DB: Scoped query (userId = req.user.id)
+    DB-->>API: result
+    API-->>App: 200 + payload`,
+        notes: [
+          'Ownership enforced server-side — every todo route filters by req.user.id. A token from user A can never read or mutate user B\'s rows.',
+          'Yup runs before the controller — shape mismatches return 400 with field-level errors before any DB query is issued.',
+        ],
+      },
+      {
+        title: 'Registration flow',
+        blurb:
+          'Registration is intentionally separate from login: the API validates, hashes, and inserts, but does not return a token. The user is then bounced to the sign-in screen, so credentials are tested before any session is established.',
+        mermaid: `flowchart LR
+    Register["POST /api/users/register<br/>{ username, email, password }"]
+    Validate["Yup validation<br/>middleware"]
+    Hash["bcrypt.hash(password, 10)"]
+    Store["INSERT users"]
+    Response["201 + user record<br/>(no token — must login)"]
+
+    Register --> Validate
+    Validate --> Hash
+    Hash --> Store
+    Store --> Response
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    class Register,Validate,Hash,Store,Response edge`,
+      },
     ],
   },
   database: {
@@ -132,4 +186,19 @@ export const todoList: Project = {
       '2-min client timeout — Render\'s free-tier cold start can take 30–60s; padding to 2 min covers worst-case wake-up cleanly.',
     ],
   },
+  apiEndpoints: [
+    { method: 'POST', path: '/api/users/register', auth: 'none', purpose: 'Create account — { username, email, password } → user record' },
+    { method: 'POST', path: '/api/users/login', auth: 'none', purpose: 'Sign in — { email, password } → { token, user }' },
+    { method: 'GET', path: '/api/users', auth: 'Bearer', purpose: 'List all users (admin utility)' },
+    { method: 'GET', path: '/api/users/:id', auth: 'Bearer', purpose: 'Get one user by ID' },
+    { method: 'PUT', path: '/api/users/:id', auth: 'Bearer', purpose: 'Update user fields' },
+    { method: 'DELETE', path: '/api/users/:id', auth: 'Bearer', purpose: 'Delete user' },
+    { method: 'GET', path: '/api/todos', auth: 'Bearer', purpose: 'List all todos for the authenticated user' },
+    { method: 'POST', path: '/api/todos', auth: 'Bearer', purpose: 'Create a todo — { title, description?, completed?, dueDate? }' },
+    { method: 'GET', path: '/api/todos/:id', auth: 'Bearer', purpose: 'Get one todo (ownership enforced)' },
+    { method: 'PUT', path: '/api/todos/:id', auth: 'Bearer', purpose: 'Update todo fields (ownership enforced)' },
+    { method: 'DELETE', path: '/api/todos/:id', auth: 'Bearer', purpose: 'Delete todo (ownership enforced)' },
+    { method: 'GET', path: '/health', auth: 'none', purpose: '{ status: "UP", service, timestamp } — Render health check, no-store' },
+    { method: 'GET', path: '/api', auth: 'none', purpose: '{ status: "online", message } — API root ping' },
+  ],
 };
