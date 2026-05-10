@@ -72,10 +72,94 @@ export const serviceTicketSystem: Project = {
     class Browser,Express,Cron edge
     class MySQL store`,
     notes: [
-      'Single Express process — no queue, no worker. helmet, cors, express.json, route mounts, /health probe. On startup: connectDB() → defineAssociations() → initCronJobs() → listen.',
+      'Single Express process — no queue, no worker. helmet, cors, express.json, route mounts, /health probe. On startup: connectDB() → defineAssociations() → seed (idempotent) → initCronJobs() → listen.',
       'Cron co-located with the API — saves an additional service. node-cron fires inside the same Node process; the trade-off is that scaling horizontally requires either a leader-election strategy or moving cron to a dedicated worker.',
-      'Modular DDD-ish layout — each domain (tickets, users, notifications) has its own controllers/services/repositories/dtos/models/routes.',
+      'Modular DDD-ish layout — each domain (tickets, users, notifications) has its own controllers/services/repositories/dtos/models/routes. No cross-module imports beyond the associations file.',
       'Snake_case DB columns mapped to camelCase model attributes via Sequelize field — clean SQL audit trail, idiomatic JS code.',
+      'Auto-seed on boot (SEED_ON_BOOT=true) — idempotent role + status + demo user seeding runs every start, making fresh Render deploys zero-manual-step.',
+      'bcryptjs over bcrypt — pure JS, no native build step; deploys cleanly to Render free tier and any serverless platform.',
+    ],
+    flows: [
+      {
+        title: 'Role hierarchy & permissions',
+        blurb:
+          'Four roles with non-overlapping responsibilities. SUPER_ADMIN and ADMIN both triage and approve; DEVELOPERs only work tickets assigned to them; TESTERs only own the tickets they reported. permissions.middleware.ts enforces this on every route.',
+        mermaid: `flowchart LR
+    super["SUPER_ADMIN<br/>platform owner<br/>full access"]
+    admin["ADMIN<br/>triage + manage users<br/>assign & update tickets"]
+    dev["DEVELOPER<br/>work assigned tickets<br/>resolve defects"]
+    tester["TESTER<br/>report defects<br/>track own tickets"]
+    approval["Approval Flow<br/>SUPER_ADMIN or ADMIN<br/>approve / reject resolved tickets"]
+
+    super -->|create / delete / update users| admin
+    super -->|approve / reject| approval
+    admin -->|assign tickets to| dev
+    admin -->|approve / reject| approval
+    tester -.create tickets.-> super
+    tester -.create tickets.-> admin
+    dev -.update status to Resolved.-> approval
+
+    classDef tier fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef flow fill:#1f0f22,stroke:#a978ff,color:#e2c8ff
+    class super,admin,dev,tester tier
+    class approval flow`,
+        notes: [
+          'SUPER_ADMIN: create / delete / update users · create / update / approve any ticket · manage users incl. ADMINs.',
+          'ADMIN: same operational reach as SUPER_ADMIN minus deleting / managing other ADMINs and SUPER_ADMINs.',
+          'DEVELOPER: work assigned tickets only. Cannot create tickets, cannot approve, cannot manage users.',
+          'TESTER: create defects, track tickets they reported, no admin or approval reach.',
+        ],
+      },
+      {
+        title: 'Ticket lifecycle · end to end',
+        blurb:
+          'A complete walkthrough of one ticket from a tester report to an approver decision. Every status update fans out to the relevant notification table rows so the right people see the change in their inbox.',
+        mermaid: `sequenceDiagram
+    autonumber
+    actor Tester
+    actor Admin
+    actor Developer
+    actor Approver as Admin / Super Admin
+    participant API as Express API
+    participant DB as MySQL
+
+    Tester->>API: POST /tickets { title, description, priority }
+    API->>DB: INSERT ticket (status=Open, reportedBy=tester)
+    API-->>Tester: 201 ticket created
+
+    Admin->>API: PUT /tickets/:id { assignedTo, status=In Progress }
+    API->>DB: UPDATE ticket + INSERT notification for developer
+    API-->>Admin: 200 updated
+
+    Developer->>API: PUT /tickets/:id { status=Resolved }
+    API->>DB: UPDATE ticket + INSERT notification for admin
+    API-->>Developer: 200 resolved
+
+    Approver->>API: POST /tickets/:id/approval { status=Approved, comment }
+    API->>DB: INSERT approval + UPDATE ticket status=Approved
+    API->>DB: INSERT notification for reporter + developer
+    API-->>Approver: 201 approval recorded
+
+    Note over Approver,DB: If Rejected: status → Rejected, developer re-assigned for next cycle`,
+        notes: [
+          'Each approval is its own immutable APPROVAL row — multiple decisions over a ticket\'s lifetime are preserved as a full audit trail.',
+          'Notifications respect each user\'s NOTIFICATION_SETTINGS row — opt-in per event type (assigned, updated, approved, rejected).',
+        ],
+      },
+      {
+        title: 'Status state machine',
+        blurb:
+          'Six lifecycle statuses, with a Rejected → InProgress loop for rework. Statuses live in the TICKET_STATUS reference table — adding a status is a row insert, not a schema change.',
+        mermaid: `stateDiagram-v2
+    [*] --> Open: Tester creates ticket
+    Open --> InProgress: Admin assigns + updates status
+    InProgress --> Resolved: Developer marks resolved
+    Resolved --> PendingApproval: System or admin transitions
+    PendingApproval --> Approved: Admin / Super Admin approves
+    PendingApproval --> Rejected: Admin / Super Admin rejects
+    Rejected --> InProgress: Re-assigned for rework
+    Approved --> [*]`,
+      },
     ],
   },
   database: {
@@ -189,4 +273,24 @@ export const serviceTicketSystem: Project = {
       'node-cron in-process — saves an entire worker service; trade-off is that scaling horizontally requires leader election.',
     ],
   },
+  apiEndpoints: [
+    { method: 'POST', path: '/auth/login', auth: 'none', purpose: 'Email + password → JWT' },
+    { method: 'POST', path: '/auth/register', auth: 'none', purpose: 'Create account (dev / open registration)' },
+    { method: 'GET', path: '/users', auth: 'ADMIN+', purpose: 'List all users' },
+    { method: 'GET', path: '/users/:id', auth: 'ADMIN+', purpose: 'Get a single user' },
+    { method: 'POST', path: '/users', auth: 'SUPER_ADMIN / ADMIN', purpose: 'Create user with role assignment' },
+    { method: 'PUT', path: '/users/:id', auth: 'SUPER_ADMIN / ADMIN', purpose: 'Update user details' },
+    { method: 'DELETE', path: '/users/:id', auth: 'SUPER_ADMIN', purpose: 'Hard delete user' },
+    { method: 'GET', path: '/users/:id/role', auth: 'session', purpose: 'Fetch the user\'s role' },
+    { method: 'GET', path: '/users/:id/notification-settings', auth: 'session', purpose: 'Get notification preferences' },
+    { method: 'PUT', path: '/users/:id/notification-settings', auth: 'session', purpose: 'Update notification preferences' },
+    { method: 'GET', path: '/tickets', auth: 'session', purpose: 'List tickets (role-filtered)' },
+    { method: 'GET', path: '/tickets/:id', auth: 'session', purpose: 'Ticket detail' },
+    { method: 'POST', path: '/tickets', auth: 'TESTER / ADMIN+', purpose: 'Create a ticket' },
+    { method: 'PUT', path: '/tickets/:id', auth: 'ADMIN+ / owner', purpose: 'Update status, assignee, details' },
+    { method: 'POST', path: '/tickets/:id/approval', auth: 'ADMIN+', purpose: 'Approve or reject a resolved ticket' },
+    { method: 'GET', path: '/tickets/statuses', auth: 'session', purpose: 'List all ticket statuses (reference table)' },
+    { method: 'GET', path: '/notifications', auth: 'session', purpose: 'List notifications for the current user' },
+    { method: 'GET', path: '/health', auth: 'none', purpose: '{ status: "UP", service, timestamp } — Render health check' },
+  ],
 };
