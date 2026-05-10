@@ -147,12 +147,12 @@ export const systemPulse: Project = {
           'Three consecutive failed logins flips the user to a locked state — every subsequent attempt returns HTTP 423 until an admin or owner with canUpdateUser unlocks the account. Unlock requires the actor\'s password as a confirmation step.',
         mermaid: `stateDiagram-v2
     [*] --> Active
-    Active --> Active: successful login\\n(reset failedLoginAttempts)
+    Active --> Active: successful login<br/>resets failedLoginAttempts
     Active --> FailedOnce: wrong password
     FailedOnce --> FailedTwice: wrong password
-    FailedTwice --> Locked: 3rd wrong password\\nset lockedAt
-    Locked --> Locked: any login → 423
-    Locked --> Active: admin POST /users/:id/unlock\\n(actor password confirm)`,
+    FailedTwice --> Locked: 3rd wrong password<br/>sets lockedAt
+    Locked --> Locked: any login returns 423
+    Locked --> Active: admin POST /users/:id/unlock<br/>actor password confirm`,
       },
       {
         title: 'Demo mode · ephemeral sessions from editable templates',
