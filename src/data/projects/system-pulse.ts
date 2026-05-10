@@ -82,6 +82,109 @@ export const systemPulse: Project = {
       'Suspend / delete flows: dropdown reason + free-text notes + automatic email to the affected owner / user. Org delete is a hard cascade (users + systems + logs + org); org suspend is a soft state honoured at login.',
       'Account lockout: 3 consecutive failed logins → status 423; admin/owner with canUpdateUser can unlock after a password-confirm. The Suspend flow itself is rate-limited and click-spam-guarded with a useRef Set so React batching cannot fire two emails on a double click.',
     ],
+    flows: [
+      {
+        title: 'Role hierarchy & permissions',
+        blurb:
+          'Four roles, eight per-user permission toggles, plus the demo-template wiring. Superadmin edits the templates; admins flip the safe permissions; only owners can grant the three dangerous ones (delete user, delete system, update user).',
+        mermaid: `flowchart LR
+    super["Superadmin<br/>platform owner<br/>cross-org reach"]
+    owner["Owner<br/>org creator<br/>all permissions on"]
+    admin["Admin<br/>permissions toggleable<br/>by owner"]
+    user["User<br/>trigger + view logs<br/>on assigned systems"]
+    template["Demo Templates<br/>editable permission<br/>presets for demo mode"]
+    demo[("Ephemeral<br/>Demo Sessions")]
+
+    super -->|suspend / delete /<br/>cross-org admin| owner
+    owner -->|create / promote /<br/>demote / delete| admin
+    owner -->|create / suspend /<br/>delete + permission grant| user
+    admin -.permission gated.-> user
+    super -.edits.-> template
+    template -.applied to.-> demo
+
+    classDef tier fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef demoStyle fill:#1f0f22,stroke:#a978ff,color:#e2c8ff
+    class super,owner,admin,user tier
+    class template,demo demoStyle`,
+        notes: [
+          'Owners always carry every permission regardless of what is stored — owner role is unambiguous.',
+          'Admins can flip safe permissions (canCreateUser, canCreateSystem, canUpdateSystem, canTriggerHealthChecks, canViewLogs) on users they invite. Owners exclusively grant the dangerous three (canDeleteUser, canDeleteSystem, canUpdateUser).',
+          'Demo templates carry the same UserPermissions shape — editing them tunes future demo sessions without touching code.',
+        ],
+      },
+      {
+        title: 'Self-serve registration · multi-tenant entry point',
+        blurb:
+          'New owners self-register with an OTP-verified email. Verifying the OTP creates the org + the active owner row in one transaction and emails a welcome — but does not auto-login. The user signs in with their new password fresh.',
+        mermaid: `sequenceDiagram
+    autonumber
+    actor User
+    participant SPA as React SPA
+    participant API as Lambda /auth/register/*
+    participant DDB as DynamoDB
+    participant SMTP as Email
+
+    User->>SPA: Submit email + password + org name
+    SPA->>API: POST /auth/register/start
+    API->>DDB: PutCommand REGISTER_OTP (TTL 10 min)
+    API->>SMTP: 6-digit OTP email
+    SMTP-->>User: OTP code
+    User->>SPA: Enter OTP
+    SPA->>API: POST /auth/register/verify
+    API->>DDB: Create ORG + active owner USER
+    API->>SMTP: Welcome email
+    API-->>SPA: 201 + org + user payload
+    SPA-->>User: "Account created — sign in to continue"
+    Note right of SPA: NO auto-login. User must authenticate with their new password.`,
+        notes: [
+          'OTP brute-force capped at 6 attempts, hashed at rest, 30s resend cooldown, 5 resends max.',
+          'Email enumeration on register is intentionally surfaced — 409 "already registered" with inline Sign in / Forgot password CTAs (per product brief).',
+        ],
+      },
+      {
+        title: 'Account lockout & unlock',
+        blurb:
+          'Three consecutive failed logins flips the user to a locked state — every subsequent attempt returns HTTP 423 until an admin or owner with canUpdateUser unlocks the account. Unlock requires the actor\'s password as a confirmation step.',
+        mermaid: `stateDiagram-v2
+    [*] --> Active
+    Active --> Active: successful login\\n(reset failedLoginAttempts)
+    Active --> FailedOnce: wrong password
+    FailedOnce --> FailedTwice: wrong password
+    FailedTwice --> Locked: 3rd wrong password\\nset lockedAt
+    Locked --> Locked: any login → 423
+    Locked --> Active: admin POST /users/:id/unlock\\n(actor password confirm)`,
+      },
+      {
+        title: 'Demo mode · ephemeral sessions from editable templates',
+        blurb:
+          'Demo sessions are real ephemeral USER rows seeded from two no-password template records (demo-template-admin / demo-template-user). The superadmin edits the template via the standard user-edit modal; the next demo click reads the new permissions. Sessions auto-clean via DynamoDB TTL.',
+        mermaid: `flowchart LR
+    Click["Click 'Try demo mode'<br/>pick admin or user"]
+    DS["POST /auth/demo<br/>{ role }"]
+    Tpl["Look up demo-template-{role}<br/>(auto-create on first call)"]
+    Demo[("Ephemeral USER row<br/>orgId=demo · demoMode=true<br/>TTL 1h · expiresAt set")]
+    SPA["SPA signs in with<br/>demoMode=true"]
+    Edit["Superadmin edits<br/>demo-template-admin or<br/>demo-template-user"]
+
+    Click --> DS
+    DS --> Tpl
+    Tpl --> Demo
+    Demo --> SPA
+    Edit -.controls.-> Tpl
+
+    classDef edge fill:#0f1422,stroke:#5eead4,color:#e2e8f0
+    classDef store fill:#0a0e1a,stroke:#5eead4,color:#5eead4
+    classDef demoStyle fill:#1f0f22,stroke:#a978ff,color:#e2c8ff
+    class Click,DS,SPA,Edit edge
+    class Demo store
+    class Tpl demoStyle`,
+        notes: [
+          'rejectIfDemo() blocks every destructive endpoint at the actor-auth layer — demo sessions cannot delete or mutate other users.',
+          'Templates have isDemoTemplate: true and no passwordHash, so they cannot log in directly and cannot be deleted (server-enforced).',
+          'Edit-and-go cycle: superadmin opens Platform → Demo org → Settings on the template → tweak → Save. Next demo click reflects the change. No redeploy.',
+        ],
+      },
+    ],
   },
   database: {
     blurb:
