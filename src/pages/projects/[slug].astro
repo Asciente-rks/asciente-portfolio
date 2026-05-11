@@ -493,7 +493,50 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     <img id="lightbox-img" src="" alt="" />
   </div>
 
-  <!-- MERMAID INITIALIZATION -->
+  <!-- PERFORMANCE STYLES (scoped to this page) -->
+  <style is:global>
+    /* Mermaid containers fade in once their SVG is rendered, so the lazy
+       render doesn't pop in jarringly. */
+    .mermaid-container .mermaid {
+      opacity: 0;
+      transition: opacity 0.35s ease-out;
+    }
+    .mermaid-container .mermaid.mermaid-rendered {
+      opacity: 1;
+    }
+    /* Reserve vertical space while the diagram is still pending so the
+       scroll position doesn't shift when each diagram resolves. */
+    .mermaid-container {
+      min-height: 240px;
+    }
+    @media (max-width: 768px) {
+      .mermaid-container {
+        min-height: 180px;
+      }
+    }
+
+    /* Skip layout/paint work for sections that aren't near the viewport.
+       Saves significant scroll cost on mobile since each detail section
+       owns dozens of nodes. contain-intrinsic-size reserves space so the
+       scrollbar doesn't jump as content materializes. */
+    .detail-section {
+      content-visibility: auto;
+      contain-intrinsic-size: 0 800px;
+    }
+    @media (max-width: 768px) {
+      .detail-section {
+        contain-intrinsic-size: 0 600px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mermaid-container .mermaid {
+        transition: none;
+      }
+    }
+  </style>
+
+  <!-- MERMAID LAZY INITIALIZATION -->
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs';
 
@@ -536,6 +579,20 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       relationLabelBackground: '#0a0e1a',
     };
 
+    let observer = null;
+    let renderQueue = Promise.resolve();
+
+    function initMermaid() {
+      const isLight = document.documentElement.classList.contains('theme-light');
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        securityLevel: 'loose',
+        fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+        themeVariables: isLight ? LIGHT_THEME : DARK_THEME,
+      });
+    }
+
     function captureOriginalSource() {
       document.querySelectorAll('.mermaid').forEach((el) => {
         if (!el.dataset.mermaidSrc) {
@@ -544,46 +601,87 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       });
     }
 
-    async function renderMermaid() {
-      const isLight = document.documentElement.classList.contains('theme-light');
+    // Render a single .mermaid element. Queued sequentially via renderQueue
+    // so two diagrams entering the viewport at once don't race each other
+    // (mermaid.run mutates global state on each call).
+    function renderOne(el) {
+      if (el.dataset.lazyRendered === 'true') return;
+      el.dataset.lazyRendered = 'true';
+      renderQueue = renderQueue.then(async () => {
+        try {
+          await mermaid.run({ nodes: [el] });
+          el.classList.add('mermaid-rendered');
+        } catch (err) {
+          console.error('Mermaid render error:', err);
+          // Even on error, fade in so the user sees the message instead of an
+          // invisible block.
+          el.classList.add('mermaid-rendered');
+        }
+      });
+    }
 
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: 'base',
-        securityLevel: 'loose',
-        fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-        themeVariables: isLight ? LIGHT_THEME : DARK_THEME,
+    function setupObserver() {
+      if (observer) observer.disconnect();
+
+      // Render diagrams ~600px before they enter the viewport so they're
+      // ready by the time the user scrolls to them. On low-end mobile
+      // browsers without IntersectionObserver, fall back to rendering all.
+      if (typeof IntersectionObserver === 'undefined') {
+        document.querySelectorAll('.mermaid').forEach(renderOne);
+        return;
+      }
+
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            renderOne(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '600px 0px',
+        threshold: 0,
       });
 
+      document.querySelectorAll('.mermaid').forEach((el) => {
+        if (el.dataset.lazyRendered !== 'true') {
+          observer.observe(el);
+        }
+      });
+    }
+
+    function resetForRerender() {
       // Reset every diagram back to its original source so mermaid can
-      // re-render with the new theme variables instead of leaving the
-      // previous SVG in place.
+      // re-render with the new theme variables (or after a page swap).
       document.querySelectorAll('.mermaid').forEach((el) => {
         const src = el.dataset.mermaidSrc;
         if (src !== undefined) {
           el.removeAttribute('data-processed');
+          el.removeAttribute('data-lazy-rendered');
+          el.classList.remove('mermaid-rendered');
           el.textContent = src;
         }
       });
-
-      try {
-        await mermaid.run({ querySelector: '.mermaid' });
-      } catch (err) {
-        console.error('Mermaid render error:', err);
-      }
     }
 
+    // First load
     captureOriginalSource();
-    await renderMermaid();
+    initMermaid();
+    setupObserver();
 
-    // Re-render Mermaid after a view-transition swap brings us into a new
-    // case-study page, and whenever the user toggles the global theme.
+    // After a view-transition swap brings us into a new case-study page
     document.addEventListener('astro:page-load', () => {
       captureOriginalSource();
-      renderMermaid();
+      initMermaid();
+      setupObserver();
     });
+
+    // Theme toggle: reset and re-observe so visible diagrams re-render with
+    // the new palette.
     document.addEventListener('theme-changed', () => {
-      renderMermaid();
+      resetForRerender();
+      initMermaid();
+      setupObserver();
     });
   </script>
 
@@ -626,3 +724,4 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     });
   </script>
 </MainLayout>
+
