@@ -589,13 +589,17 @@ body {
 
 @media (min-width: 640px) {
   .stack-grid {
-    grid-template-columns: repeat(2, 1fr);
+    /* minmax(0, 1fr) — without this, long no-wrap tech-chip labels
+       (e.g. "DynamoDB (single-table + 3 GSIs + TTL on 4 entity types)")
+       force the grid track wider than 1fr would normally allow, pushing
+       the last column past the viewport. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
   .stack-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -607,7 +611,20 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  /* Pair with minmax(0, 1fr) on .stack-grid — flex children default to
+     min-content width, which would still let chips overflow the column. */
+  min-width: 0;
   transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+/* Tech chips inside stack cards need to wrap when the chip text is wider
+   than the column — otherwise nowrap chips overflow the card. The chips
+   on homepage project cards (.project-card-tech .tech-chip) keep their
+   nowrap behavior since those cards size to content. */
+.stack-card-items .tech-chip {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .stack-card:hover {
