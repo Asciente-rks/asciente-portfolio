@@ -161,6 +161,39 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       </section>
     )}
 
+    <!-- CINEMATIC SHOWCASE (only for projects with cinematicUrl set) -->
+    {project.cinematicUrl && (
+      <section class="detail-section" id="cinematic">
+        <div class="section-eyebrow">
+          <span class="section-num">▶ · cinematic</span>
+        </div>
+        <h2>Walk through the product</h2>
+        {project.cinematicCaption && (
+          <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
+            {project.cinematicCaption}
+          </p>
+        )}
+        <div class="cinematic-frame">
+          <iframe
+            src={project.cinematicUrl}
+            title={`${project.title} — interactive cinematic`}
+            loading="lazy"
+            allow="fullscreen"
+          ></iframe>
+          <a
+            href={project.cinematicUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cinematic-fullscreen"
+            aria-label="Open cinematic in fullscreen"
+          >
+            <span>Open fullscreen</span>
+            <span style="font-family:'JetBrains Mono', monospace; font-size: 0.85em;">↗</span>
+          </a>
+        </div>
+      </section>
+    )}
+
     <!-- SUMMARY ============================================== -->
     <section class="detail-section" id="summary">
       <div class="section-eyebrow">
@@ -532,6 +565,65 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     @media (prefers-reduced-motion: reduce) {
       .mermaid-container .mermaid {
         transition: none;
+      }
+    }
+
+    /* Cinematic embed — interactive product showcase iframe */
+    .cinematic-frame {
+      position: relative;
+      margin-top: 2rem;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(94, 234, 212, 0.18);
+      background: #f7f1e8;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(94, 234, 212, 0.05);
+      isolation: isolate;
+    }
+    .cinematic-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #f7f1e8;
+    }
+    .cinematic-fullscreen {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(15, 20, 34, 0.85);
+      color: #5eead4;
+      border: 1px solid rgba(94, 234, 212, 0.35);
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      z-index: 2;
+    }
+    .cinematic-fullscreen:hover {
+      transform: translateY(-1px);
+      background: rgba(15, 20, 34, 0.95);
+      border-color: rgba(94, 234, 212, 0.6);
+    }
+    @media (max-width: 768px) {
+      .cinematic-frame {
+        aspect-ratio: 4 / 3;
+        margin-top: 1.25rem;
+      }
+      .cinematic-fullscreen {
+        font-size: 0.65rem;
+        padding: 6px 12px;
+        top: 10px;
+        right: 10px;
       }
     }
   </style>

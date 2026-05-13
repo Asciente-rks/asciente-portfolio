@@ -66,6 +66,8 @@ export type Project = {
   thumbnail: string;
   gallery: GalleryItem[];
   featuredVideo?: { src: string; caption?: string };
+  cinematicUrl?: string;
+  cinematicCaption?: string;
   architecture: {
     mermaid: string;
     notes: string[];
