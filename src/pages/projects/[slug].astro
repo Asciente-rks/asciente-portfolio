@@ -616,7 +616,8 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     }
     @media (max-width: 768px) {
       .cinematic-frame {
-        aspect-ratio: 4 / 3;
+        /* Keep 16:10 across screens — cinematic is a fixed-design canvas (1440x900).
+           Matching the iframe ratio to the design avoids wasted letterbox bars. */
         margin-top: 1.25rem;
       }
       .cinematic-fullscreen {
