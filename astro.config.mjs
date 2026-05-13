@@ -10,7 +10,11 @@ export default defineConfig({
   },
   prefetch: {
     prefetchAll: true,
-    defaultStrategy: 'viewport',
+    // hover (was 'viewport'): with 8+ project cards, viewport prefetch fires
+    // 8+ parallel page fetches as soon as the homepage renders — including
+    // the heavy SwiftRace page. `hover` waits for actual user intent so the
+    // homepage scrolls smoothly and we only pay for what the user actually wants.
+    defaultStrategy: 'hover',
   },
   integrations: [tailwind()],
   markdown: {
