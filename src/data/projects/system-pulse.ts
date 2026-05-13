@@ -358,6 +358,7 @@ export const systemPulse: Project = {
     { method: 'POST', path: '/me/email/start', auth: 'session + password', purpose: 'Send OTP to a new email' },
     { method: 'POST', path: '/me/email/verify', auth: 'session + OTP', purpose: 'Commit the email change' },
     { method: 'POST', path: '/users/invite', auth: 'canCreateUser', purpose: 'Email an invite link to a teammate' },
+    { method: 'POST', path: '/users/:id/systems', auth: 'canUpdateUser', purpose: "Replace a user's allowedSystemIds access list" },
     { method: 'POST', path: '/users/:id/permissions', auth: 'canUpdateUser', purpose: 'System access + status + permission toggles in one call' },
     { method: 'POST', path: '/users/:id/role', auth: 'owner', purpose: 'Promote / demote within the org' },
     { method: 'POST', path: '/users/:id/unlock', auth: 'canUpdateUser + pwd', purpose: 'Clear failed-login lockout' },
