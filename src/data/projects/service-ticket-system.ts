@@ -119,28 +119,28 @@ export const serviceTicketSystem: Project = {
     actor Tester
     actor Admin
     actor Developer
-    actor Approver as Admin / Super Admin
+    actor Approver
     participant API as Express API
     participant DB as MySQL
 
-    Tester->>API: POST /tickets { title, description, priority }
+    Tester->>API: POST /tickets (title, description, priority)
     API->>DB: INSERT ticket (statusId=Open, reportedBy=tester)
     API-->>Tester: 201 ticket created
 
-    Admin->>API: PATCH /tickets/:id { assignedTo, statusId=In Progress }
+    Admin->>API: PATCH /tickets/:id (assignedTo, statusId=In Progress)
     API->>DB: UPDATE ticket + INSERT notification for developer
     API-->>Admin: 200 updated
 
-    Developer->>API: PATCH /tickets/:id { statusId=Ready for QA }
+    Developer->>API: PATCH /tickets/:id (statusId=Ready for QA)
     API->>DB: UPDATE ticket + INSERT notification for admin
     API-->>Developer: 200 ready for review
 
-    Approver->>API: POST /tickets/:id/approval { status=Approved, comment }
+    Approver->>API: POST /tickets/:id/approval (status=Approved, comment)
     API->>DB: INSERT approval + UPDATE ticket statusId=Resolved
-    API->>DB: INSERT notification for reporter (gated by NOTIFICATION_SETTINGS)
+    API->>DB: INSERT notification for reporter
     API-->>Approver: 201 approval recorded
 
-    Note over Approver,DB: If status=Rejected, ticket statusId becomes Error Persists; developer iterates and re-submits for QA.`,
+    Note over Approver,DB: On reject, ticket statusId becomes Error Persists and the developer iterates.`,
         notes: [
           'Each approval is its own immutable APPROVAL row — multiple decisions over a ticket\'s lifetime are preserved as a full audit trail.',
           'Notifications respect each user\'s NOTIFICATION_SETTINGS row — opt-in per event type (assigned, updated, approved, rejected).',
