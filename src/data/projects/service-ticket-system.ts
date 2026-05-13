@@ -140,7 +140,7 @@ export const serviceTicketSystem: Project = {
     API->>DB: INSERT notification for reporter (gated by NOTIFICATION_SETTINGS)
     API-->>Approver: 201 approval recorded
 
-    Note over Approver,DB: If status=Rejected: ticket statusId -> Error Persists; developer iterates and re-submits for QA.`,
+    Note over Approver,DB: If status=Rejected, ticket statusId becomes Error Persists; developer iterates and re-submits for QA.`,
         notes: [
           'Each approval is its own immutable APPROVAL row — multiple decisions over a ticket\'s lifetime are preserved as a full audit trail.',
           'Notifications respect each user\'s NOTIFICATION_SETTINGS row — opt-in per event type (assigned, updated, approved, rejected).',
