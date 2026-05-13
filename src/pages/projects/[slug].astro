@@ -173,25 +173,23 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
             {project.cinematicCaption}
           </p>
         )}
-        {/* Click-to-load: don't fetch the 600 KB iframe until the user opts in.
-            Until clicked, we show the project thumbnail as a poster with a play
-            button overlay. On click, the iframe replaces the poster with a
-            fade-in. Keeps the detail page light + the iframe is full-quality
-            when actually requested. */}
+        {/* Auto-load with deferred iframe injection.
+            The 600 KB iframe is NOT in the initial HTML. We render the project
+            thumbnail as an instant placeholder, then inject the iframe after
+            the browser becomes idle (requestIdleCallback) — so the rest of the
+            page paints first. When the iframe finishes loading, it fades in
+            over the poster. Full quality preserved; just deferred a few hundred
+            milliseconds so the page becomes interactive sooner. */}
         <div
           class="cinematic-frame"
           data-cinematic-url={project.cinematicUrl}
           data-cinematic-title={`${project.title} — interactive cinematic`}
         >
-          <button
-            type="button"
-            class="cinematic-poster"
-            aria-label="Play interactive cinematic"
-          >
+          <div class="cinematic-poster" aria-hidden="true">
             {getImageAsset(project.thumbnail) && (
               <Image
                 src={getImageAsset(project.thumbnail)!}
-                alt={`${project.title} preview`}
+                alt=""
                 widths={[800, 1200, 1600]}
                 sizes="(min-width: 900px) 1100px, 100vw"
                 loading="lazy"
@@ -200,16 +198,11 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
               />
             )}
             <span class="cinematic-poster-veil"></span>
-            <span class="cinematic-poster-overlay">
-              <span class="cinematic-play-btn" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-              <span class="cinematic-play-label">Play interactive cinematic</span>
-              <span class="cinematic-play-hint">Click to load · 12 scenes · ← / → to navigate</span>
+            <span class="cinematic-loading" role="status" aria-live="polite">
+              <span class="cinematic-loading-dot" aria-hidden="true"></span>
+              <span class="cinematic-loading-text">Loading cinematic</span>
             </span>
-          </button>
+          </div>
           <a
             href={project.cinematicUrl}
             target="_blank"
@@ -645,23 +638,23 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       border-color: rgba(94, 234, 212, 0.6);
     }
 
-    /* Click-to-load poster — shown until the user opts in to load the iframe. */
+    /* Poster shown briefly while the iframe is deferred-loaded.
+       Once iframe.onload fires, the poster fades out and the iframe fades in. */
     .cinematic-poster {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      padding: 0;
-      margin: 0;
-      border: 0;
       background: #0f1422;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: inherit;
-      color: inherit;
       overflow: hidden;
+      transition: opacity 0.5s ease;
+    }
+    .cinematic-poster.is-fading {
+      opacity: 0;
+      pointer-events: none;
     }
     .cinematic-poster-img {
       position: absolute !important;
@@ -669,80 +662,55 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       width: 100% !important;
       height: 100% !important;
       object-fit: cover;
-      transition: transform 0.5s ease;
     }
     .cinematic-poster-veil {
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse at center, rgba(15, 20, 34, 0.25) 0%, rgba(15, 20, 34, 0.75) 100%),
-        linear-gradient(180deg, rgba(15, 20, 34, 0.3) 0%, rgba(15, 20, 34, 0.65) 100%);
-      transition: opacity 0.3s ease;
+        radial-gradient(ellipse at center, rgba(15, 20, 34, 0.18) 0%, rgba(15, 20, 34, 0.5) 100%),
+        linear-gradient(180deg, rgba(15, 20, 34, 0.2) 0%, rgba(15, 20, 34, 0.45) 100%);
       z-index: 1;
     }
-    .cinematic-poster-overlay {
-      position: relative;
+    /* Subtle loading pill in the corner — non-intrusive while iframe boots */
+    .cinematic-loading {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
       z-index: 2;
-      display: flex;
-      flex-direction: column;
+      display: inline-flex;
       align-items: center;
-      gap: 14px;
-      color: #fff;
-      pointer-events: none;
-      padding: 1rem;
-      text-align: center;
-    }
-    .cinematic-play-btn {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #14b8a6 0%, #0f766e 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      box-shadow: 0 16px 40px rgba(15, 118, 110, 0.55), 0 0 0 1px rgba(94, 234, 212, 0.3);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-    .cinematic-play-btn svg {
-      margin-left: 4px; /* optical centering of triangle */
-    }
-    .cinematic-poster:hover .cinematic-play-btn {
-      transform: scale(1.08);
-      box-shadow: 0 20px 48px rgba(15, 118, 110, 0.7), 0 0 0 1px rgba(94, 234, 212, 0.5);
-    }
-    .cinematic-poster:hover .cinematic-poster-img {
-      transform: scale(1.03);
-    }
-    .cinematic-poster:hover .cinematic-poster-veil {
-      opacity: 0.85;
-    }
-    .cinematic-poster:focus-visible {
-      outline: 2px solid #5eead4;
-      outline-offset: -2px;
-    }
-    .cinematic-play-label {
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(15, 20, 34, 0.85);
+      color: rgba(226, 232, 240, 0.92);
+      border: 1px solid rgba(94, 234, 212, 0.25);
+      border-radius: 999px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      letter-spacing: 0.1em;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      font-weight: 700;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      pointer-events: none;
     }
-    .cinematic-play-hint {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      color: rgba(255, 255, 255, 0.75);
-      letter-spacing: 0.06em;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+    .cinematic-loading-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5eead4;
+      box-shadow: 0 0 12px rgba(94, 234, 212, 0.7);
+      animation: cinematicDotPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes cinematicDotPulse {
+      0%, 100% { opacity: 0.45; transform: scale(0.85); }
+      50%      { opacity: 1;    transform: scale(1.12); }
     }
     /* Iframe injected by JS — fade in for a smooth handoff from poster */
     .cinematic-frame iframe.cinematic-iframe-active {
-      animation: cinematicFadeIn 0.45s ease;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
-    @keyframes cinematicFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .cinematic-frame iframe.cinematic-iframe-active.is-ready {
+      opacity: 1;
     }
 
     @media (max-width: 768px) {
@@ -757,19 +725,11 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         top: 10px;
         right: 10px;
       }
-      .cinematic-play-btn {
-        width: 64px;
-        height: 64px;
-      }
-      .cinematic-play-btn svg {
-        width: 26px;
-        height: 26px;
-      }
-      .cinematic-play-label {
-        font-size: 0.75rem;
-      }
-      .cinematic-play-hint {
+      .cinematic-loading {
         font-size: 0.62rem;
+        padding: 6px 10px;
+        bottom: 10px;
+        left: 10px;
       }
     }
   </style>
@@ -945,29 +905,57 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     });
   </script>
 
-  <!-- CINEMATIC CLICK-TO-LOAD -->
+  <!-- CINEMATIC AUTO-LOAD (deferred) -->
   <script>
-    // Wire up the cinematic poster button. When clicked, swap the poster
-    // for the actual iframe with a fade-in. This keeps the heavy 600 KB
-    // iframe out of the initial page load, while quality stays full.
+    // Defer the cinematic iframe until the browser is idle, so the rest of the
+    // page paints and becomes interactive first. The thumbnail poster shows
+    // immediately as a graceful placeholder. When the iframe loads, it fades
+    // in over the poster. Full quality preserved; ~300-600 ms delay vs being
+    // in initial HTML — but the page becomes interactive significantly sooner.
     function bindCinematic() {
       document.querySelectorAll<HTMLElement>('.cinematic-frame[data-cinematic-url]').forEach((frame) => {
-        const poster = frame.querySelector<HTMLButtonElement>('.cinematic-poster');
-        if (!poster || poster.dataset.bound === 'true') return;
-        poster.dataset.bound = 'true';
-        poster.addEventListener('click', () => {
-          const url = frame.dataset.cinematicUrl;
-          const title = frame.dataset.cinematicTitle || 'Interactive cinematic';
-          if (!url) return;
+        if (frame.dataset.bound === 'true') return;
+        frame.dataset.bound = 'true';
+
+        const url = frame.dataset.cinematicUrl;
+        const title = frame.dataset.cinematicTitle || 'Interactive cinematic';
+        if (!url) return;
+
+        function injectIframe() {
+          // Guard against double-injection across page-load events
+          if (frame.querySelector('iframe.cinematic-iframe-active')) return;
+          const poster = frame.querySelector<HTMLElement>('.cinematic-poster');
           const iframe = document.createElement('iframe');
           iframe.src = url;
           iframe.title = title;
           iframe.setAttribute('allow', 'fullscreen');
           iframe.setAttribute('allowfullscreen', 'true');
           iframe.className = 'cinematic-iframe-active';
-          iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;background:#f7f1e8;';
-          frame.replaceChild(iframe, poster);
-        }, { once: true });
+          iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;background:#f7f1e8;position:absolute;inset:0;z-index:3;';
+          iframe.addEventListener('load', () => {
+            // Iframe content finished loading → reveal it + fade out poster
+            iframe.classList.add('is-ready');
+            if (poster) poster.classList.add('is-fading');
+            // Remove poster after fade completes to free DOM
+            setTimeout(() => poster?.remove(), 600);
+          }, { once: true });
+          frame.appendChild(iframe);
+        }
+
+        // Schedule injection AFTER the browser becomes idle. Falls back to a
+        // small timeout for browsers without requestIdleCallback (Safari).
+        const schedule = (cb: () => void) => {
+          if ('requestIdleCallback' in window) {
+            (window as any).requestIdleCallback(cb, { timeout: 1500 });
+          } else {
+            setTimeout(cb, 400);
+          }
+        };
+        if (document.readyState === 'complete') {
+          schedule(injectIframe);
+        } else {
+          window.addEventListener('load', () => schedule(injectIframe), { once: true });
+        }
       });
     }
     bindCinematic();
