@@ -26,11 +26,11 @@ export const judgementCut: Project = {
     },
     {
       label: 'Storage',
-      items: ['TiDB Cloud Serverless (5 GB free)', 'Cloudflare R2', '@aws-sdk/client-s3'],
+      items: ['TiDB Cloud Serverless (5 GB free)', 'Cloudflare R2', 'boto3 (S3-compatible)'],
     },
     {
       label: 'Frontend',
-      items: ['React 18', 'TypeScript', 'Vite 5', 'Tailwind 3', 'react-router-dom 6', 'fetch'],
+      items: ['React 18 (JSX)', 'Vite 5', 'Tailwind 3', 'native fetch', 'single-file SPA — no router'],
     },
     {
       label: 'CI/CD · Hosting',
@@ -99,7 +99,7 @@ export const judgementCut: Project = {
     Steam-->>Lambda: {success: true, data: {price_overview: {final: ...}}}
     Lambda->>TiDB: UPDATE price_php, normal_price_php
     Note over Lambda,TiDB: If Steam returns success=false or times out, retry x3 with backoff. price_php stays NULL → frontend shows amber "USD est." badge.
-    Spider->>Lambda: POST /internal/finalize
+    Spider->>Lambda: POST /internal/ingest/finalize
     Lambda->>TiDB: Phase 1 — re-enrich deals still missing price_php (up to 50)
     Lambda->>TiDB: Phase 2 — UPDATE is_active=0 WHERE last_seen_at < run start
     Lambda->>TiDB: Phase 3 — DELETE WHERE is_active=0`,
@@ -142,8 +142,8 @@ export const judgementCut: Project = {
     USER {
         int id PK
         string username UK
-        string passwordHash
-        bool isAdmin
+        string password_hash
+        bool is_admin
     }
     FEATURED_DEAL {
         string deal_id PK
@@ -214,16 +214,21 @@ export const judgementCut: Project = {
   },
   apiEndpoints: [
     { method: 'POST', path: '/auth/login', auth: 'none', purpose: 'Username + password → JWT access token' },
-    { method: 'POST', path: '/auth/register', auth: 'none', purpose: 'Create admin account (first-run / seeded use)' },
-    { method: 'GET', path: '/v1/deals', auth: 'JWT', purpose: 'Paginated, filterable deal list with PHP prices' },
+    { method: 'GET', path: '/v1/me', auth: 'JWT', purpose: 'Current user profile (id, username, is_admin)' },
+    { method: 'GET', path: '/v1/deals/featured', auth: 'JWT', purpose: 'Latest crawl, ranked by deal rating' },
+    { method: 'GET', path: '/v1/deals/search', auth: 'JWT', purpose: 'Live CheapShark passthrough by title' },
+    { method: 'GET', path: '/v1/deals/{deal_id}/history', auth: 'JWT', purpose: 'Per-deal price history' },
+    { method: 'GET', path: '/v1/deals/{deal_id}/thumbnail', auth: 'JWT', purpose: 'Presigned R2 URL (lazy-mirrored from CheapShark)' },
+    { method: 'GET', path: '/v1/exchange-rate', auth: 'JWT', purpose: 'FX via open.er-api.com, 24h cached' },
     { method: 'GET', path: '/v1/admin/users', auth: 'JWT (admin)', purpose: 'List users' },
-    { method: 'POST', path: '/v1/admin/users', auth: 'JWT (admin)', purpose: 'Create user' },
-    { method: 'PATCH', path: '/v1/admin/users/:id', auth: 'JWT (admin)', purpose: 'Update user' },
-    { method: 'DELETE', path: '/v1/admin/users/:id', auth: 'JWT (admin)', purpose: 'Delete user' },
+    { method: 'POST', path: '/v1/admin/users/{username}/admin', auth: 'JWT (admin)', purpose: 'Promote / demote a user' },
     { method: 'GET', path: '/v1/admin/platforms', auth: 'JWT (admin)', purpose: 'List per-storefront enabled toggles' },
-    { method: 'PATCH', path: '/v1/admin/platforms/:id', auth: 'JWT (admin)', purpose: 'Enable / disable a storefront' },
-    { method: 'GET', path: '/v1/admin/crawler', auth: 'JWT (admin)', purpose: 'Scraper heartbeat + last-run metadata' },
+    { method: 'POST', path: '/v1/admin/platforms/{name}/toggle', auth: 'JWT (admin)', purpose: 'Enable / disable a storefront' },
+    { method: 'GET', path: '/v1/admin/monitor/scraper', auth: 'JWT (admin)', purpose: 'Scraper heartbeat + last-run metadata + CheapShark probe' },
+    { method: 'POST', path: '/v1/admin/crawler/settings', auth: 'JWT (admin)', purpose: 'Write a key/value into crawler_settings' },
+    { method: 'POST', path: '/v1/admin/assets/upload', auth: 'JWT (admin)', purpose: 'Upload an arbitrary file to R2 (multipart)' },
+    { method: 'DELETE', path: '/v1/admin/assets/{key}', auth: 'JWT (admin)', purpose: 'Delete an R2 object' },
     { method: 'POST', path: '/internal/ingest', auth: 'X-Scraper-Secret', purpose: 'Spider → Lambda — upsert a batch of 25 deals, enrich PHP prices' },
-    { method: 'POST', path: '/internal/finalize', auth: 'X-Scraper-Secret', purpose: '3-phase crawl finalization — re-enrich, mark inactive, delete' },
+    { method: 'POST', path: '/internal/ingest/finalize', auth: 'X-Scraper-Secret', purpose: '3-phase crawl finalization — re-enrich, mark inactive, delete' },
   ],
 };
