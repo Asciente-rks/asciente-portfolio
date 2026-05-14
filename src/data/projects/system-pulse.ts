@@ -31,6 +31,9 @@ export const systemPulse: Project = {
   ],
   liveUrl: 'https://system-pulse-sn3w.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/system-pulse',
+  cinematicUrl: '/cinematics/system-pulse',
+  cinematicCaption:
+    'An 8-scene walkthrough of System Pulse — the multi-tenant uptime + health-check platform running on AWS free tier forever. Click anywhere or press → / Space to advance.',
   thumbnail: 'SystemPulse/LoginPage_SystemPulse.png',
   gallery: [
     { src: 'SystemPulse/LoginPage_SystemPulse.png', caption: 'Tabbed login · sign in / forgot / sign up' },
