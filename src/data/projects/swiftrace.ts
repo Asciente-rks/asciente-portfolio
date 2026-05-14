@@ -35,7 +35,7 @@ export const swiftRace: Project = {
   ],
   liveUrl: 'https://swiftrace.vercel.app/',
   sourceUrl: 'https://github.com/Asciente-rks/swiftrace',
-  cinematicUrl: '/cinematics/swiftrace-cinematic.html',
+  cinematicUrl: '/cinematics/swiftrace',
   cinematicCaption:
     'A 12-scene interactive walkthrough of the SwiftRace UI — login flow, role-based dashboards, the four-stage shipment pipeline, user management, place-order flow, and the light/dark themes. Click anywhere or press → / Space to advance.',
   thumbnail: 'Swiftrace/Login_Swiftrace.png',

@@ -1,0 +1,1768 @@
+---
+import CinematicLayout from '../../layouts/CinematicLayout.astro';
+import { Image } from 'astro:assets';
+
+// Per-project logos — Astro will optimize and serve as webp/avif variants.
+import logoIcon from '../../assets/cinematics/swiftrace-logo-icon.png';
+import logoFull from '../../assets/cinematics/swiftrace-logo-full.png';
+import logoDark from '../../assets/cinematics/swiftrace-logo-dark.png';
+---
+
+<CinematicLayout
+  title="SwiftRace — Cinematic"
+  brandName="SwiftRace"
+  brandLogoIcon={logoIcon}
+  totalSlides={12}
+>
+
+  <!-- SLIDE 1 — OPENING -->
+  <section class="slide opening active" data-slide="1">
+    <div class="badge-row" id="openingBadges">
+      <div class="badge-pill">Logistics</div>
+      <div class="badge-pill">Real-Time</div>
+      <div class="badge-pill">Multi-Role</div>
+    </div>
+    <div class="logo-wrap" id="openingLogo">
+      <Image src={logoFull} alt="SwiftRace" class="logo-img logo-xl" widths={[240, 360, 480]} sizes="(max-width: 900px) 320px, 440px" loading="eager" />
+    </div>
+    <div class="tag" id="openingTag">Logistics. Reimagined.</div>
+    <div class="accent-bar" id="openingBar"></div>
+  </section>
+
+  <!-- SLIDE 2 — TAGLINE -->
+  <section class="slide tagline" data-slide="2">
+    <div class="pre">The Promise</div>
+    <h1>
+      <span class="word">Track</span>
+      <span class="word">the</span>
+      <span class="word">sample</span>
+      <span class="word">order</span><br />
+      <span class="word">journey</span>
+      <span class="word">in</span>
+      <span class="word accent strike">minutes,</span><br />
+      <span class="word">not</span>
+      <span class="word accent">hours.</span>
+    </h1>
+    <div class="caption">
+      <div class="eyebrow">From the home screen</div>
+      <p class="sub">The exact line that greets every visitor. No fluff. Just a promise the rest of the product keeps.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — LOGIN UI -->
+  <section class="slide" data-slide="3">
+    <div class="theme-toggle-mock">🌙</div>
+    <div class="ui-frame login-frame">
+      <div class="login-form">
+        <Image src={logoFull} alt="SwiftRace" class="logo-img" widths={[140, 280]} sizes="140px" style="margin:0 auto 8px;max-width:140px" />
+        <h3>Swiftrace Login</h3>
+        <div class="field-mock">
+          <span class="label">Email</span>
+          <div class="input" id="emailInput">admin@swiftrace.com</div>
+        </div>
+        <div class="field-mock">
+          <span class="label">Password</span>
+          <div class="input" id="pwInput">••••••••</div>
+        </div>
+        <button class="btn-primary" id="loginBtn" type="button">Login</button>
+      </div>
+      <div class="login-illust">
+        <div class="robot">
+          <div class="antenna"></div>
+          <div class="head">
+            <div class="eye l"></div>
+            <div class="eye r"></div>
+            <div class="mouth"></div>
+          </div>
+          <div class="arm l"></div>
+          <div class="arm r"></div>
+          <div class="body"></div>
+        </div>
+      </div>
+    </div>
+    <div class="devtools-pill">⚙ Dev Tools</div>
+    <div class="cursor" id="loginCursor" style="left:50%;top:50%">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M5 3l14 7-6 2-2 6-6-15z" fill="#0f766e" stroke="#fff" stroke-width="1.5" />
+      </svg>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 01 — Authentication</div>
+      <h2>One door. Three roles.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — DEV TOOLS POPOVER -->
+  <section class="slide" data-slide="4">
+    <div class="devtools-stage">
+      <div class="devtools-bg-hint">
+        // PORTFOLIO MODE<br />
+        // Quick-login as any role.<br />
+        // No typing required.
+      </div>
+      <div class="devtools-popover">
+        <div class="head">
+          <h4>Dev Tools</h4>
+          <span class="tag-pill">demo</span>
+        </div>
+        <p class="help">Quick-login as a seeded account so portfolio reviewers don't have to type anything.</p>
+        <div class="devtools-list">
+          <button class="devtools-option" type="button">
+            <span class="role-label">Admin</span>
+            <code>admin@swiftrace.com</code>
+          </button>
+          <button class="devtools-option" type="button">
+            <span class="role-label">Shipper</span>
+            <code>shipper@swiftrace.com</code>
+          </button>
+          <button class="devtools-option" type="button">
+            <span class="role-label">Customer</span>
+            <code>customer@swiftrace.com</code>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 02 — Built for reviewers</div>
+      <h2>One click. Any role.</h2>
+      <p class="sub">A built-in dev panel that quick-logs into any seeded account — so reviewers see the product in seconds, not minutes.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — DASHBOARD -->
+  <section class="slide" data-slide="5">
+    <div class="ui-frame dashboard-frame">
+      <div class="dash-header">
+        <div class="left">
+          <Image src={logoIcon} alt="SwiftRace" widths={[40, 80]} sizes="40px" style="width:40px;height:auto" />
+          <h4>Swiftrace Dashboard</h4>
+        </div>
+        <div class="user-chip">
+          Welcome Admin User
+          <svg width="10" height="10" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" /></svg>
+        </div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-sidebar">
+          <div class="nav-item active"><span class="ico">◉</span>Track Item</div>
+          <div class="nav-item"><span class="ico">+</span>Create User</div>
+          <div class="nav-item"><span class="ico">≡</span>Manage Users</div>
+          <div class="nav-item"><span class="ico">▤</span>Manage Shipments</div>
+        </div>
+        <div class="dash-main">
+          <div class="dash-hero">
+            <h1>Track the sample order journey in <span class="accent">minutes, not hours.</span></h1>
+          </div>
+          <div class="dash-card">
+            <div class="card-head">
+              <div>
+                <h5>Tracking quick view</h5>
+                <p class="muted">Paste a tracking code to preview shipment status.</p>
+              </div>
+              <span class="badge">Public</span>
+            </div>
+            <div class="field-mock" style="margin-top:8px">
+              <span class="label">Tracking number</span>
+              <div class="input-row">
+                <div class="input">SW1714371629903</div>
+                <button class="btn-primary" type="button">Find shipment</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 03 — The Dashboard</div>
+      <h2>Everything in one calm surface.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — PIPELINE -->
+  <section class="slide" data-slide="6">
+    <div class="pipeline-wrap">
+      <div class="pipeline-title">From warehouse <span class="accent">to doorstep.</span></div>
+      <div class="pipeline" id="pipeline">
+        <div class="stage-node done"><div class="circle">✓</div><div class="label">Preparing</div></div>
+        <div class="line filled"><div class="fill"></div></div>
+        <div class="stage-node done"><div class="circle">✓</div><div class="label">In Transit</div></div>
+        <div class="line filled"><div class="fill"></div></div>
+        <div class="stage-node current"><div class="circle">3</div><div class="label">Out for Delivery</div></div>
+        <div class="line"><div class="fill"></div></div>
+        <div class="stage-node"><div class="circle">4</div><div class="label">Delivered</div></div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 04 — The Pipeline</div>
+      <h2>Four stages. Zero guessing.</h2>
+      <p class="sub">A real-time status pipeline visible to the right people at the right time — admins, shippers, and the customer waiting on their package.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — MANAGE USERS -->
+  <section class="slide" data-slide="7">
+    <div class="ui-frame table-frame">
+      <div class="head">
+        <div>
+          <div class="eyebrow-mini">Admin tools</div>
+          <h5>Manage Users</h5>
+        </div>
+        <div class="pill-select">Filter by role: Admins
+          <svg width="10" height="10" viewBox="0 0 12 12"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" /></svg>
+        </div>
+      </div>
+      <table class="data">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="usersBody">
+          <tr>
+            <td><strong>Admin User</strong></td>
+            <td class="email">admin@swiftrace.com</td>
+            <td><span class="role-pill role-admin">Admin</span></td>
+            <td><span class="status-dot">Verified</span></td>
+            <td class="muted">5/13/2026</td>
+            <td><div class="row-actions"><button class="mini-btn edit" type="button">Edit</button><button class="mini-btn danger" type="button">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>Shipper User</strong></td>
+            <td class="email">shipper@swiftrace.com</td>
+            <td><span class="role-pill role-shipper">Shipper</span></td>
+            <td><span class="status-dot">Verified</span></td>
+            <td class="muted">5/13/2026</td>
+            <td><div class="row-actions"><button class="mini-btn edit" type="button">Edit</button><button class="mini-btn danger" type="button">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>Customer User</strong></td>
+            <td class="email">customer@swiftrace.com</td>
+            <td><span class="role-pill role-customer">Customer</span></td>
+            <td><span class="status-dot">Verified</span></td>
+            <td class="muted">5/13/2026</td>
+            <td><div class="row-actions"><button class="mini-btn edit" type="button">Edit</button><button class="mini-btn danger" type="button">Delete</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 05 — User Management</div>
+      <h2>Hide the IDs. Show the people.</h2>
+      <p class="sub">Edit roles, verify accounts, and remove access — without ever leaking an internal database ID into the UI.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — ROLES -->
+  <section class="slide" data-slide="8">
+    <div class="roles-grid">
+      <div class="role-card admin">
+        <div class="role-icon">◆</div>
+        <h6>Admin</h6>
+        <p class="role-desc">Full control of the operation.</p>
+        <div class="nav-preview">
+          <div class="label">Sidebar</div>
+          <div class="nav-mini active"><span>◉</span>Track Item</div>
+          <div class="nav-mini"><span>+</span>Create User</div>
+          <div class="nav-mini"><span>≡</span>Manage Users</div>
+          <div class="nav-mini"><span>▤</span>Manage Shipments</div>
+        </div>
+      </div>
+      <div class="role-card shipper">
+        <div class="role-icon">▲</div>
+        <h6>Shipper</h6>
+        <p class="role-desc">Focused on the floor.</p>
+        <div class="nav-preview">
+          <div class="label">Sidebar</div>
+          <div class="nav-mini active"><span>◉</span>Track Item</div>
+          <div class="nav-mini"><span>▤</span>View Shipments</div>
+        </div>
+      </div>
+      <div class="role-card customer">
+        <div class="role-icon">●</div>
+        <h6>Customer</h6>
+        <p class="role-desc">Just the tracking. None of the noise.</p>
+        <div class="nav-preview">
+          <div class="label">Sidebar</div>
+          <div class="nav-mini active"><span>◉</span>Track Item</div>
+          <div class="nav-mini"><span>+</span>Place Order</div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 06 — Three Realities</div>
+      <h2>One product. Three perfect surfaces.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 — PLACE ORDER -->
+  <section class="slide" data-slide="9">
+    <div class="order-frame">
+      <div class="head">
+        <div class="eyebrow-mini">Customer · Sample Order</div>
+        <h3>Place Sample Order</h3>
+        <p>Order a sample shipment to generate a tracking number.</p>
+      </div>
+      <form>
+        <div class="field-mock">
+          <span class="label">Destination</span>
+          <div class="input" id="destInput">Manila, PH</div>
+        </div>
+        <div class="field-mock">
+          <span class="label">Origin (optional)</span>
+          <div class="input" id="originInput">Warehouse</div>
+        </div>
+        <button class="btn-primary" id="createOrderBtn" type="button" style="align-self:flex-start">Create Sample Order</button>
+      </form>
+      <div class="order-result" id="orderResult">
+        <div>
+          <div class="ml">Tracking number generated</div>
+          <div class="mv">SW1714371629903</div>
+        </div>
+        <div class="copy-pill">Copied ✓</div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 07 — From order to tracking</div>
+      <h2>One form. One code. One source of truth.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 — TRACKING NUMBER -->
+  <section class="slide" data-slide="10">
+    <div class="track-display">
+      <div class="demo-tag">Sample tracking — preview only</div>
+      <div class="track-code" id="trackCode">
+        <span class="digit track-prefix">S</span><span class="digit track-prefix">W</span><span class="digit">1</span><span class="digit">7</span><span class="digit">1</span><span class="digit">4</span><span class="digit">3</span><span class="digit">7</span><span class="digit">1</span><span class="digit">6</span><span class="digit">2</span><span class="digit">9</span><span class="digit">9</span><span class="digit">0</span><span class="digit">3</span>
+      </div>
+      <div class="track-meta">
+        <div class="meta-card"><span class="ml">Origin</span><span class="mv">Warehouse</span></div>
+        <div class="meta-card"><span class="ml">Destination</span><span class="mv">Manila, PH</span></div>
+        <div class="meta-card"><span class="ml">Status</span><span class="mv"><span style="color:var(--orange)">Out for Delivery</span></span></div>
+        <div class="meta-card"><span class="ml">Updated</span><span class="mv"><span class="accent">just now</span></span></div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 08 — The Lookup</div>
+      <h2>One code. Total clarity.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 — DARK MODE -->
+  <section class="slide dark-scene" data-slide="11">
+    <div class="split">
+      <div class="ui-mini light">
+        <div class="mini-head">
+          <Image src={logoIcon} alt="" widths={[44, 88]} sizes="44px" class="mini-logo" />
+          <div class="toggle-icon">🌙</div>
+        </div>
+        <div>
+          <h3 class="mini-title">Swiftrace<br />Login</h3>
+          <span class="theme-marker">Light · Cream</span>
+        </div>
+        <div class="mini-card-row">
+          <div>
+            <div class="mini-label">Email</div>
+            <div class="mock-input">admin@swiftrace.com</div>
+          </div>
+          <div>
+            <div class="mini-label">Password</div>
+            <div class="mock-input">••••••••</div>
+          </div>
+          <div class="mock-btn">Login</div>
+        </div>
+      </div>
+      <div class="ui-mini dark">
+        <div class="mini-head">
+          <Image src={logoDark} alt="" widths={[44, 88]} sizes="44px" class="mini-logo" />
+          <div class="toggle-icon">☀️</div>
+        </div>
+        <div>
+          <h3 class="mini-title">Swiftrace<br />Login</h3>
+          <span class="theme-marker">Dark · Midnight</span>
+        </div>
+        <div class="mini-card-row">
+          <div>
+            <div class="mini-label">Email</div>
+            <div class="mock-input">admin@swiftrace.com</div>
+          </div>
+          <div>
+            <div class="mini-label">Password</div>
+            <div class="mock-input">••••••••</div>
+          </div>
+          <div class="mock-btn">Login</div>
+        </div>
+      </div>
+      <div class="vs-text">VS</div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Step 09 — Day &amp; Night</div>
+      <h2>The same product, before and after sunset.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — CLOSING -->
+  <section class="slide closing-scene" data-slide="12">
+    <div class="closing-logo" id="closingLogo">
+      <Image src={logoFull} alt="SwiftRace" class="logo-img logo-xl" widths={[240, 360, 480]} sizes="(max-width: 900px) 320px, 440px" />
+    </div>
+    <div class="closing-tag">Track. Ship. Deliver. Repeat.</div>
+    <div class="closing-cta-row">
+      <div class="closing-pill primary">swiftrace.vercel.app</div>
+      <div class="closing-pill ghost">See it live →</div>
+    </div>
+    <div class="closing-footer">
+      Swiftrace logistics dashboard. Ready for frontend integrations.
+    </div>
+  </section>
+
+</CinematicLayout>
+
+<style is:global>
+  /* =========================================================
+     SwiftRace cinematic — scene-specific styles
+     Layout/chrome lives in src/styles/cinematic.css.
+     ========================================================= */
+
+  /* OPENING ----------------------------------------------- */
+  .opening {
+    flex-direction: column;
+    background: radial-gradient(ellipse at top, #fff 0%, var(--bg) 50%, var(--bg-deep) 100%);
+    gap: 8px;
+  }
+  .opening .logo-wrap {
+    opacity: 0;
+    transform: scale(0.7) translateY(40px);
+    margin-top: 48px;
+    margin-bottom: 8px;
+  }
+  .opening .tag {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0;
+    opacity: 0;
+  }
+  .opening .accent-bar {
+    width: 0;
+    height: 4px;
+    background: var(--accent);
+    margin-top: 24px;
+    border-radius: 2px;
+  }
+  .opening .badge-row {
+    position: absolute;
+    top: 11cqh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 14px;
+    opacity: 0;
+  }
+  .opening .badge-pill {
+    padding: 8px 18px;
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    color: var(--muted);
+    box-shadow: var(--shadow-soft);
+  }
+  .opening .caption { display: none; }
+
+  /* TAGLINE ----------------------------------------------- */
+  .tagline {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 10cqw;
+    padding-right: 10cqw;
+  }
+  .tagline .pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .tagline h1 {
+    font-size: clamp(40px, 7cqw, 108px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .tagline h1 .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotateX(-30deg);
+    transform-origin: center bottom;
+  }
+  .tagline h1 .accent {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 600;
+  }
+  .tagline h1 .strike { position: relative; }
+  .tagline h1 .strike::after {
+    content: "";
+    position: absolute;
+    left: -4%;
+    right: -4%;
+    top: 55%;
+    height: 6px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+  }
+  .tagline.active h1 .strike::after { transform: scaleX(1); }
+
+  /* LOGIN ------------------------------------------------- */
+  .login-frame {
+    width: min(960px, 80cqw);
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+  }
+  .login-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 380px;
+  }
+  .login-form h3 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .login-illust {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .robot {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    animation: robot-bob 3s ease-in-out infinite;
+  }
+  @keyframes robot-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .robot .head {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 110px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #fff, #fff7ee);
+    border: 3px solid var(--ink);
+  }
+  .robot .eye {
+    position: absolute;
+    top: 38px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px #0f766e80;
+    animation: eye-blink 4s infinite;
+  }
+  .robot .eye.l { left: 25%; }
+  .robot .eye.r { right: 25%; }
+  @keyframes eye-blink {
+    0%, 90%, 100% { transform: scaleY(1); }
+    93% { transform: scaleY(0.1); }
+  }
+  .robot .mouth {
+    position: absolute;
+    left: 50%;
+    top: 70px;
+    transform: translateX(-50%);
+    width: 34px;
+    height: 8px;
+    border-radius: 0 0 12px 12px;
+    background: var(--ink);
+  }
+  .robot .antenna {
+    position: absolute;
+    left: 50%;
+    top: -22px;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 22px;
+    background: var(--ink);
+  }
+  .robot .antenna::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: -5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--orange);
+    animation: antenna-glow 1.5s ease-in-out infinite;
+  }
+  @keyframes antenna-glow {
+    0%, 100% { box-shadow: 0 0 16px #ff6b35cc; }
+    50% { box-shadow: 0 0 28px #ff6b35, 0 0 0 8px #ff6b3530; }
+  }
+  .robot .body {
+    position: absolute;
+    left: 50%;
+    top: 110px;
+    transform: translateX(-50%);
+    width: 170px;
+    height: 90px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: 3px solid var(--ink);
+    overflow: hidden;
+  }
+  .robot .body::before {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 8px;
+    border-radius: 4px;
+    background: #fff7ee66;
+  }
+  .robot .body::after {
+    content: "";
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 16px #ff6b35aa;
+  }
+  .robot .arm {
+    position: absolute;
+    width: 18px;
+    height: 50px;
+    border-radius: 9px;
+    background: var(--ink);
+    top: 130px;
+  }
+  .robot .arm.l {
+    left: 5%;
+    transform-origin: top center;
+    animation: arm-wave 2s ease-in-out infinite;
+  }
+  .robot .arm.r {
+    right: 5%;
+    transform-origin: top center;
+    animation: arm-wave 2s ease-in-out infinite reverse;
+  }
+  @keyframes arm-wave {
+    0%, 100% { transform: rotate(-8deg); }
+    50% { transform: rotate(8deg); }
+  }
+
+  .cursor {
+    position: absolute;
+    pointer-events: none;
+    z-index: 20;
+    width: 24px;
+    height: 24px;
+  }
+  .cursor svg { filter: drop-shadow(0 4px 8px #0003); }
+
+  .theme-toggle-mock {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: var(--shadow-soft);
+    z-index: 5;
+  }
+  .devtools-pill {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 18px;
+    background: var(--surface-88);
+    border: 1px solid #0f766e80;
+    border-radius: 999px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.04em;
+    box-shadow: 0 8px 24px #0f766e2e;
+    backdrop-filter: blur(14px);
+    z-index: 5;
+  }
+
+  /* DEV TOOLS POPOVER ------------------------------------- */
+  .devtools-stage {
+    position: relative;
+    width: min(900px, 80cqw);
+    height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .devtools-popover {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    padding: 22px;
+    background: var(--surface-88);
+    border: 1px solid var(--stroke);
+    border-radius: 18px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 24px 60px #0000003d;
+    z-index: 5;
+  }
+  .devtools-popover .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .devtools-popover h4 {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .devtools-popover .tag-pill {
+    background: #0f766e2e;
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+  }
+  .devtools-popover .help {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 8px 0 14px;
+  }
+  .devtools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .devtools-option {
+    border: 1px solid var(--stroke);
+    background: var(--surface-92);
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .devtools-option:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .devtools-option .role-label {
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  .devtools-option code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .devtools-bg-hint {
+    position: absolute;
+    left: 8%;
+    top: 20%;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    opacity: 0.4;
+    line-height: 1.8;
+  }
+
+  /* DASHBOARD --------------------------------------------- */
+  .dashboard-frame {
+    width: min(1100px, 88cqw);
+    height: min(680px, 72cqh);
+    display: flex;
+    flex-direction: column;
+  }
+  .dash-header {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+  }
+  .dash-header .left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .dash-header h4 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .dash-header .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--bg);
+    border: 1px solid var(--stroke);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .dash-body { flex: 1; display: flex; }
+  .dash-sidebar {
+    width: 240px;
+    border-right: 1px solid var(--stroke);
+    padding: 22px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface);
+  }
+  .nav-item {
+    padding: 11px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  .slide.active .nav-item { opacity: 1; transform: translateX(0); }
+  .nav-item .ico {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .nav-item.active {
+    background: #0f766e14;
+    color: var(--accent);
+  }
+  .nav-item.active .ico {
+    background: var(--accent);
+    color: #fff;
+  }
+  .dash-main {
+    flex: 1;
+    padding: 36px 40px;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow: hidden;
+  }
+  .dash-hero h1 {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    max-width: 520px;
+  }
+  .dash-hero h1 .accent { color: var(--accent); }
+  .dash-card {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .slide.active .dash-card {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s;
+  }
+  .dash-card .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+  .dash-card h5 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .dash-card p.muted {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .input-row .input {
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--surface-92);
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  /* PIPELINE ---------------------------------------------- */
+  .pipeline-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    align-items: center;
+  }
+  .pipeline-title {
+    font-size: clamp(32px, 5cqw, 68px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-align: center;
+  }
+  .pipeline-title .accent { color: var(--accent); }
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 36px 48px;
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+  .pipeline .stage-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 0 28px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .pipeline .stage-node .circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--muted);
+    transition: all 0.5s;
+  }
+  .pipeline .stage-node.done .circle {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 8px 24px #0f766e40;
+  }
+  .pipeline .stage-node.current .circle {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #fff;
+    box-shadow: 0 8px 24px #ff6b3580, 0 0 0 8px #ff6b3520;
+    transform: scale(1.1);
+  }
+  .pipeline .stage-node .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .pipeline .stage-node.done .label,
+  .pipeline .stage-node.current .label { color: var(--ink); }
+  .pipeline .line {
+    flex: 1;
+    height: 2px;
+    background: var(--stroke);
+    min-width: 60px;
+    position: relative;
+  }
+  .pipeline .line .fill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .pipeline .line.filled .fill { transform: scaleX(1); }
+
+  /* TABLE / MANAGE USERS ---------------------------------- */
+  .table-frame {
+    width: min(960px, 82cqw);
+    background: var(--surface-84);
+    border: 1px solid var(--stroke);
+    border-radius: 30px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .table-frame .head {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-frame .head h5 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .table-frame .head .eyebrow-mini {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .table-frame .head .pill-select {
+    padding: 8px 16px;
+    background: var(--bg);
+    border: 1px solid var(--stroke);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+  }
+  table.data th {
+    text-align: left;
+    padding: 14px 22px;
+    background: var(--bg);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 1px solid var(--stroke);
+  }
+  table.data td {
+    padding: 16px 22px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--stroke-soft);
+  }
+  table.data td.email {
+    font-family: var(--mono);
+    color: var(--muted);
+  }
+  table.data td.muted { color: var(--muted); }
+  table.data td .role-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+  .role-admin { background: #0f766e1f; color: var(--accent); }
+  .role-shipper { background: #ff6b351f; color: var(--orange); }
+  .role-customer { background: #1ba6e01f; color: #1ba6e0; }
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .status-dot::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .row-actions { display: flex; gap: 6px; }
+  .row-actions .mini-btn {
+    padding: 6px 14px;
+    font-size: 11px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    color: #fff;
+  }
+  .row-actions .mini-btn.edit { background: #007bff; }
+  .row-actions .mini-btn.danger { background: #dc3545; }
+  table.data tbody tr {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  /* ROLES ------------------------------------------------- */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    width: 88cqw;
+  }
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 22px;
+    padding: 32px 26px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .role-card .role-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .role-card.admin .role-icon { background: #0f766e1f; color: var(--accent); }
+  .role-card.shipper .role-icon { background: #ff6b351f; color: var(--orange); }
+  .role-card.customer .role-icon { background: #1ba6e01f; color: #1ba6e0; }
+  .role-card h6 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .role-card p.role-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .role-card .nav-preview {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--stroke);
+  }
+  .role-card .nav-preview .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .role-card .nav-preview .nav-mini {
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .role-card .nav-preview .nav-mini.active { background: #0f766e14; color: var(--accent); }
+  .role-card.shipper .nav-preview .nav-mini.active { background: #ff6b3514; color: var(--orange); }
+  .role-card.customer .nav-preview .nav-mini.active { background: #1ba6e014; color: #1ba6e0; }
+
+  /* ORDER FORM -------------------------------------------- */
+  .order-frame {
+    width: min(720px, 70cqw);
+    padding: 48px;
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .order-frame .head .eyebrow-mini {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .order-frame .head h3 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .order-frame .head p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .order-frame form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 6px;
+  }
+  .order-result {
+    margin-top: 16px;
+    padding: 18px 22px;
+    background: var(--bg);
+    border: 1px dashed var(--stroke);
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .order-result .ml {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .order-result .mv {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .order-result .copy-pill {
+    padding: 6px 12px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* TRACKING ---------------------------------------------- */
+  .track-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+  .track-code {
+    font-family: var(--mono);
+    font-size: clamp(28px, 5.5cqw, 88px);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.1;
+    max-width: 92cqw;
+    word-break: break-all;
+  }
+  .track-code .digit {
+    display: inline-block;
+    color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
+  }
+  .track-code .digit.track-prefix {
+    color: var(--orange);
+    -webkit-text-fill-color: var(--orange);
+    font-style: italic;
+  }
+  .demo-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    padding: 7px 16px;
+    border: 1px solid #0f766e66;
+    background: #0f766e14;
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    box-shadow: 0 4px 12px #0f766e1a;
+    margin-bottom: -12px;
+  }
+  .track-meta {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .meta-card {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    padding: 14px 22px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 160px;
+    text-align: left;
+    box-shadow: var(--shadow-soft);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .meta-card .ml {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .meta-card .mv {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .meta-card .mv .accent { color: var(--accent); }
+
+  /* DARK MODE COMPARE ------------------------------------- */
+  .dark-scene {
+    background: linear-gradient(135deg, var(--bg) 0%, var(--bg-deep) 50%, #1a1a1a 100%);
+  }
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    width: 88cqw;
+    max-width: 1100px;
+    position: relative;
+  }
+  .ui-mini {
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--stroke);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 420px;
+  }
+  .ui-mini.light { background: var(--surface); }
+  .ui-mini.dark {
+    background: #2a2a2a;
+    color: #f5f5f5;
+    border-color: #404040;
+  }
+  .ui-mini .mini-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ui-mini .mini-head .mini-logo { width: 44px; height: auto; }
+  .ui-mini .mini-head .toggle-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .ui-mini.dark .mini-head .toggle-icon {
+    background: #1a1a1a;
+    border-color: #404040;
+  }
+  .ui-mini h3.mini-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .ui-mini .mini-card-row {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ui-mini .mock-input {
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .ui-mini.dark .mock-input {
+    background: #1a1a1a;
+    border-color: #404040;
+    color: #a3a3a3;
+  }
+  .ui-mini .mock-btn {
+    padding: 12px 22px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+    color: #fff;
+    border-radius: 14px 4px 14px 4px;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: 0 10px 18px #0f766e33;
+    text-align: center;
+  }
+  .ui-mini .mini-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .ui-mini.dark .mini-label { color: #a3a3a3; }
+  .vs-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    padding: 8px 18px;
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    z-index: 10;
+  }
+  .theme-marker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--stroke);
+    background: var(--bg);
+    color: var(--muted);
+    margin-left: 8px;
+  }
+  .ui-mini.dark .theme-marker {
+    border-color: #404040;
+    background: #1a1a1a;
+    color: #a3a3a3;
+  }
+
+  /* CLOSING ----------------------------------------------- */
+  .closing-scene {
+    flex-direction: column;
+    background: radial-gradient(ellipse at top, #fff 0%, var(--bg) 40%, var(--bg-deep) 100%);
+  }
+  .closing-logo {
+    opacity: 0;
+    transform: scale(0.7) translateY(40px);
+    margin-bottom: 24px;
+  }
+  .closing-tag {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .closing-cta-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 36px;
+  }
+  .closing-pill {
+    padding: 14px 26px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .closing-pill.primary {
+    background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+    color: #fff;
+    box-shadow: 0 12px 32px #0f766e40;
+  }
+  .closing-pill.ghost {
+    border: 1px solid var(--stroke);
+    color: var(--ink);
+    background: var(--surface);
+  }
+  .closing-footer {
+    position: absolute;
+    bottom: 6cqh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .closing-scene .caption { display: none; }
+</style>
+
+<script is:inline>
+  // SwiftRace scene animations. Layered on top of the layout's slide nav.
+  // Listens for the layout's `cinematic:slide-changed` event and runs the
+  // matching scene animation. Layout is project-agnostic; this file is the
+  // only thing that knows about SwiftRace's specific slides.
+  (() => {
+    function whenReady(cb) {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') cb();
+      else document.addEventListener('DOMContentLoaded', cb, { once: true });
+    }
+
+    whenReady(() => {
+      if (typeof gsap === 'undefined') {
+        console.warn('GSAP not loaded — cinematic animations skipped');
+        return;
+      }
+
+      function $$(sel, root) { return (root || document).querySelectorAll(sel); }
+      function $(sel, root) { return (root || document).querySelector(sel); }
+
+      // ----- Per-slide animations -----
+      function animOpening(s) {
+        gsap.fromTo($('#openingLogo', s), { scale: 0.7, opacity: 0, y: 40 },
+          { scale: 1, opacity: 1, y: 0, duration: 1.2, ease: 'expo.out' });
+        gsap.fromTo($('#openingTag', s), { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, delay: 0.6, ease: 'power3.out' });
+        gsap.fromTo($('#openingBar', s), { width: 0 },
+          { width: 120, duration: 0.9, delay: 1, ease: 'power4.out' });
+        gsap.fromTo($('#openingBadges', s), { opacity: 0, y: -20 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 1.2, ease: 'power2.out' });
+      }
+
+      function animTagline(s) {
+        const words = $$('.word', s);
+        gsap.fromTo(words, { y: 40, opacity: 0, rotateX: -30 },
+          { y: 0, opacity: 1, rotateX: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' });
+      }
+
+      function animLogin(s) {
+        const cursor = $('#loginCursor', s);
+        const email = $('#emailInput', s);
+        const pw = $('#pwInput', s);
+        const btn = $('#loginBtn', s);
+        if (!cursor || !email || !pw || !btn) return;
+        email.classList.remove('focused');
+        pw.classList.remove('focused');
+
+        // Use bounding-rect deltas relative to the slide, divided by the
+        // canvas scale, so cursor positions stay in canvas-local pixel space.
+        function localPos(target, dx, dy) {
+          const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scale')) || 1;
+          const sRect = s.getBoundingClientRect();
+          const tRect = target.getBoundingClientRect();
+          return {
+            left: ((tRect.left - sRect.left) / scale) + dx + 'px',
+            top:  ((tRect.top  - sRect.top)  / scale) + dy + 'px'
+          };
+        }
+        gsap.set(cursor, { left: '50%', top: '50%', x: 0, y: 0 });
+        const p1 = localPos(email, 100, 18);
+        const p2 = localPos(pw, 100, 18);
+        const p3 = localPos(btn, 50, 22);
+        gsap.timeline()
+          .to(cursor, { left: p1.left, top: p1.top, duration: 1.2, ease: 'power3.inOut', delay: 0.7 })
+          .add(() => email.classList.add('focused'))
+          .to(cursor, { left: p2.left, top: p2.top, duration: 0.7, ease: 'power2.inOut', delay: 0.3 })
+          .add(() => { email.classList.remove('focused'); pw.classList.add('focused'); })
+          .to(cursor, { left: p3.left, top: p3.top, duration: 0.7, ease: 'power2.inOut', delay: 0.3 })
+          .to(btn, { scale: 0.95, duration: 0.1 })
+          .to(btn, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
+      }
+
+      function animDevtools(s) {
+        const opts = $$('.devtools-option', s);
+        gsap.fromTo($('.devtools-popover', s), { y: 30, scale: 0.95, opacity: 0 },
+          { y: 0, scale: 1, opacity: 1, duration: 0.7, delay: 0.3, ease: 'power3.out' });
+        gsap.fromTo(opts, { y: 8, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.12, delay: 0.8, ease: 'power2.out' });
+        gsap.fromTo($('.devtools-bg-hint', s), { opacity: 0 },
+          { opacity: 0.4, duration: 1.2, delay: 1.4 });
+      }
+
+      function animDashboard(s) {
+        const navItems = $$('.nav-item', s);
+        gsap.fromTo(navItems, { x: -20, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.5, stagger: 0.08, delay: 0.5, ease: 'power2.out' });
+      }
+
+      function animPipeline(s) {
+        const nodes = $$('.stage-node', s);
+        const lines = $$('.line', s);
+        gsap.set(nodes, { y: 20, opacity: 0 });
+        lines.forEach((l) => l.classList.remove('filled'));
+        gsap.timeline()
+          .to(nodes[0], { y: 0, opacity: 1, duration: 0.4, delay: 0.3 })
+          .add(() => lines[0].classList.add('filled'), '+=.1')
+          .to(nodes[1], { y: 0, opacity: 1, duration: 0.4 }, '+=.4')
+          .add(() => lines[1].classList.add('filled'), '+=.1')
+          .to(nodes[2], { y: 0, opacity: 1, duration: 0.4 }, '+=.4')
+          .to(nodes[3], { y: 0, opacity: 1, duration: 0.4 }, '+=.3');
+      }
+
+      function animTable(s) {
+        const rows = $$('table.data tbody tr', s);
+        gsap.fromTo(rows, { x: -20, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.4, stagger: 0.12, delay: 0.4, ease: 'power2.out' });
+      }
+
+      function animRoles(s) {
+        const cards = $$('.role-card', s);
+        gsap.fromTo(cards, { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, stagger: 0.15, delay: 0.3, ease: 'power3.out' });
+      }
+
+      function animOrder(s) {
+        const destInput = $('#destInput', s);
+        const originInput = $('#originInput', s);
+        const btn = $('#createOrderBtn', s);
+        const result = $('#orderResult', s);
+        if (!destInput || !originInput || !btn || !result) return;
+        gsap.set(result, { opacity: 0, y: 10 });
+        destInput.classList.remove('focused');
+        originInput.classList.remove('focused');
+        gsap.timeline()
+          .add(() => destInput.classList.add('focused'), '+=.5')
+          .add(() => { destInput.classList.remove('focused'); originInput.classList.add('focused'); }, '+=.8')
+          .add(() => originInput.classList.remove('focused'), '+=.6')
+          .to(btn, { scale: 0.95, duration: 0.12 }, '+=.3')
+          .to(btn, { scale: 1, duration: 0.2, ease: 'back.out(2)' })
+          .to(result, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '+=.1');
+      }
+
+      function animTrack(s) {
+        const digits = $$('.digit', s);
+        const meta = $$('.meta-card', s);
+        const demoTag = $('.demo-tag', s);
+        gsap.from(demoTag, { opacity: 0, y: -10, duration: 0.5, delay: 0.1, ease: 'power2.out' });
+        gsap.from(digits, { opacity: 0, y: 14, duration: 0.35, stagger: 0.04, delay: 0.25, ease: 'power2.out', clearProps: 'all' });
+        gsap.from(meta, { opacity: 0, y: 14, duration: 0.5, stagger: 0.08, delay: 1.0, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      function animDark(s) {
+        gsap.fromTo($('.ui-mini.light', s), { x: -30, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.7, delay: 0.3 });
+        gsap.fromTo($('.ui-mini.dark', s), { x: 30, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.7, delay: 0.5 });
+        gsap.fromTo($('.vs-text', s), { scale: 0, rotation: -90 },
+          { scale: 1, rotation: 0, duration: 0.6, delay: 0.9, ease: 'back.out(2)' });
+      }
+
+      function animClosing(s) {
+        gsap.fromTo($('#closingLogo', s), { scale: 0.7, opacity: 0, y: 40 },
+          { scale: 1, opacity: 1, y: 0, duration: 1.2, ease: 'expo.out' });
+        gsap.fromTo($('.closing-tag', s), { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, delay: 0.7, ease: 'power3.out' });
+        gsap.fromTo($('.closing-cta-row', s), { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, delay: 1, ease: 'power3.out' });
+        gsap.fromTo($('.closing-footer', s), { opacity: 0 },
+          { opacity: 1, duration: 0.7, delay: 1.4 });
+      }
+
+      const sceneMap = {
+        1: animOpening,
+        2: animTagline,
+        3: animLogin,
+        4: animDevtools,
+        5: animDashboard,
+        6: animPipeline,
+        7: animTable,
+        8: animRoles,
+        9: animOrder,
+        10: animTrack,
+        11: animDark,
+        12: animClosing,
+      };
+
+      document.addEventListener('cinematic:slide-changed', (e) => {
+        const { slide } = e.detail;
+        const num = +slide.dataset.slide;
+        const fn = sceneMap[num];
+        if (fn) fn(slide);
+      });
+    });
+  })();
+</script>
