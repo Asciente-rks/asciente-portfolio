@@ -35,6 +35,9 @@ export const h100Ecolodge: Project = {
   ],
 
   sourceUrl: 'https://github.com/Ecolodge-STI/EcoWeb',
+  cinematicUrl: '/cinematics/h100-ecolodge',
+  cinematicCaption:
+    'An 8-scene walkthrough of H100 Ecolodge — a real Philippine hospitality booking engine built as a school capstone. Storefront, catalog, booking flow, admin operations, audit trail. Click anywhere or press → / Space to advance.',
   thumbnail: 'H100/ADMIN_Login.png',
   gallery: [
     { src: 'H100/ADMIN_Login.png', caption: 'Admin login' },
