@@ -39,6 +39,9 @@ export const judgementCut: Project = {
   ],
   liveUrl: 'https://judgement-cut.vercel.app/',
   sourceUrl: 'https://github.com/Asciente-rks/judgement-cut',
+  cinematicUrl: '/cinematics/judgement-cut',
+  cinematicCaption:
+    'An 8-scene walkthrough of Judgement Cut — the daily-refreshed game-deals dashboard with native Philippine peso pricing. Click anywhere or press → / Space to advance.',
   thumbnail: 'JudgementCut/Login_JC.png',
   gallery: [
     { src: 'JudgementCut/Login_JC.png', caption: 'Login' },

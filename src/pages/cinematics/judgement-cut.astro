@@ -1,0 +1,1316 @@
+---
+import CinematicLayout from '../../layouts/CinematicLayout.astro';
+import { Image } from 'astro:assets';
+import logoMark from '../../assets/cinematics/judgement-cut-logo-mark.png';
+---
+
+<CinematicLayout
+  title="Judgement Cut — Cinematic"
+  brandName="Judgement Cut"
+  brandLogoIcon={logoMark}
+  brandMarkHeight={40}
+  totalSlides={8}
+  fontsUrl="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+>
+
+  <!-- SLIDE 1 — OPENING -->
+  <section class="slide jc-open active" data-slide="1">
+    <div class="bloom bloom-cyan"></div>
+    <div class="bloom bloom-gold"></div>
+    <div class="jc-open-inner">
+      <div class="jc-pre" id="openingPre">A daily intelligence dashboard</div>
+      <h1 class="jc-title">
+        <span class="jc-word">Judgement</span>
+        <span class="jc-word jc-amber">Cut.</span>
+      </h1>
+      <div class="jc-rule" id="openingRule"></div>
+      <div class="jc-tagline" id="openingTag">
+        The price you see is the price you pay.
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — THE PROBLEM -->
+  <section class="slide jc-problem" data-slide="2">
+    <div class="bloom bloom-cyan"></div>
+    <div class="jc-problem-inner">
+      <div class="jc-eyebrow">The problem</div>
+      <h2 class="jc-prob-line">
+        <span class="jc-word">Every</span>
+        <span class="jc-word">other</span>
+        <span class="jc-word">deal</span>
+        <span class="jc-word">site</span>
+        <span class="jc-word jc-strike">shows USD.</span>
+      </h2>
+      <h2 class="jc-prob-line jc-prob-line-2">
+        <span class="jc-word">Steam charges</span>
+        <span class="jc-word jc-amber">in pesos</span>
+        <span class="jc-word">at checkout.</span>
+      </h2>
+      <p class="jc-prob-note">
+        The mismatch costs you, every time.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — DASHBOARD HERO -->
+  <section class="slide jc-dash" data-slide="3">
+    <div class="bloom bloom-cyan small"></div>
+    <div class="bloom bloom-gold small"></div>
+    <div class="jc-dash-wrap">
+      <div class="jc-dash-head">
+        <div class="jc-storefront-row" id="storefrontRow">
+          <span class="jc-store-chip steam">Steam</span>
+          <span class="jc-store-chip gog">GOG</span>
+          <span class="jc-store-chip humble">Humble</span>
+          <span class="jc-store-chip epic">Epic</span>
+        </div>
+        <div class="jc-stamp">02:00 PHT · daily refresh</div>
+      </div>
+      <div class="jc-deal-grid" id="dealGrid">
+        <article class="jc-deal">
+          <div class="jc-deal-art art-1"><span class="jc-discount">−75%</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Hollow Knight</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱149</span>
+              <span class="jc-price-was">₱595</span>
+            </div>
+            <span class="jc-badge jc-badge-green">Steam PH price</span>
+          </div>
+        </article>
+        <article class="jc-deal">
+          <div class="jc-deal-art art-2"><span class="jc-discount">−60%</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Stardew Valley</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱180</span>
+              <span class="jc-price-was">₱450</span>
+            </div>
+            <span class="jc-badge jc-badge-green">Steam PH price</span>
+          </div>
+        </article>
+        <article class="jc-deal">
+          <div class="jc-deal-art art-3"><span class="jc-discount">−50%</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Hades</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱374</span>
+              <span class="jc-price-was">₱749</span>
+            </div>
+            <span class="jc-badge jc-badge-amber">USD est.</span>
+          </div>
+        </article>
+        <article class="jc-deal">
+          <div class="jc-deal-art art-4"><span class="jc-discount">−85%</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Disco Elysium</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱149</span>
+              <span class="jc-price-was">₱995</span>
+            </div>
+            <span class="jc-badge jc-badge-green">Steam PH price</span>
+          </div>
+        </article>
+        <article class="jc-deal">
+          <div class="jc-deal-art art-5"><span class="jc-discount">−40%</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Outer Wilds</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱358</span>
+              <span class="jc-price-was">₱595</span>
+            </div>
+            <span class="jc-badge jc-badge-green">Steam PH price</span>
+          </div>
+        </article>
+        <article class="jc-deal">
+          <div class="jc-deal-art art-6"><span class="jc-discount">FREE</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Epic Weekly</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱0</span>
+              <span class="jc-price-was">₱1,299</span>
+            </div>
+            <span class="jc-badge jc-badge-amber">USD est.</span>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">600 deals · 4 storefronts</div>
+      <h2>Every morning. Fresh from the source.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — PRICING HONESTY -->
+  <section class="slide jc-honesty" data-slide="4">
+    <div class="bloom bloom-cyan"></div>
+    <div class="jc-honesty-wrap">
+      <div class="jc-compare">
+        <article class="jc-deal jc-deal-large">
+          <div class="jc-deal-art art-1"><span class="jc-discount">−75%</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Hollow Knight</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱149</span>
+              <span class="jc-price-was">₱595</span>
+            </div>
+            <span class="jc-badge jc-badge-green jc-badge-lg">Steam PH price</span>
+          </div>
+        </article>
+        <div class="jc-vs">
+          <span class="jc-vs-line"></span>
+          <span class="jc-vs-text">honesty</span>
+          <span class="jc-vs-line"></span>
+        </div>
+        <article class="jc-deal jc-deal-large">
+          <div class="jc-deal-art art-3"><span class="jc-discount">−50%</span></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Hades</div>
+            <div class="jc-deal-prices">
+              <span class="jc-price-now">₱374</span>
+              <span class="jc-price-was">₱749</span>
+            </div>
+            <span class="jc-badge jc-badge-amber jc-badge-lg">USD est.</span>
+          </div>
+        </article>
+      </div>
+      <div class="jc-honesty-notes">
+        <div class="jc-honesty-note">
+          <span class="jc-honesty-dot dot-green"></span>
+          <strong>Steam PH price</strong> — fetched directly from Steam's regional API in pesos.
+        </div>
+        <div class="jc-honesty-note">
+          <span class="jc-honesty-dot dot-amber"></span>
+          <strong>USD est.</strong> — fallback when no native price exists. Honest about it.
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The differentiator</div>
+      <h2>Two badges. One promise.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — LIVE SEARCH -->
+  <section class="slide jc-search" data-slide="5">
+    <div class="bloom bloom-cyan"></div>
+    <div class="jc-search-wrap">
+      <div class="jc-search-bar">
+        <span class="jc-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="16" y1="16" x2="22" y2="22"/>
+          </svg>
+        </span>
+        <span class="jc-search-input" id="searchInput"></span>
+        <span class="jc-search-caret" id="searchCaret"></span>
+      </div>
+      <div class="jc-search-results" id="searchResults">
+        <article class="jc-deal jc-deal-narrow">
+          <div class="jc-deal-art art-1"></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Hollow Knight</div>
+            <div class="jc-deal-prices"><span class="jc-price-now">₱149</span><span class="jc-price-was">₱595</span></div>
+          </div>
+        </article>
+        <article class="jc-deal jc-deal-narrow">
+          <div class="jc-deal-art art-7"></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Hollow Knight: Silksong</div>
+            <div class="jc-deal-prices"><span class="jc-price-now">₱995</span></div>
+          </div>
+        </article>
+        <article class="jc-deal jc-deal-narrow">
+          <div class="jc-deal-art art-8"></div>
+          <div class="jc-deal-body">
+            <div class="jc-deal-title">Knight's Trial</div>
+            <div class="jc-deal-prices"><span class="jc-price-now">₱249</span><span class="jc-price-was">₱499</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Live lookup</div>
+      <h2>Type. Watch the world price itself.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — ARCHITECTURE -->
+  <section class="slide jc-arch" data-slide="6">
+    <div class="bloom bloom-cyan"></div>
+    <div class="bloom bloom-gold small"></div>
+    <div class="jc-arch-wrap">
+      <div class="jc-arch-time">
+        <span class="jc-arch-dot"></span>
+        02:00 PHT · every day
+      </div>
+      <div class="jc-arch-flow">
+        <div class="jc-arch-node" data-arch="1">
+          <div class="jc-arch-icon">⟳</div>
+          <div class="jc-arch-label">GitHub Actions</div>
+          <div class="jc-arch-sub">cron trigger</div>
+        </div>
+        <div class="jc-arch-edge"></div>
+        <div class="jc-arch-node" data-arch="2">
+          <div class="jc-arch-icon">🕷</div>
+          <div class="jc-arch-label">Zyte Spider</div>
+          <div class="jc-arch-sub">Scrapy · 4 storefronts</div>
+        </div>
+        <div class="jc-arch-edge"></div>
+        <div class="jc-arch-node" data-arch="3">
+          <div class="jc-arch-icon">λ</div>
+          <div class="jc-arch-label">AWS Lambda</div>
+          <div class="jc-arch-sub">FastAPI · enrich PHP</div>
+        </div>
+        <div class="jc-arch-edge"></div>
+        <div class="jc-arch-node" data-arch="4">
+          <div class="jc-arch-icon">▤</div>
+          <div class="jc-arch-label">TiDB Cloud</div>
+          <div class="jc-arch-sub">5 GB free · serverless</div>
+        </div>
+        <div class="jc-arch-edge"></div>
+        <div class="jc-arch-node final" data-arch="5">
+          <div class="jc-arch-icon">◉</div>
+          <div class="jc-arch-label">Frontend</div>
+          <div class="jc-arch-sub">React + Vite · Vercel</div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The daily machine</div>
+      <h2>Cron. Scrape. Enrich. Persist. Refresh.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — $0/MONTH -->
+  <section class="slide jc-cost" data-slide="7">
+    <div class="bloom bloom-gold"></div>
+    <div class="jc-cost-wrap">
+      <div class="jc-cost-list">
+        <div class="jc-cost-row"><span class="jc-cost-service">AWS Lambda · Function URL</span><span class="jc-cost-amount">$0</span></div>
+        <div class="jc-cost-row"><span class="jc-cost-service">TiDB Cloud · Serverless</span><span class="jc-cost-amount">$0</span></div>
+        <div class="jc-cost-row"><span class="jc-cost-service">Cloudflare R2 · zero-egress</span><span class="jc-cost-amount">$0</span></div>
+        <div class="jc-cost-row"><span class="jc-cost-service">Zyte Scrapy Cloud</span><span class="jc-cost-amount">$0</span></div>
+        <div class="jc-cost-row"><span class="jc-cost-service">Vercel Hobby</span><span class="jc-cost-amount">$0</span></div>
+      </div>
+      <div class="jc-cost-total">
+        <div class="jc-cost-total-label">Monthly total</div>
+        <div class="jc-cost-total-value">$0<span class="jc-cost-total-suffix">/month</span></div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Designed for forever</div>
+      <h2>Built to last. Built to cost nothing.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — CLOSING -->
+  <section class="slide jc-end" data-slide="8">
+    <div class="bloom bloom-cyan"></div>
+    <div class="bloom bloom-gold"></div>
+    <div class="jc-end-inner">
+      <div class="jc-end-pre">judgement-cut.vercel.app</div>
+      <h1 class="jc-title jc-title-end">
+        <span class="jc-word">Judgement</span>
+        <span class="jc-word jc-amber">Cut.</span>
+      </h1>
+      <div class="jc-rule"></div>
+      <p class="jc-end-tag">The price you see is the price you pay.</p>
+    </div>
+  </section>
+
+</CinematicLayout>
+
+<style is:global>
+  /* =========================================================
+     Judgement Cut — dark navy / cyan / gold tactical theme
+     Overrides cinematic.css's default warm theme.
+     ========================================================= */
+
+  :root {
+    /* Re-theme the shared variables so all shared chrome inherits the new palette. */
+    --bg:         #061625;
+    --bg-deep:    #0a2136;
+    --surface:    #0f3b58;
+    --surface-92: #0f3b58eb;
+    --surface-88: #0f3b58e0;
+    --surface-84: #0f3b58d6;
+    --ink:        #e7f2ff;
+    --muted:      #8da6ba;
+    --accent:     #5cc4ff;
+    --accent-deep:#3ba6e3;
+    --accent-2:   #8dd7ff;
+    --orange:     #d4b06c;
+    --stroke:     #1c4866;
+    --stroke-soft:#1c486666;
+    --green:      #5cc4ff;
+    --display:    "Cinzel Decorative", "Cinzel", serif;
+    --mono:       "Rajdhani", sans-serif;
+    --jc-cyan:    #5cc4ff;
+    --jc-cyan-2:  #8dd7ff;
+    --jc-gold:    #d4b06c;
+    --jc-gold-2:  #f2d28b;
+    --jc-ink:     #061625;
+    --jc-deep:    #0e2f4a;
+    --jc-aegis:   #164f72;
+    --jc-steel:   #8da6ba;
+  }
+
+  /* Override body backgrounds completely — replace cream/teal blooms with
+     deep navy + cyan/gold blooms and a tactical crosshatch grid. */
+  body {
+    background:
+      radial-gradient(at 15% 15%, #1d4d7a55 0%, transparent 45%),
+      radial-gradient(at 85% 10%, #5c4a2255 0%, transparent 50%),
+      radial-gradient(at 50% 100%, #0e2f4a 0%, transparent 60%),
+      linear-gradient(180deg, var(--jc-ink) 0%, #0a2136 50%, #0e2f4a 100%) !important;
+    font-family: "Rajdhani", sans-serif;
+    color: var(--ink);
+  }
+  body::after {
+    /* Crosshatch grid — tactical HUD feel */
+    background-image:
+      linear-gradient(to right,  #5cc4ff14 1px, transparent 1px),
+      linear-gradient(to bottom, #5cc4ff14 1px, transparent 1px) !important;
+    background-size: 64px 64px !important;
+  }
+  body::before {
+    /* Subtle grain — keep but tone down further on this dark theme */
+    opacity: 0.2 !important;
+  }
+
+  /* Brand mark text — slightly different style on navy bg */
+  .brand-mark span {
+    color: var(--jc-cyan-2);
+    font-family: var(--display);
+    text-shadow: 0 0 12px #5cc4ff55;
+    letter-spacing: 0.04em;
+  }
+
+  /* Progress dots — re-color */
+  .progress .dot { background: #e7f2ff22; }
+  .progress .dot.done { background: #5cc4ff66; }
+  .progress .dot.active { background: var(--jc-cyan); box-shadow: 0 0 12px #5cc4ff80; }
+
+  /* Slide-num + controls re-color */
+  .slide-num { color: var(--jc-steel); }
+  .ctrl {
+    background: #0e2f4ad6;
+    border-color: var(--stroke);
+    color: var(--ink);
+  }
+  .ctrl:hover {
+    background: var(--jc-aegis);
+    border-color: var(--jc-cyan);
+    color: var(--jc-cyan-2);
+  }
+  .ctrl .key {
+    background: #061625;
+    border-color: var(--stroke);
+    color: var(--jc-steel);
+  }
+
+  /* Mobile nav re-color */
+  .mobile-nav button {
+    background: #0e2f4a;
+    border-color: var(--stroke);
+    color: var(--jc-cyan-2);
+    box-shadow: 0 8px 24px #00000066;
+  }
+  .mobile-nav button:active {
+    background: var(--jc-cyan);
+    color: var(--jc-ink);
+    border-color: var(--jc-cyan);
+  }
+  .mobile-nav .progress-mini {
+    background: #0e2f4a;
+    border-color: var(--stroke);
+    color: var(--jc-steel);
+  }
+
+  /* Caption chrome — re-color */
+  .caption .eyebrow {
+    color: var(--jc-cyan-2);
+    border-color: #5cc4ff40;
+    background: #5cc4ff14;
+    font-family: var(--mono);
+    font-weight: 700;
+  }
+  .caption h2 {
+    font-family: var(--display);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .caption p.sub { color: var(--jc-steel); font-family: var(--mono); font-weight: 400; }
+
+  /* =========================================================
+     Decorative blooms — reusable across slides
+     ========================================================= */
+  .bloom {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(60px);
+    opacity: 0.55;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .bloom-cyan {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #5cc4ff 0%, transparent 70%);
+    top: -10%; left: -8%;
+  }
+  .bloom-gold {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, #d4b06c 0%, transparent 70%);
+    top: -5%; right: -10%;
+  }
+  .bloom.small { width: 320px; height: 320px; filter: blur(45px); opacity: 0.4; }
+
+  /* Shared cyan/gold accent helpers */
+  .jc-cyan-text { color: var(--jc-cyan-2); }
+  .jc-amber { color: var(--jc-gold-2); }
+  .jc-strike { position: relative; }
+  .jc-strike::after {
+    content: "";
+    position: absolute;
+    left: -4%; right: -4%;
+    top: 55%;
+    height: 6px;
+    background: var(--jc-gold);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+    box-shadow: 0 0 12px #d4b06c80;
+  }
+  .slide.active .jc-strike::after { transform: scaleX(1); }
+
+  /* Shared rule line + tagline + eyebrow */
+  .jc-rule {
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--jc-cyan), transparent);
+    margin: 28px auto;
+    box-shadow: 0 0 18px #5cc4ff80;
+  }
+  .jc-eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--jc-cyan-2);
+    font-weight: 700;
+    margin-bottom: 22px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .jc-eyebrow {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+  }
+
+  .jc-word { display: inline-block; }
+
+  /* =========================================================
+     SLIDE 1 — Opening
+     ========================================================= */
+  .jc-open { flex-direction: column; }
+  .jc-open-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 1100px;
+    padding: 0 4cqw;
+  }
+  .jc-pre {
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--jc-steel);
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .jc-title {
+    font-family: var(--display);
+    font-size: clamp(64px, 12cqw, 168px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-shadow: 0 0 40px #5cc4ff40, 0 0 80px #5cc4ff20;
+  }
+  .jc-title .jc-word {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .jc-tagline {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: clamp(16px, 1.6cqw, 24px);
+    color: var(--jc-cyan-2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  /* =========================================================
+     SLIDE 2 — Problem
+     ========================================================= */
+  .jc-problem {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 10cqw;
+    padding-right: 10cqw;
+  }
+  .jc-problem-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .jc-prob-line {
+    font-family: var(--display);
+    font-size: clamp(40px, 6cqw, 88px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .jc-prob-line .jc-word {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .jc-prob-line-2 { margin-top: 8px; }
+  .jc-prob-note {
+    margin-top: 32px;
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--jc-steel);
+    font-size: clamp(14px, 1.3cqw, 20px);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .jc-prob-note {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.5s;
+  }
+  .jc-problem .caption { display: none; }
+
+  /* =========================================================
+     SLIDE 3 — Dashboard grid + SHARED .jc-deal card styles
+     ========================================================= */
+  .jc-dash-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .jc-dash-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .jc-storefront-row { display: flex; gap: 10px; opacity: 0; }
+  .jc-store-chip {
+    padding: 7px 14px;
+    background: #0e2f4ad6;
+    border: 1px solid var(--stroke);
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--jc-cyan-2);
+    backdrop-filter: blur(8px);
+  }
+  .jc-store-chip.gog { color: #c79bff; border-color: #c79bff40; }
+  .jc-store-chip.humble { color: #ff8888; border-color: #ff888840; }
+  .jc-store-chip.epic { color: var(--jc-steel); }
+  .jc-stamp {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--jc-steel);
+    padding: 7px 14px;
+    border: 1px solid var(--stroke);
+    border-radius: 999px;
+    background: #0e2f4ad6;
+    backdrop-filter: blur(8px);
+  }
+  .jc-deal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  /* Shared deal card (used across slides 3, 4, 5) */
+  .jc-deal {
+    background: linear-gradient(180deg, #0e2f4adb 0%, #0a2136db 100%);
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 32px #00000080, inset 0 1px 0 #5cc4ff15;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .slide.active .jc-deal { opacity: 1; transform: translateY(0); }
+  .jc-deal-art {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+  .jc-deal-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, #061625dd 100%);
+  }
+  /* Each art tile uses gradients to simulate a game art thumbnail. */
+  .art-1 { background: linear-gradient(135deg, #2a4a3d 0%, #0e2f1d 50%, #061a10 100%); }
+  .art-2 { background: linear-gradient(135deg, #4d4632 0%, #2e2a1d 50%, #1c1a14 100%); }
+  .art-3 { background: linear-gradient(135deg, #3d243a 0%, #2a1623 50%, #1a0e16 100%); }
+  .art-4 { background: linear-gradient(135deg, #3b3823 0%, #2a2818 50%, #181811 100%); }
+  .art-5 { background: linear-gradient(135deg, #1c3c4d 0%, #112835 50%, #091820 100%); }
+  .art-6 { background: linear-gradient(135deg, #1d2e44 0%, #122035 50%, #08111e 100%); }
+  .art-7 { background: linear-gradient(135deg, #4a2436 0%, #2e1620 50%, #1a0c14 100%); }
+  .art-8 { background: linear-gradient(135deg, #2a3a4d 0%, #1a2535 50%, #0c1520 100%); }
+
+  .jc-discount {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    padding: 6px 10px;
+    background: linear-gradient(180deg, var(--jc-gold-2), var(--jc-gold));
+    color: var(--jc-ink);
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px #d4b06c55;
+  }
+  .jc-deal-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .jc-deal-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .jc-deal-prices {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .jc-price-now {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--jc-cyan-2);
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 12px #5cc4ff40;
+  }
+  .jc-price-was {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--jc-steel);
+    text-decoration: line-through;
+    text-decoration-color: #8da6ba80;
+  }
+
+  .jc-badge {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .jc-badge-green {
+    background: #5cc4ff22;
+    color: var(--jc-cyan-2);
+    border: 1px solid #5cc4ff44;
+    box-shadow: 0 0 12px #5cc4ff15;
+  }
+  .jc-badge-amber {
+    background: #d4b06c22;
+    color: var(--jc-gold-2);
+    border: 1px solid #d4b06c44;
+    box-shadow: 0 0 12px #d4b06c15;
+  }
+  .jc-badge-lg {
+    padding: 6px 14px;
+    font-size: 11px;
+  }
+
+  /* =========================================================
+     SLIDE 4 — Pricing Honesty
+     ========================================================= */
+  .jc-honesty { flex-direction: column; }
+  .jc-honesty-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1000px, 88cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
+  }
+  .jc-compare {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    width: 100%;
+  }
+  .jc-deal-large { flex: 1; max-width: 380px; }
+  .jc-deal-large .jc-deal-art { aspect-ratio: 4 / 3; }
+  .jc-deal-large .jc-deal-title { font-size: 20px; }
+  .jc-deal-large .jc-price-now { font-size: 28px; }
+  .jc-vs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    opacity: 0;
+  }
+  .jc-vs-line {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--jc-cyan), transparent);
+  }
+  .jc-vs-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--jc-cyan-2);
+    font-weight: 700;
+  }
+  .jc-honesty-notes {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--jc-steel);
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .jc-honesty-notes {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.0s;
+  }
+  .jc-honesty-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0e2f4ad6;
+    border: 1px solid var(--stroke);
+    padding: 12px 18px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    max-width: 440px;
+  }
+  .jc-honesty-note strong { color: var(--jc-cyan-2); font-weight: 700; }
+  .jc-honesty-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green { background: var(--jc-cyan); box-shadow: 0 0 12px var(--jc-cyan); }
+  .dot-amber { background: var(--jc-gold); box-shadow: 0 0 12px var(--jc-gold); }
+  .jc-honesty-note:nth-child(2) strong { color: var(--jc-gold-2); }
+
+  /* =========================================================
+     SLIDE 5 — Live Search
+     ========================================================= */
+  .jc-search { flex-direction: column; }
+  .jc-search-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(720px, 80cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .jc-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    background: #0e2f4adb;
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 0 0 #5cc4ff00, 0 12px 40px #00000080;
+    transition: box-shadow 0.3s;
+  }
+  .jc-search-bar.focused {
+    border-color: #5cc4ff66;
+    box-shadow: 0 0 0 4px #5cc4ff20, 0 12px 40px #5cc4ff20;
+  }
+  .jc-search-icon {
+    color: var(--jc-cyan-2);
+    display: flex;
+    align-items: center;
+  }
+  .jc-search-input {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--ink);
+    flex: 1;
+    letter-spacing: 0.02em;
+    min-height: 28px;
+  }
+  .jc-search-caret {
+    display: inline-block;
+    width: 2px;
+    height: 22px;
+    background: var(--jc-cyan);
+    animation: jc-blink 1s infinite;
+  }
+  @keyframes jc-blink { 50% { opacity: 0; } }
+  .jc-search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .jc-deal-narrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px;
+  }
+  .jc-deal-narrow .jc-deal-art {
+    width: 100px;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+    border-radius: 8px;
+  }
+  .jc-deal-narrow .jc-deal-body {
+    flex: 1;
+    padding: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .jc-deal-narrow .jc-deal-title { font-size: 16px; }
+  .jc-deal-narrow .jc-price-now { font-size: 18px; }
+
+  /* =========================================================
+     SLIDE 6 — Architecture
+     ========================================================= */
+  .jc-arch { flex-direction: column; }
+  .jc-arch-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1200px, 94cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    align-items: center;
+  }
+  .jc-arch-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: #0e2f4ad6;
+    border: 1px solid var(--stroke);
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.24em;
+    color: var(--jc-cyan-2);
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+  }
+  .jc-arch-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--jc-cyan);
+    box-shadow: 0 0 12px var(--jc-cyan);
+    animation: jc-pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes jc-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  .jc-arch-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+  }
+  .jc-arch-node {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 12px;
+    background: linear-gradient(180deg, #0e2f4ad6 0%, #0a2136d6 100%);
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px #00000080;
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .jc-arch-node.final {
+    border-color: #5cc4ff44;
+    box-shadow: 0 12px 32px #5cc4ff20, 0 0 0 1px #5cc4ff22 inset;
+  }
+  .jc-arch-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #164f72, #0e2f4a);
+    border: 1px solid #5cc4ff33;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--jc-cyan-2);
+    box-shadow: 0 0 18px #5cc4ff30 inset;
+  }
+  .jc-arch-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .jc-arch-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--jc-steel);
+    text-align: center;
+  }
+  .jc-arch-edge {
+    flex: 0 0 32px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--jc-cyan) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.6s;
+    align-self: center;
+    transform: translateY(28px); /* offset to align with node centers */
+  }
+  .jc-arch-edge.lit { opacity: 0.8; }
+
+  /* =========================================================
+     SLIDE 7 — Cost
+     ========================================================= */
+  .jc-cost { flex-direction: column; }
+  .jc-cost-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(720px, 78cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .jc-cost-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .jc-cost-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    background: #0e2f4ad6;
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  .jc-cost-service {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .jc-cost-amount {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--jc-cyan-2);
+    text-shadow: 0 0 12px #5cc4ff40;
+  }
+  .jc-cost-total {
+    margin-top: 10px;
+    padding: 26px 32px;
+    background: linear-gradient(135deg, #164f72 0%, #0e2f4a 50%, #061625 100%);
+    border: 1px solid #5cc4ff55;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 0 60px #5cc4ff25, 0 18px 60px #00000080;
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  .jc-cost-total-label {
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--jc-steel);
+    font-weight: 700;
+  }
+  .jc-cost-total-value {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(48px, 6cqw, 86px);
+    color: var(--jc-gold-2);
+    text-shadow: 0 0 28px #d4b06c80;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .jc-cost-total-suffix {
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--jc-steel);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    text-shadow: none;
+  }
+
+  /* =========================================================
+     SLIDE 8 — Closing
+     ========================================================= */
+  .jc-end { flex-direction: column; }
+  .jc-end-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .jc-end-pre {
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--jc-cyan-2);
+    margin-bottom: 24px;
+    text-shadow: 0 0 12px #5cc4ff60;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .jc-title-end {
+    font-size: clamp(48px, 9cqw, 128px);
+  }
+  .jc-end-tag {
+    margin-top: 28px;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(18px, 1.8cqw, 26px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .jc-end .caption { display: none; }
+
+  /* Mobile / small viewport adjustments — rare since CSS zoom handles most. */
+  @container stage (max-width: 700px) {
+    .jc-deal-grid { grid-template-columns: repeat(2, 1fr); }
+    .jc-compare { flex-direction: column; gap: 14px; }
+    .jc-vs { flex-direction: row; }
+    .jc-arch-flow { flex-direction: column; gap: 12px; }
+    .jc-arch-edge { width: 2px; height: 24px; background: linear-gradient(180deg, transparent 0%, var(--jc-cyan) 50%, transparent 100%); transform: none; }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    function whenReady(cb) {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') cb();
+      else document.addEventListener('DOMContentLoaded', cb, { once: true });
+    }
+
+    whenReady(() => {
+      if (typeof gsap === 'undefined') {
+        console.warn('GSAP not loaded — animations skipped');
+        return;
+      }
+
+      function $$(sel, root) { return (root || document).querySelectorAll(sel); }
+      function $(sel, root) { return (root || document).querySelector(sel); }
+
+      // ----- SLIDE 1: OPENING -----
+      function animOpen(s) {
+        const words = $$('.jc-title .jc-word', s);
+        gsap.fromTo($('.jc-pre', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.9, stagger: 0.18, delay: 0.3, ease: 'expo.out' });
+        gsap.fromTo('#openingRule', { width: 0 },
+          { width: 220, duration: 0.9, delay: 1.2, ease: 'power3.out' });
+        gsap.fromTo($('.jc-tagline', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 1.6, ease: 'power3.out' });
+      }
+
+      // ----- SLIDE 2: PROBLEM -----
+      function animProblem(s) {
+        const wordsL1 = $$('.jc-prob-line .jc-word', s);
+        gsap.fromTo(wordsL1, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, delay: 0.4, ease: 'back.out(1.4)' });
+      }
+
+      // ----- SLIDE 3: DASHBOARD -----
+      function animDash(s) {
+        gsap.fromTo($('.jc-storefront-row', s), { opacity: 0, y: -12 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
+        gsap.fromTo($('.jc-stamp', s), { opacity: 0, y: -12 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.35, ease: 'power3.out' });
+        gsap.fromTo($$('.jc-deal', s), { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, delay: 0.5, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 4: PRICING HONESTY -----
+      function animHonesty(s) {
+        gsap.fromTo($$('.jc-compare .jc-deal', s)[0], { opacity: 0, x: -30 },
+          { opacity: 1, x: 0, duration: 0.7, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+        gsap.fromTo($('.jc-vs', s), { opacity: 0, scale: 0.6 },
+          { opacity: 1, scale: 1, duration: 0.6, delay: 0.7, ease: 'back.out(2)' });
+        gsap.fromTo($$('.jc-compare .jc-deal', s)[1], { opacity: 0, x: 30 },
+          { opacity: 1, x: 0, duration: 0.7, delay: 0.85, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 5: LIVE SEARCH -----
+      function animSearch(s) {
+        const bar = $('.jc-search-bar', s);
+        const input = $('#searchInput', s);
+        const caret = $('#searchCaret', s);
+        const results = $$('.jc-search-results .jc-deal', s);
+        const text = 'hollow knight';
+
+        bar.classList.remove('focused');
+        input.textContent = '';
+        gsap.set(results, { opacity: 0, y: 12 });
+
+        let i = 0;
+        function typeChar() {
+          if (i < text.length) {
+            input.textContent = text.slice(0, ++i);
+            setTimeout(typeChar, 80 + Math.random() * 60);
+          } else {
+            // Hide caret after typing
+            setTimeout(() => { if (caret) caret.style.display = 'none'; }, 400);
+            gsap.to(results, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, delay: 0.3, ease: 'power3.out' });
+          }
+        }
+        setTimeout(() => {
+          if (caret) caret.style.display = 'inline-block';
+          bar.classList.add('focused');
+          setTimeout(typeChar, 200);
+        }, 500);
+      }
+
+      // ----- SLIDE 6: ARCHITECTURE -----
+      function animArch(s) {
+        const nodes = $$('.jc-arch-node', s);
+        const edges = $$('.jc-arch-edge', s);
+        gsap.fromTo($('.jc-arch-time', s), { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
+
+        edges.forEach((e) => e.classList.remove('lit'));
+        const tl = gsap.timeline({ delay: 0.5 });
+        nodes.forEach((node, i) => {
+          tl.to(node, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, i === 0 ? 0 : '+=.15');
+          if (edges[i]) {
+            tl.add(() => edges[i].classList.add('lit'), '+=.1');
+          }
+        });
+      }
+
+      // ----- SLIDE 7: COST -----
+      function animCost(s) {
+        gsap.fromTo($$('.jc-cost-row', s), { opacity: 0, x: -12 },
+          { opacity: 1, x: 0, duration: 0.4, stagger: 0.12, delay: 0.3, ease: 'power3.out' });
+        gsap.fromTo($('.jc-cost-total', s), { opacity: 0, scale: 0.92 },
+          { opacity: 1, scale: 1, duration: 0.7, delay: 1.0, ease: 'back.out(1.6)' });
+      }
+
+      // ----- SLIDE 8: CLOSING -----
+      function animEnd(s) {
+        const words = $$('.jc-title .jc-word', s);
+        gsap.fromTo($('.jc-end-pre', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.9, stagger: 0.18, delay: 0.3, ease: 'expo.out' });
+        gsap.fromTo($('.jc-rule', s), { width: 0 },
+          { width: 220, duration: 0.9, delay: 1.2, ease: 'power3.out' });
+        gsap.fromTo($('.jc-end-tag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 1.6, ease: 'power3.out' });
+      }
+
+      const sceneMap = {
+        1: animOpen,
+        2: animProblem,
+        3: animDash,
+        4: animHonesty,
+        5: animSearch,
+        6: animArch,
+        7: animCost,
+        8: animEnd,
+      };
+
+      document.addEventListener('cinematic:slide-changed', (e) => {
+        const { slide } = e.detail;
+        const num = +slide.dataset.slide;
+        const fn = sceneMap[num];
+        if (fn) fn(slide);
+      });
+    });
+  })();
+</script>

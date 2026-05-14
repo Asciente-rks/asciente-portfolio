@@ -254,9 +254,12 @@ body::before {
 }
 
 .brand-mark img {
-  width: 38px;
-  height: auto;
+  height: var(--brand-mark-h, 38px);
+  width: auto;
   display: block;
+  /* Cap width for very wide logos so they don't push the brand text off-screen */
+  max-width: calc(var(--brand-mark-h, 38px) * 4);
+  object-fit: contain;
 }
 
 /* Logo sizing utilities ---------------------------------- */

@@ -31,9 +31,27 @@ export interface Props {
   brandName: string;
   brandLogoIcon: ImageMetadata;
   totalSlides: number;
+  /**
+   * Optional Google Fonts URL — pass a project-specific font set so we don't
+   * bloat every cinematic with fonts it doesn't use. Defaults to Bricolage
+   * Grotesque + Space Mono (the SwiftRace warm-editorial palette).
+   */
+  fontsUrl?: string;
+  /**
+   * Optional brand mark icon height in px (default 38). Use a smaller value
+   * for logos that look soft when enlarged.
+   */
+  brandMarkHeight?: number;
 }
 
-const { title, brandName, brandLogoIcon, totalSlides } = Astro.props;
+const {
+  title,
+  brandName,
+  brandLogoIcon,
+  totalSlides,
+  fontsUrl = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Space+Mono:wght@400;700&display=swap',
+  brandMarkHeight = 38,
+} = Astro.props;
 const initialLabel = `01 / ${String(totalSlides).padStart(2, '0')}`;
 ---
 
@@ -48,10 +66,7 @@ const initialLabel = `01 / ${String(totalSlides).padStart(2, '0')}`;
   <!-- Font preconnect + load — Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Space+Mono:wght@400;700&display=swap"
-  />
+  <link rel="stylesheet" href={fontsUrl} />
 
   <!-- GSAP for slide animations -->
   <script
@@ -71,8 +86,8 @@ const initialLabel = `01 / ${String(totalSlides).padStart(2, '0')}`;
   <!-- Fixed 1440x900 design canvas -->
   <div class="canvas" id="canvas">
 
-    <div class="brand-mark">
-      <Image src={brandLogoIcon} alt={brandName} widths={[40, 80]} sizes="40px" loading="eager" />
+    <div class="brand-mark" style={`--brand-mark-h:${brandMarkHeight}px`}>
+      <Image src={brandLogoIcon} alt={brandName} widths={[brandMarkHeight * 2, brandMarkHeight * 4]} sizes={`${brandMarkHeight}px`} loading="eager" />
       <span>{brandName}</span>
     </div>
 
