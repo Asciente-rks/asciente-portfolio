@@ -880,6 +880,10 @@ import logoIcon from '../../assets/cinematics/system-pulse-icon.png';
     opacity: 0;
     transform: translateX(-12px);
   }
+  /* Once the slide is active, rows are visible by default. GSAP briefly
+     overrides to 0 then animates them in; `clearProps: 'all'` clears the
+     inline styles afterwards and these rules keep them on screen. */
+  .slide.active .sp-system { opacity: 1; transform: translateX(0); }
   .sp-status-dot {
     width: 10px; height: 10px;
     border-radius: 50%;
@@ -976,6 +980,8 @@ import logoIcon from '../../assets/cinematics/system-pulse-icon.png';
     transform: translateX(-8px);
   }
   .sp-perm-row:last-child { border-bottom: 0; }
+  /* Active-slide override — see comment under .sp-system above */
+  .slide.active .sp-perm-row { opacity: 1; transform: translateX(0); }
   .sp-perm-label {
     font-family: var(--mono);
     font-size: 13px;
