@@ -31,6 +31,9 @@ export const serviceTicketSystem: Project = {
   ],
   liveUrl: 'https://service-ticket-system-frontend.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/service-ticket-system',
+  cinematicUrl: '/cinematics/service-ticket-system',
+  cinematicCaption:
+    'An 8-scene walkthrough of the Service Ticket System — internal IT/QA defect tracker with a six-status lifecycle, four roles, and an immutable approval audit trail. Click anywhere or press → / Space to advance.',
   thumbnail: 'ServiceTicket/Login_STS.png',
   gallery: [
     { src: 'ServiceTicket/Login_STS.png', caption: 'Login' },
