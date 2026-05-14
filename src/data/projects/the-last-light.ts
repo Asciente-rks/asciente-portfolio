@@ -31,6 +31,9 @@ export const theLastLight: Project = {
   ],
 
   sourceUrl: 'https://github.com/Asciente-rks/the-last-light',
+  cinematicUrl: '/cinematics/the-last-light',
+  cinematicCaption:
+    'An 8-scene atmospheric trailer for The Last Light — a 3D survival horror built in Unity. Maynard alone, a lantern in hand, two hunters in the dark. Click anywhere or press → / Space to advance.',
   thumbnail: 'TheLastLight/MainMenu.png',
   featuredVideo: {
     src: 'TheLastLight/ShortClip.mp4',

@@ -1,0 +1,1439 @@
+---
+import CinematicLayout from '../../layouts/CinematicLayout.astro';
+// Game has no clean logo asset — render brand mark text-only.
+---
+
+<CinematicLayout
+  title="The Last Light — Cinematic"
+  brandName="The Last Light"
+  totalSlides={8}
+  fontsUrl="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+>
+
+  <!-- SLIDE 1 — BLACK OPEN -->
+  <section class="slide tll-blackopen active" data-slide="1">
+    <div class="tll-darkness">
+      <!-- Ember/flame core that materializes from nothing -->
+      <div class="tll-ember" id="ember1">
+        <div class="tll-ember-flame"></div>
+        <div class="tll-ember-glow"></div>
+      </div>
+    </div>
+    <!-- Sound waveform indicating audio cues -->
+    <div class="tll-audio-cue" id="audio1">
+      <span class="tll-audio-label">CHAINSAW_IDLE.mp3</span>
+      <div class="tll-audio-bars">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <!-- Heartbeat indicator -->
+    <div class="tll-heartbeat" id="heartbeat1" aria-hidden="true">
+      <svg viewBox="0 0 80 24" preserveAspectRatio="none">
+        <path d="M0,12 L18,12 L24,4 L30,20 L36,12 L44,12 L50,8 L56,16 L62,12 L80,12"
+              fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — TITLE / WORLD ESTABLISH -->
+  <section class="slide tll-title" data-slide="2">
+    <div class="tll-title-fog"></div>
+    <div class="tll-title-inner">
+      <p class="tll-title-pre" id="titlePre">A Unity 3D survival horror</p>
+      <h1 class="tll-title-main" id="titleMain">
+        <span class="tll-tword">The</span>
+        <span class="tll-tword">Last</span>
+        <span class="tll-tword tll-ember-word">Light</span>
+      </h1>
+      <div class="tll-title-rule" id="titleRule"></div>
+      <p class="tll-title-sub" id="titleSub">
+        Maynard is alone in the dark.
+      </p>
+      <p class="tll-title-sub2" id="titleSub2">
+        Two things hunt him.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — THE FIRST ENEMY -->
+  <section class="slide tll-enemy" data-slide="3">
+    <div class="tll-enemy-wrap">
+      <div class="tll-enemy-eyebrow">They patrol.</div>
+      <div class="tll-enemy-art">
+        <!-- Blade glint sweeping across darkness -->
+        <div class="tll-blade-glint" id="bladeGlint"></div>
+        <div class="tll-shadow-figure" id="shadowFigure">
+          <div class="tll-figure-body"></div>
+          <div class="tll-figure-head"></div>
+        </div>
+      </div>
+      <div class="tll-enemy-cues">
+        <div class="tll-cue" data-cue="1">
+          <span class="tll-cue-mark">⌖</span>
+          <span class="tll-cue-text">Waypoint patrol · idle → walk → chase</span>
+        </div>
+        <div class="tll-cue" data-cue="2">
+          <span class="tll-cue-mark">∿</span>
+          <span class="tll-cue-text">Hears the player. Hunts last known position.</span>
+        </div>
+        <div class="tll-cue" data-cue="3">
+          <span class="tll-cue-mark">!</span>
+          <span class="tll-cue-text">Chainsaw makes its own warning.</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Antagonist · 1 of 2</div>
+      <h2>You hear it before you see it.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — THE SECOND ENEMY -->
+  <section class="slide tll-enemy2" data-slide="4">
+    <div class="tll-enemy2-wrap">
+      <div class="tll-enemy2-art">
+        <div class="tll-charge-trail" id="chargeTrail"></div>
+        <div class="tll-pursuer" id="pursuer">
+          <div class="tll-pursuer-silhouette"></div>
+          <div class="tll-pursuer-eye"></div>
+        </div>
+      </div>
+      <div class="tll-enemy2-stats">
+        <div class="tll-stat-row">
+          <span class="tll-stat-key">ALERT RANGE</span>
+          <span class="tll-stat-val">20</span>
+        </div>
+        <div class="tll-stat-row">
+          <span class="tll-stat-key">MOVE SPEED</span>
+          <span class="tll-stat-val">30</span>
+        </div>
+        <div class="tll-stat-row">
+          <span class="tll-stat-key">SEES YOU?</span>
+          <span class="tll-stat-val tll-stat-red">CHARGES</span>
+        </div>
+        <div class="tll-stat-row">
+          <span class="tll-stat-key">CROUCH?</span>
+          <span class="tll-stat-val tll-stat-amber">INVISIBLE</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Antagonist · 2 of 2</div>
+      <h2>The fast one. Stays quiet — until it doesn't.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — THE LANTERN / CROUCH (Stealth verb) -->
+  <section class="slide tll-stealth" data-slide="5">
+    <div class="tll-stealth-wrap">
+      <div class="tll-stealth-frame">
+        <div class="tll-stealth-bg"></div>
+        <!-- Lantern light cone -->
+        <div class="tll-lantern-cone" id="lanternCone"></div>
+        <!-- Maynard silhouette (crouching) -->
+        <div class="tll-maynard" id="maynard">
+          <div class="tll-maynard-head"></div>
+          <div class="tll-maynard-body"></div>
+          <div class="tll-maynard-lantern">
+            <div class="tll-lantern-flame"></div>
+          </div>
+        </div>
+        <!-- Pursuer in background, far away -->
+        <div class="tll-bg-figure" id="bgFigure"></div>
+        <div class="tll-key-prompt" id="keyPrompt">
+          <span class="tll-key-cap">LEFT CTRL</span>
+          <span class="tll-key-action">CROUCH</span>
+        </div>
+      </div>
+      <div class="tll-stealth-notes">
+        <div class="tll-snote">
+          <span class="tll-snote-mark">·</span>
+          The lantern only lights what's in front of you.
+        </div>
+        <div class="tll-snote">
+          <span class="tll-snote-mark">·</span>
+          The dark behind is where they live.
+        </div>
+        <div class="tll-snote">
+          <span class="tll-snote-mark">·</span>
+          Crouching disables their detection.
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The only verb</div>
+      <h2>Stealth, or be seen.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — THE KEY / OBJECTIVE -->
+  <section class="slide tll-key" data-slide="6">
+    <div class="tll-key-wrap">
+      <div class="tll-key-stage">
+        <!-- Chest -->
+        <div class="tll-chest" id="chest">
+          <div class="tll-chest-body"></div>
+          <div class="tll-chest-lid"></div>
+          <div class="tll-chest-glow" id="chestGlow"></div>
+        </div>
+        <!-- The key -->
+        <div class="tll-key-art" id="keyArt">
+          <svg viewBox="0 0 100 40" width="100%" height="100%" aria-hidden="true">
+            <!-- Key bow (circle) -->
+            <circle cx="14" cy="20" r="10" fill="none" stroke="currentColor" stroke-width="3"/>
+            <!-- Key stem -->
+            <rect x="22" y="18" width="60" height="4" fill="currentColor"/>
+            <!-- Teeth -->
+            <rect x="68" y="22" width="4" height="6" fill="currentColor"/>
+            <rect x="76" y="22" width="4" height="8" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tll-key-text">
+        <h3>One key. One door.</h3>
+        <p>The map gives you nothing else. Find it. Open it. Get out — or die trying.</p>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The objective</div>
+      <h2>Find the key. Open the door.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — DEATH / SUCCESS SPLIT -->
+  <section class="slide tll-split" data-slide="7">
+    <div class="tll-split-wrap">
+      <div class="tll-split-side tll-split-death" id="deathSide">
+        <div class="tll-split-overlay"></div>
+        <div class="tll-split-content">
+          <div class="tll-split-label">SCENE</div>
+          <h3>Death</h3>
+          <p>Kill animation triggers. Scream cue.<br/>Cut to red. Try again.</p>
+          <div class="tll-split-audio">scary-scream-3.mp3</div>
+        </div>
+      </div>
+      <div class="tll-split-divider"></div>
+      <div class="tll-split-side tll-split-success" id="successSide">
+        <div class="tll-split-overlay"></div>
+        <div class="tll-split-content">
+          <div class="tll-split-label">SCENE</div>
+          <h3>Survive</h3>
+          <p>A breath. A turning key.<br/>The door opens. Silence.</p>
+          <div class="tll-split-audio">soft_breath.mp3</div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Two endings</div>
+      <h2>One of them is yours.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — CLOSING TITLE CARD -->
+  <section class="slide tll-end" data-slide="8">
+    <div class="tll-end-fog"></div>
+    <div class="tll-end-inner">
+      <div class="tll-end-ember" id="endEmber">
+        <div class="tll-ember-flame"></div>
+        <div class="tll-ember-glow"></div>
+      </div>
+      <h1 class="tll-end-title" id="endTitle">
+        <span class="tll-tword">The</span>
+        <span class="tll-tword">Last</span>
+        <span class="tll-tword tll-ember-word">Light</span>
+      </h1>
+      <p class="tll-end-tag" id="endTag">Not all lights survive the dark.</p>
+      <div class="tll-end-meta" id="endMeta">
+        <span>Unity 2022 LTS</span>
+        <span class="tll-meta-dot"></span>
+        <span>C#</span>
+        <span class="tll-meta-dot"></span>
+        <span>Windows Standalone</span>
+      </div>
+    </div>
+  </section>
+
+</CinematicLayout>
+
+<style is:global>
+  /* =========================================================
+     The Last Light — atmospheric horror trailer theme
+     Pure black + lantern ember + occasional blood red.
+     ========================================================= */
+
+  :root {
+    --bg:         #000000;
+    --bg-deep:    #000000;
+    --surface:    #0a0807;
+    --surface-92: #0a0807eb;
+    --surface-88: #0a0807e0;
+    --surface-84: #0a0807d6;
+    --ink:        #e8d4b8;
+    --muted:      #6b5e50;
+    --accent:     #ff8c3a;
+    --accent-deep:#cc5a14;
+    --accent-2:   #ffb060;
+    --orange:     #ff8c3a;
+    --stroke:     #2a1f17;
+    --stroke-soft:#2a1f1766;
+    --green:      #6b8e5a;
+    --display:    "Cinzel", "Trajan Pro", serif;
+    --mono:       "Inter", "Segoe UI", system-ui, sans-serif;
+
+    /* TLL-specific */
+    --tll-black:  #000000;
+    --tll-soot:   #0a0807;
+    --tll-ash:    #1a1410;
+    --tll-ember:  #ff8c3a;
+    --tll-flame:  #ffb060;
+    --tll-glow:   #ff6b1f;
+    --tll-blood:  #8b0a0a;
+    --tll-blood-2:#b91c1c;
+    --tll-parch:  #e8d4b8;
+    --tll-parch-d:#a0876b;
+  }
+
+  body {
+    background: var(--tll-black) !important;
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--tll-parch);
+  }
+  /* Replace the grid texture with a subtle film-grain only — no monitoring-style grid here */
+  body::after {
+    background-image: none !important;
+  }
+  body::before {
+    opacity: 0.35 !important;
+  }
+
+  /* Brand-mark — text-only, parchment in serif */
+  .brand-mark span {
+    color: var(--tll-parch);
+    font-family: var(--display);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 13px;
+    text-shadow: 0 0 12px rgba(255, 140, 58, 0.25);
+  }
+
+  /* Progress + chrome */
+  .progress .dot { background: #e8d4b820; }
+  .progress .dot.done { background: rgba(255, 140, 58, 0.45); }
+  .progress .dot.active {
+    background: var(--tll-ember);
+    box-shadow: 0 0 14px rgba(255, 140, 58, 0.7);
+  }
+
+  .slide-num {
+    color: var(--tll-parch-d);
+    font-family: var(--display);
+    letter-spacing: 0.32em;
+  }
+  .ctrl {
+    background: rgba(10, 8, 7, 0.85);
+    border-color: var(--stroke);
+    color: var(--tll-parch);
+    font-family: var(--mono);
+  }
+  .ctrl:hover {
+    background: rgba(255, 140, 58, 0.08);
+    border-color: var(--tll-ember);
+    color: var(--tll-flame);
+  }
+  .ctrl .key {
+    background: var(--tll-black);
+    border-color: var(--stroke);
+    color: var(--tll-parch-d);
+  }
+
+  .mobile-nav button {
+    background: rgba(10, 8, 7, 0.9);
+    border-color: var(--stroke);
+    color: var(--tll-parch);
+  }
+  .mobile-nav button:active {
+    background: var(--tll-ember);
+    color: #000;
+    border-color: var(--tll-ember);
+  }
+  .mobile-nav .progress-mini {
+    background: rgba(10, 8, 7, 0.9);
+    border-color: var(--stroke);
+    color: var(--tll-parch-d);
+  }
+
+  .caption .eyebrow {
+    color: var(--tll-flame);
+    border-color: rgba(255, 140, 58, 0.35);
+    background: rgba(255, 140, 58, 0.06);
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+  }
+  .caption h2 {
+    font-family: var(--display);
+    color: var(--tll-parch);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .caption p.sub { color: var(--tll-parch-d); }
+
+  /* =========================================================
+     SHARED — Ember / Flame
+     ========================================================= */
+  .tll-ember {
+    position: relative;
+    width: 80px;
+    height: 100px;
+    opacity: 0;
+  }
+  .tll-ember-flame {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 56px;
+    background: radial-gradient(
+      ellipse at 50% 60%,
+      var(--tll-flame) 0%,
+      var(--tll-ember) 35%,
+      var(--tll-glow) 60%,
+      transparent 78%
+    );
+    border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+    filter: blur(0.5px);
+    animation: tll-flicker 1.2s ease-in-out infinite;
+  }
+  .tll-ember-glow {
+    position: absolute;
+    left: 50%;
+    bottom: -10%;
+    transform: translateX(-50%);
+    width: 200%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, rgba(255, 140, 58, 0.4) 0%, transparent 60%);
+    filter: blur(8px);
+    z-index: -1;
+  }
+  @keyframes tll-flicker {
+    0%, 100% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 1; }
+    25%      { transform: translateX(-50%) scaleY(1.08) scaleX(0.94); opacity: 0.92; }
+    50%      { transform: translateX(-50%) scaleY(0.95) scaleX(1.06); opacity: 1; }
+    75%      { transform: translateX(-50%) scaleY(1.1) scaleX(0.92); opacity: 0.88; }
+  }
+
+  .tll-tword { display: inline-block; }
+  .tll-ember-word {
+    color: var(--tll-flame) !important;
+    text-shadow:
+      0 0 20px rgba(255, 140, 58, 0.6),
+      0 0 40px rgba(255, 107, 31, 0.4);
+  }
+
+  /* =========================================================
+     SLIDE 1 — Black open
+     ========================================================= */
+  .tll-blackopen { flex-direction: column; background: #000; }
+  .tll-darkness {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .tll-darkness #ember1 {
+    width: 60px;
+    height: 80px;
+  }
+  .tll-audio-cue {
+    position: absolute;
+    bottom: 14cqh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+  }
+  .tll-audio-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    color: var(--tll-parch-d);
+    font-weight: 600;
+  }
+  .tll-audio-bars {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+    height: 24px;
+  }
+  .tll-audio-bars span {
+    width: 3px;
+    background: var(--tll-ember);
+    box-shadow: 0 0 6px rgba(255, 140, 58, 0.4);
+    animation: tll-audio-pulse 1.5s ease-in-out infinite;
+  }
+  .tll-audio-bars span:nth-child(1) { height: 30%; animation-delay: 0s; }
+  .tll-audio-bars span:nth-child(2) { height: 60%; animation-delay: 0.15s; }
+  .tll-audio-bars span:nth-child(3) { height: 45%; animation-delay: 0.3s; }
+  .tll-audio-bars span:nth-child(4) { height: 75%; animation-delay: 0.45s; }
+  .tll-audio-bars span:nth-child(5) { height: 50%; animation-delay: 0.6s; }
+  .tll-audio-bars span:nth-child(6) { height: 90%; animation-delay: 0.75s; }
+  .tll-audio-bars span:nth-child(7) { height: 35%; animation-delay: 0.9s; }
+  .tll-audio-bars span:nth-child(8) { height: 65%; animation-delay: 1.05s; }
+  .tll-audio-bars span:nth-child(9) { height: 50%; animation-delay: 1.2s; }
+  .tll-audio-bars span:nth-child(10){ height: 25%; animation-delay: 1.35s; }
+  @keyframes tll-audio-pulse {
+    0%, 100% { transform: scaleY(0.4); }
+    50%      { transform: scaleY(1); }
+  }
+  .tll-heartbeat {
+    position: absolute;
+    top: 14cqh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    width: 120px;
+    color: var(--tll-blood-2);
+    opacity: 0;
+    filter: drop-shadow(0 0 6px rgba(185, 28, 28, 0.5));
+  }
+  .tll-heartbeat svg {
+    width: 100%;
+    height: auto;
+    animation: tll-heartbeat-pulse 1s ease-in-out infinite;
+  }
+  @keyframes tll-heartbeat-pulse {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+  }
+
+  /* =========================================================
+     SLIDE 2 — Title / World establish
+     ========================================================= */
+  .tll-title { flex-direction: column; background: #000; }
+  .tll-title-fog {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(255, 107, 31, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 0%,   rgba(0, 0, 0, 0.6) 0%, transparent 50%);
+    z-index: 1;
+  }
+  .tll-title-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 1100px;
+    padding: 0 4cqw;
+  }
+  .tll-title-pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--tll-parch-d);
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .tll-title-main {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(64px, 11cqw, 168px);
+    line-height: 1.05;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--tll-parch);
+    text-shadow: 0 0 30px rgba(255, 140, 58, 0.15);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.2em;
+  }
+  .tll-title-main .tll-tword {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(8px);
+  }
+  .tll-title-rule {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--tll-ember), transparent);
+    margin: 28px auto;
+    box-shadow: 0 0 12px rgba(255, 140, 58, 0.5);
+  }
+  .tll-title-sub, .tll-title-sub2 {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(16px, 1.8cqw, 26px);
+    color: var(--tll-parch);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .tll-title-sub2 { margin-top: 8px; color: var(--tll-parch-d); }
+
+  /* =========================================================
+     SLIDE 3 — The first enemy (chainsaw)
+     ========================================================= */
+  .tll-enemy { flex-direction: column; background: #000; }
+  .tll-enemy-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .tll-enemy-eyebrow {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(18px, 2cqw, 28px);
+    color: var(--tll-parch-d);
+    letter-spacing: 0.06em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .tll-enemy-art {
+    position: relative;
+    width: 100%;
+    height: clamp(180px, 24cqh, 280px);
+    background:
+      radial-gradient(ellipse at center, rgba(20, 14, 10, 0.8) 0%, #000 70%),
+      linear-gradient(180deg, #000 0%, #050302 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--stroke);
+    opacity: 0;
+  }
+  .tll-blade-glint {
+    position: absolute;
+    left: -10%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20%;
+    height: 4px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 200, 120, 0.1) 20%,
+      rgba(255, 220, 160, 0.95) 50%,
+      rgba(255, 200, 120, 0.1) 80%,
+      transparent 100%);
+    box-shadow:
+      0 0 16px rgba(255, 200, 120, 0.7),
+      0 0 32px rgba(255, 140, 58, 0.4);
+    filter: blur(0.4px);
+  }
+  .tll-shadow-figure {
+    position: absolute;
+    left: 45%;
+    top: 30%;
+    width: 60px;
+    height: 140px;
+    opacity: 0.55;
+  }
+  .tll-figure-body {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 100px;
+    background: linear-gradient(180deg, #1a0e0a 0%, #000 100%);
+    border-radius: 8px 8px 4px 4px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.9);
+  }
+  .tll-figure-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38px;
+    height: 44px;
+    background: #100805;
+    border-radius: 50% 50% 40% 40%;
+  }
+  .tll-enemy-cues {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 720px;
+  }
+  .tll-cue {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    background: rgba(10, 8, 7, 0.6);
+    border-left: 2px solid var(--tll-ember);
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--tll-parch);
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  .slide.active .tll-cue { opacity: 1; transform: translateX(0); }
+  .tll-cue-mark {
+    color: var(--tll-flame);
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    width: 20px;
+    text-align: center;
+  }
+  .tll-cue-text { letter-spacing: 0.02em; }
+
+  /* =========================================================
+     SLIDE 4 — The second enemy (fast pursuer)
+     ========================================================= */
+  .tll-enemy2 { flex-direction: column; background: #000; }
+  .tll-enemy2-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  .tll-enemy2-art {
+    position: relative;
+    height: clamp(260px, 36cqh, 380px);
+    background:
+      radial-gradient(ellipse at 30% 70%, rgba(139, 10, 10, 0.18) 0%, transparent 60%),
+      linear-gradient(180deg, #000 0%, #050201 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--stroke);
+    opacity: 0;
+  }
+  .tll-charge-trail {
+    position: absolute;
+    left: -20%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 60%;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(139, 10, 10, 0.2) 30%,
+      rgba(185, 28, 28, 0.4) 70%,
+      rgba(255, 100, 100, 0.7) 100%);
+    filter: blur(8px);
+  }
+  .tll-charge-trail.fired { width: 100%; transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+  .tll-pursuer {
+    position: absolute;
+    right: 12%;
+    top: 50%;
+    transform: translate(50%, -50%);
+    width: 100px;
+    height: 180px;
+    opacity: 0;
+  }
+  .tll-pursuer.charged { opacity: 1; transform: translate(-50%, -50%) scale(1.05); transition: all 0.4s ease-out; }
+  .tll-pursuer-silhouette {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #1a0606 0%, #000 100%);
+    border-radius: 50% 50% 30% 30% / 35% 35% 65% 65%;
+    box-shadow:
+      0 0 32px rgba(0, 0, 0, 0.9),
+      inset 0 0 24px rgba(139, 10, 10, 0.4);
+  }
+  .tll-pursuer-eye {
+    position: absolute;
+    top: 22%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: var(--tll-blood-2);
+    border-radius: 50%;
+    box-shadow:
+      0 0 14px rgba(185, 28, 28, 1),
+      0 0 28px rgba(185, 28, 28, 0.6);
+    animation: tll-eye-pulse 0.8s ease-in-out infinite;
+  }
+  @keyframes tll-eye-pulse {
+    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+    50%      { opacity: 1;   transform: translateX(-50%) scale(1.18); }
+  }
+  .tll-enemy2-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tll-stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: rgba(10, 8, 7, 0.6);
+    border: 1px solid var(--stroke);
+    border-left: 2px solid var(--tll-ember);
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  .slide.active .tll-stat-row { opacity: 1; transform: translateX(0); }
+  .tll-stat-key {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--tll-parch-d);
+    font-weight: 600;
+  }
+  .tll-stat-val {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--tll-parch);
+  }
+  .tll-stat-red {
+    color: var(--tll-blood-2);
+    text-shadow: 0 0 12px rgba(185, 28, 28, 0.5);
+  }
+  .tll-stat-amber {
+    color: var(--tll-flame);
+    text-shadow: 0 0 12px rgba(255, 140, 58, 0.4);
+  }
+
+  /* =========================================================
+     SLIDE 5 — Stealth / Crouch
+     ========================================================= */
+  .tll-stealth { flex-direction: column; background: #000; }
+  .tll-stealth-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(960px, 88cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    align-items: center;
+  }
+  .tll-stealth-frame {
+    position: relative;
+    width: 100%;
+    height: clamp(280px, 38cqh, 400px);
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--stroke);
+    opacity: 0;
+  }
+  .tll-stealth-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(20, 14, 10, 0.4) 0%, #000 100%);
+  }
+  /* Lantern light cone — soft warm light in front of Maynard */
+  .tll-lantern-cone {
+    position: absolute;
+    left: 30%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50%;
+    height: 80%;
+    background: radial-gradient(
+      ellipse at 0% 50%,
+      rgba(255, 180, 100, 0.35) 0%,
+      rgba(255, 140, 58, 0.15) 30%,
+      transparent 70%
+    );
+    filter: blur(6px);
+  }
+  .tll-maynard {
+    position: absolute;
+    left: 18%;
+    bottom: 12%;
+    width: 90px;
+    height: 110px;
+    z-index: 2;
+  }
+  .tll-maynard-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 44px;
+    background: linear-gradient(180deg, #2a1a0e 0%, #000 100%);
+    border-radius: 50% 50% 40% 40%;
+  }
+  .tll-maynard-body {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 70px;
+    background: linear-gradient(180deg, #1a0e08 0%, #000 100%);
+    border-radius: 50% 50% 10% 10% / 70% 70% 30% 30%;
+  }
+  .tll-maynard-lantern {
+    position: absolute;
+    right: -22px;
+    top: 38%;
+    width: 22px;
+    height: 28px;
+  }
+  .tll-lantern-flame {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 24px;
+    background: radial-gradient(
+      ellipse at 50% 60%,
+      var(--tll-flame) 0%,
+      var(--tll-ember) 40%,
+      var(--tll-glow) 70%,
+      transparent 90%
+    );
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    box-shadow: 0 0 18px rgba(255, 140, 58, 0.7);
+    animation: tll-flicker 1.2s ease-in-out infinite;
+  }
+  .tll-bg-figure {
+    position: absolute;
+    right: 12%;
+    bottom: 12%;
+    width: 45px;
+    height: 80px;
+    background: linear-gradient(180deg, #0a0606 0%, #000 100%);
+    border-radius: 50% 50% 20% 20% / 35% 35% 65% 65%;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 1);
+    opacity: 0.6;
+  }
+  .tll-bg-figure::after {
+    content: "";
+    position: absolute;
+    top: 22%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--tll-blood-2);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(185, 28, 28, 0.6);
+    animation: tll-eye-pulse 0.8s ease-in-out infinite;
+  }
+  .tll-key-prompt {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 18px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--tll-ember);
+    border-radius: 6px;
+    box-shadow: 0 0 16px rgba(255, 140, 58, 0.25);
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  .tll-key-cap {
+    padding: 5px 11px;
+    background: rgba(255, 140, 58, 0.15);
+    border: 1px solid rgba(255, 140, 58, 0.4);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--tll-flame);
+  }
+  .tll-key-action {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    color: var(--tll-parch);
+    text-transform: uppercase;
+  }
+
+  .tll-stealth-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 540px;
+  }
+  .tll-snote {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--tll-parch-d);
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .slide.active .tll-snote { opacity: 1; transform: translateY(0); }
+  .tll-snote-mark { color: var(--tll-flame); margin-right: 8px; }
+
+  /* =========================================================
+     SLIDE 6 — The Key
+     ========================================================= */
+  .tll-key { flex-direction: column; background: #000; }
+  .tll-key-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(900px, 88cqw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+  .tll-key-stage {
+    position: relative;
+    width: 100%;
+    height: clamp(220px, 28cqh, 320px);
+    background:
+      radial-gradient(ellipse at center, rgba(255, 140, 58, 0.06) 0%, #000 70%);
+    border-radius: 12px;
+    border: 1px solid var(--stroke);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+  .tll-chest {
+    position: relative;
+    width: 180px;
+    height: 110px;
+    transform: translateY(20px);
+  }
+  .tll-chest-body {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 65%;
+    background: linear-gradient(180deg, #2a1a0e 0%, #100805 100%);
+    border: 2px solid #3a2615;
+    border-radius: 4px;
+  }
+  .tll-chest-lid {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(180deg, #3a2615 0%, #2a1a0e 100%);
+    border: 2px solid #4a3215;
+    border-radius: 8px 8px 0 0;
+    transform-origin: bottom center;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .tll-chest.opened .tll-chest-lid { transform: rotateX(-95deg); }
+  .tll-chest-glow {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 140, 58, 0.6) 0%, transparent 70%);
+    transition: all 0.7s ease-out;
+  }
+  .tll-chest.opened .tll-chest-glow {
+    width: 220px;
+    height: 220px;
+  }
+  .tll-key-art {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 140px;
+    height: 56px;
+    color: var(--tll-flame);
+    filter: drop-shadow(0 0 12px rgba(255, 140, 58, 0.7));
+    z-index: 2;
+  }
+  .tll-key-art.revealed {
+    transform: translate(-50%, -110%) scale(1);
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s;
+  }
+  .tll-key-text {
+    text-align: center;
+  }
+  .tll-key-text h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(28px, 3.6cqw, 48px);
+    color: var(--tll-parch);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .tll-key-text h3 {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 1.4s;
+  }
+  .tll-key-text p {
+    margin-top: 12px;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(15px, 1.5cqw, 20px);
+    color: var(--tll-parch-d);
+    max-width: 520px;
+    opacity: 0;
+  }
+  .slide.active .tll-key-text p {
+    opacity: 1;
+    transition: opacity 0.7s ease 1.7s;
+  }
+
+  /* =========================================================
+     SLIDE 7 — Death / Success split
+     ========================================================= */
+  .tll-split { background: #000; }
+  .tll-split-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1200px, 96cqw);
+    height: clamp(360px, 56cqh, 540px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--stroke);
+  }
+  .tll-split-side {
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+  }
+  .tll-split-death {
+    background:
+      radial-gradient(ellipse at center, rgba(139, 10, 10, 0.4) 0%, #0a0000 70%),
+      linear-gradient(135deg, #1a0606 0%, #000 100%);
+  }
+  .tll-split-success {
+    background:
+      radial-gradient(ellipse at center, rgba(255, 140, 58, 0.18) 0%, #050302 70%),
+      linear-gradient(135deg, #1a1208 0%, #000 100%);
+  }
+  .tll-split-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  }
+  .tll-split-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 5%;
+    gap: 14px;
+  }
+  .tll-split-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--tll-parch-d);
+    font-weight: 600;
+  }
+  .tll-split-side h3 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(48px, 7cqw, 96px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tll-split-death h3 {
+    color: var(--tll-blood-2);
+    text-shadow: 0 0 30px rgba(185, 28, 28, 0.6), 0 0 60px rgba(139, 10, 10, 0.4);
+  }
+  .tll-split-success h3 {
+    color: var(--tll-flame);
+    text-shadow: 0 0 30px rgba(255, 140, 58, 0.5), 0 0 60px rgba(255, 107, 31, 0.3);
+  }
+  .tll-split-side p {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(15px, 1.5cqw, 20px);
+    color: var(--tll-parch);
+    line-height: 1.5;
+  }
+  .tll-split-audio {
+    margin-top: 8px;
+    padding: 6px 14px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--stroke);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--tll-parch-d);
+  }
+  .tll-split-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(255, 140, 58, 0.5), transparent);
+    box-shadow: 0 0 10px rgba(255, 140, 58, 0.3);
+    z-index: 3;
+    opacity: 0;
+  }
+
+  /* =========================================================
+     SLIDE 8 — Closing title card
+     ========================================================= */
+  .tll-end { flex-direction: column; background: #000; }
+  .tll-end-fog {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 60%, rgba(255, 140, 58, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgba(255, 107, 31, 0.08) 0%, transparent 50%);
+    z-index: 1;
+  }
+  .tll-end-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1100px;
+    padding: 0 4cqw;
+  }
+  #endEmber {
+    width: 50px;
+    height: 70px;
+    margin-bottom: 32px;
+  }
+  .tll-end-title {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(56px, 9cqw, 132px);
+    line-height: 1.05;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--tll-parch);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.2em;
+  }
+  .tll-end-title .tll-tword {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(6px);
+  }
+  .tll-end-tag {
+    margin-top: 28px;
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(16px, 1.8cqw, 24px);
+    color: var(--tll-parch);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .tll-end-meta {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--tll-parch-d);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .tll-meta-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--tll-ember);
+    box-shadow: 0 0 6px rgba(255, 140, 58, 0.5);
+  }
+  .tll-end .caption { display: none; }
+  .tll-blackopen .caption,
+  .tll-title .caption { display: none; }
+
+  /* Container responsive */
+  @container stage (max-width: 700px) {
+    .tll-enemy2-wrap { grid-template-columns: 1fr; }
+    .tll-split-wrap { grid-template-columns: 1fr; height: auto; }
+    .tll-split-side { padding: 40px 20px; }
+    .tll-split-divider { display: none; }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    function whenReady(cb) {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') cb();
+      else document.addEventListener('DOMContentLoaded', cb, { once: true });
+    }
+
+    whenReady(() => {
+      if (typeof gsap === 'undefined') return;
+
+      function $$(sel, root) { return (root || document).querySelectorAll(sel); }
+      function $(sel, root) { return (root || document).querySelector(sel); }
+
+      // ----- SLIDE 1: BLACK OPEN -----
+      function animBlackOpen(s) {
+        const ember = $('#ember1', s);
+        const audio = $('#audio1', s);
+        const heart = $('#heartbeat1', s);
+        // Heartbeat fades in first (it's the chest tightening)
+        gsap.fromTo(heart, { opacity: 0 }, { opacity: 1, duration: 1.4, delay: 0.3, ease: 'power2.out' });
+        // Then the audio cue (chainsaw distant)
+        gsap.fromTo(audio, { opacity: 0 }, { opacity: 1, duration: 1.0, delay: 1.0, ease: 'power2.out' });
+        // Finally — the lantern ignites
+        gsap.fromTo(ember,
+          { opacity: 0, scale: 0.3 },
+          { opacity: 1, scale: 1, duration: 1.6, delay: 1.8, ease: 'power3.out' });
+      }
+
+      // ----- SLIDE 2: TITLE -----
+      function animTitle(s) {
+        gsap.fromTo($('#titlePre', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 0.3, ease: 'power2.out' });
+        gsap.fromTo($$('.tll-title-main .tll-tword', s),
+          { opacity: 0, y: 40, filter: 'blur(8px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.25, delay: 0.7, ease: 'expo.out' });
+        gsap.fromTo($('#titleRule', s), { width: 0 },
+          { width: 260, duration: 0.9, delay: 2.0, ease: 'power3.out' });
+        gsap.fromTo($('#titleSub', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 2.4, ease: 'power2.out' });
+        gsap.fromTo($('#titleSub2', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 2.8, ease: 'power2.out' });
+      }
+
+      // ----- SLIDE 3: ENEMY 1 -----
+      function animEnemy(s) {
+        const art = $('.tll-enemy-art', s);
+        const glint = $('#bladeGlint', s);
+        gsap.fromTo($('.tll-enemy-eyebrow', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 0.3, ease: 'power2.out' });
+        gsap.fromTo(art, { opacity: 0, scale: 0.96 },
+          { opacity: 1, scale: 1, duration: 1.0, delay: 0.5, ease: 'power3.out' });
+        // Blade glint sweeps across — repeats for tension
+        gsap.fromTo(glint, { left: '-15%' },
+          { left: '115%', duration: 2.5, delay: 1.2, ease: 'power1.inOut', repeat: 1, repeatDelay: 0.8 });
+        gsap.fromTo($$('.tll-cue', s), { opacity: 0, x: -12 },
+          { opacity: 1, x: 0, duration: 0.5, stagger: 0.18, delay: 1.4, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 4: ENEMY 2 -----
+      function animEnemy2(s) {
+        const art = $('.tll-enemy2-art', s);
+        const trail = $('#chargeTrail', s);
+        const pursuer = $('#pursuer', s);
+        gsap.fromTo(art, { opacity: 0, scale: 0.96 },
+          { opacity: 1, scale: 1, duration: 0.9, delay: 0.3, ease: 'power3.out' });
+        // The pursuer charges in
+        setTimeout(() => {
+          trail.classList.add('fired');
+          pursuer.classList.add('charged');
+        }, 1100);
+        gsap.fromTo($$('.tll-stat-row', s), { opacity: 0, x: 12 },
+          { opacity: 1, x: 0, duration: 0.5, stagger: 0.15, delay: 0.8, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 5: STEALTH -----
+      function animStealth(s) {
+        gsap.fromTo($('.tll-stealth-frame', s), { opacity: 0, scale: 0.96 },
+          { opacity: 1, scale: 1, duration: 0.9, delay: 0.3, ease: 'power3.out' });
+        gsap.fromTo($('#keyPrompt', s),
+          { opacity: 0, x: '-50%', y: 10 },
+          { opacity: 1, x: '-50%', y: 0, duration: 0.6, delay: 1.4, ease: 'back.out(1.4)' });
+        gsap.fromTo($$('.tll-snote', s), { opacity: 0, y: 8 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.2, delay: 1.7, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 6: KEY -----
+      function animKey(s) {
+        const stage = $('.tll-key-stage', s);
+        const chest = $('#chest', s);
+        const key = $('#keyArt', s);
+        // Reset state
+        chest.classList.remove('opened');
+        key.classList.remove('revealed');
+        gsap.fromTo(stage, { opacity: 0, scale: 0.96 },
+          { opacity: 1, scale: 1, duration: 0.9, delay: 0.3, ease: 'power3.out' });
+        // Open chest, then reveal key
+        setTimeout(() => chest.classList.add('opened'), 900);
+        setTimeout(() => key.classList.add('revealed'), 1300);
+      }
+
+      // ----- SLIDE 7: SPLIT (death / success) -----
+      function animSplit(s) {
+        gsap.fromTo($('#deathSide', s), { opacity: 0, x: -30 },
+          { opacity: 1, x: 0, duration: 0.9, delay: 0.3, ease: 'power3.out' });
+        gsap.fromTo($('#successSide', s), { opacity: 0, x: 30 },
+          { opacity: 1, x: 0, duration: 0.9, delay: 0.6, ease: 'power3.out' });
+        gsap.fromTo($('.tll-split-divider', s), { opacity: 0, scaleY: 0 },
+          { opacity: 1, scaleY: 1, duration: 0.8, delay: 1.2, ease: 'power3.out' });
+      }
+
+      // ----- SLIDE 8: END TITLE -----
+      function animEnd(s) {
+        gsap.fromTo($('#endEmber', s), { opacity: 0, scale: 0.3 },
+          { opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out' });
+        gsap.fromTo($$('.tll-end-title .tll-tword', s),
+          { opacity: 0, y: 40, filter: 'blur(6px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.0, stagger: 0.2, delay: 0.6, ease: 'expo.out' });
+        gsap.fromTo($('#endTag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.9, delay: 1.7, ease: 'power2.out' });
+        gsap.fromTo($('#endMeta', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 2.1, ease: 'power2.out' });
+      }
+
+      const sceneMap = {
+        1: animBlackOpen,
+        2: animTitle,
+        3: animEnemy,
+        4: animEnemy2,
+        5: animStealth,
+        6: animKey,
+        7: animSplit,
+        8: animEnd,
+      };
+
+      document.addEventListener('cinematic:slide-changed', (e) => {
+        const { slide } = e.detail;
+        const num = +slide.dataset.slide;
+        const fn = sceneMap[num];
+        if (fn) fn(slide);
+      });
+    });
+  })();
+</script>
