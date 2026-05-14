@@ -1,0 +1,1640 @@
+---
+import CinematicLayout from '../../layouts/CinematicLayout.astro';
+import { Image } from 'astro:assets';
+import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
+---
+
+<CinematicLayout
+  title="AscienteHub — Cinematic"
+  brandName="AscienteHub"
+  brandLogoIcon={logoIcon}
+  brandMarkHeight={36}
+  totalSlides={8}
+  fontsUrl="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+>
+
+  <!-- SLIDE 1 — OPENING -->
+  <section class="slide ah-open active" data-slide="1">
+    <div class="ah-bloom bloom-cyan-tl"></div>
+    <div class="ah-bloom bloom-cyan-br"></div>
+    <div class="ah-grid-overlay"></div>
+    <div class="ah-open-inner">
+      <div class="ah-logo-stage" id="openingLogo">
+        <Image src={logoIcon} alt="" widths={[140, 280]} sizes="140px" class="ah-hero-logo" />
+      </div>
+      <h1 class="ah-title" id="openingTitle">
+        <span class="ah-word">Asciente</span><span class="ah-word ah-accent">Hub</span>
+      </h1>
+      <div class="ah-rule" id="openingRule"></div>
+      <p class="ah-tagline" id="openingTag">
+        Pay. Install. Launch.
+      </p>
+      <p class="ah-subtag" id="openingSubtag">
+        A Steam-style desktop marketplace · running on free tier
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — THE HOOK -->
+  <section class="slide ah-hook" data-slide="2">
+    <div class="ah-bloom bloom-cyan-tl small"></div>
+    <div class="ah-hook-inner">
+      <div class="ah-eyebrow">The premise</div>
+      <h2 class="ah-hook-line">
+        <span class="ah-word">Not a web demo.</span>
+      </h2>
+      <h2 class="ah-hook-line ah-hook-line-2">
+        <span class="ah-word">A</span>
+        <span class="ah-word ah-accent">real</span>
+        <span class="ah-word">desktop launcher,</span>
+      </h2>
+      <h2 class="ah-hook-line ah-hook-line-3">
+        <span class="ah-word">built in</span>
+        <span class="ah-word ah-rust">Rust.</span>
+      </h2>
+      <p class="ah-hook-note">
+        Tauri shell. React UI. AWS Lambda backend. PayMongo 3-D Secure.
+        Every byte downloaded directly from Cloudflare R2.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — THE CATALOG -->
+  <section class="slide ah-catalog" data-slide="3">
+    <div class="ah-bloom bloom-cyan-tl small"></div>
+    <div class="ah-catalog-wrap">
+      <div class="ah-catalog-head">
+        <h2>Discover games</h2>
+        <div class="ah-cat-filter">
+          <span class="ah-chip active">All</span>
+          <span class="ah-chip">Action</span>
+          <span class="ah-chip">RPG</span>
+          <span class="ah-chip">Indie</span>
+        </div>
+      </div>
+
+      <!-- Featured hero banner -->
+      <article class="ah-featured">
+        <div class="ah-featured-art"></div>
+        <div class="ah-featured-overlay">
+          <div class="ah-featured-meta">
+            <span class="ah-featured-tag">Featured · This week</span>
+            <h3>Hollow Pact</h3>
+            <p>An atmospheric indie platformer of cathedral light and shadow.</p>
+          </div>
+          <div class="ah-featured-cta">
+            <div class="ah-featured-price">
+              <span class="ah-price-was">₱995</span>
+              <span class="ah-price-now">₱449</span>
+              <span class="ah-discount">−55%</span>
+            </div>
+            <button class="ah-btn-primary" type="button">View details</button>
+          </div>
+        </div>
+      </article>
+
+      <div class="ah-cat-row-title">Action</div>
+      <div class="ah-game-grid">
+        <article class="ah-game" data-game="1">
+          <div class="ah-game-art art-1"></div>
+          <div class="ah-game-body">
+            <div class="ah-game-title">Skyforge Reborn</div>
+            <div class="ah-game-price">₱599</div>
+          </div>
+        </article>
+        <article class="ah-game" data-game="2">
+          <div class="ah-game-art art-2"></div>
+          <div class="ah-game-body">
+            <div class="ah-game-title">Ironveil</div>
+            <div class="ah-game-price">₱249</div>
+          </div>
+        </article>
+        <article class="ah-game" data-game="3">
+          <div class="ah-game-art art-3"></div>
+          <div class="ah-game-body">
+            <div class="ah-game-title">Echoes of Vale</div>
+            <div class="ah-game-price">₱899</div>
+          </div>
+        </article>
+        <article class="ah-game" data-game="4">
+          <div class="ah-game-art art-4"></div>
+          <div class="ah-game-body">
+            <div class="ah-game-title">Static Dawn</div>
+            <div class="ah-game-price">₱149</div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The storefront</div>
+      <h2>Cached at the edge. Sorted by price.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — PURCHASE FLOW -->
+  <section class="slide ah-purchase" data-slide="4">
+    <div class="ah-bloom bloom-cyan-tl small"></div>
+    <div class="ah-purchase-wrap">
+      <div class="ah-flow">
+        <div class="ah-flow-step" data-step="1">
+          <div class="ah-flow-card">
+            <div class="ah-flow-icon">🛒</div>
+            <div class="ah-flow-label">Cart</div>
+            <div class="ah-flow-sub">3 games · ₱1,247</div>
+          </div>
+        </div>
+        <div class="ah-flow-arrow"></div>
+        <div class="ah-flow-step" data-step="2">
+          <div class="ah-flow-card">
+            <div class="ah-flow-icon paymongo">PM</div>
+            <div class="ah-flow-label">PayMongo</div>
+            <div class="ah-flow-sub">3-D Secure · system browser</div>
+          </div>
+        </div>
+        <div class="ah-flow-arrow"></div>
+        <div class="ah-flow-step" data-step="3">
+          <div class="ah-flow-card">
+            <div class="ah-flow-icon webhook">⚡</div>
+            <div class="ah-flow-label">Webhook</div>
+            <div class="ah-flow-sub">payments/status</div>
+          </div>
+        </div>
+        <div class="ah-flow-arrow"></div>
+        <div class="ah-flow-step" data-step="4">
+          <div class="ah-flow-card success">
+            <div class="ah-flow-icon check">✓</div>
+            <div class="ah-flow-label">Confirmed</div>
+            <div class="ah-flow-sub">games added to library</div>
+          </div>
+        </div>
+      </div>
+      <div class="ah-purchase-notes">
+        <div class="ah-note">
+          <strong>Real card payments.</strong> PayMongo PHP charge with 3-D Secure
+          automatic. The 3DS redirect opens in the system browser via
+          <code>webbrowser::open</code> — not an embedded webview.
+        </div>
+        <div class="ah-note">
+          <strong>Zero-trust on the client.</strong> The SPA polls
+          <code>/api/payments/status</code> until the server-side webhook
+          confirms. No fake "thanks for paying" before money moves.
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Real money. Real flow.</div>
+      <h2>Cart. 3-D Secure. Webhook. Confirmation.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — THE INSTALL MOMENT (signature scene) -->
+  <section class="slide ah-install" data-slide="5">
+    <div class="ah-bloom bloom-cyan-tl"></div>
+    <div class="ah-install-wrap">
+      <div class="ah-terminal">
+        <div class="ah-terminal-head">
+          <div class="ah-tt-dots"><span></span><span></span><span></span></div>
+          <div class="ah-tt-title">Tauri Rust · install_and_launch</div>
+        </div>
+        <div class="ah-terminal-body" id="installLog">
+          <div class="ah-tlog-line" data-line="1">
+            <span class="ah-tlog-prompt">→</span>
+            <span class="ah-tlog-text">Resolving game manifest…</span>
+            <span class="ah-tlog-status ok">OK</span>
+          </div>
+          <div class="ah-tlog-line" data-line="2">
+            <span class="ah-tlog-prompt">→</span>
+            <span class="ah-tlog-text">GET <span class="ah-tlog-url">r2://ascientehub/games/hollow-pact.zip</span></span>
+            <span class="ah-tlog-status ok">200</span>
+          </div>
+          <div class="ah-tlog-line ah-tlog-progress" data-line="3">
+            <span class="ah-tlog-prompt">↓</span>
+            <span class="ah-tlog-text">Downloading <span class="ah-tlog-bytes" id="dlBytes">0.0 / 84.2 MB</span></span>
+            <div class="ah-tlog-bar"><div class="ah-tlog-bar-fill" id="dlBar"></div></div>
+          </div>
+          <div class="ah-tlog-line" data-line="4">
+            <span class="ah-tlog-prompt">→</span>
+            <span class="ah-tlog-text">Extracting to <span class="ah-tlog-path">%APPDATA%\ascientehub\games\hollow-pact\</span></span>
+            <span class="ah-tlog-status ok">DONE</span>
+          </div>
+          <div class="ah-tlog-line" data-line="5">
+            <span class="ah-tlog-prompt">→</span>
+            <span class="ah-tlog-text">Locating executable… <span class="ah-tlog-path">.\hollow-pact.exe</span></span>
+            <span class="ah-tlog-status ok">FOUND</span>
+          </div>
+          <div class="ah-tlog-line" data-line="6">
+            <span class="ah-tlog-prompt">⚡</span>
+            <span class="ah-tlog-text">Spawning process…</span>
+            <span class="ah-tlog-status launched">LAUNCHED</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The signature move</div>
+      <h2>Pulled from R2. Extracted to disk. Spawned natively.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — LIBRARY -->
+  <section class="slide ah-library" data-slide="6">
+    <div class="ah-bloom bloom-cyan-tl small"></div>
+    <div class="ah-library-wrap">
+      <div class="ah-library-head">
+        <h2>My library</h2>
+        <span class="ah-lib-count">5 games · 1.2 GB on disk</span>
+      </div>
+      <div class="ah-library-grid">
+        <article class="ah-lib-game" data-lib="1">
+          <div class="ah-lib-art art-1"></div>
+          <div class="ah-lib-body">
+            <div class="ah-lib-title">Hollow Pact</div>
+            <div class="ah-lib-meta">installed · last played 2d ago</div>
+            <button class="ah-btn-launch" type="button">▶ Launch</button>
+          </div>
+        </article>
+        <article class="ah-lib-game" data-lib="2">
+          <div class="ah-lib-art art-2"></div>
+          <div class="ah-lib-body">
+            <div class="ah-lib-title">Skyforge Reborn</div>
+            <div class="ah-lib-meta">installed · 1.4 GB</div>
+            <button class="ah-btn-launch" type="button">▶ Launch</button>
+          </div>
+        </article>
+        <article class="ah-lib-game" data-lib="3">
+          <div class="ah-lib-art art-3"></div>
+          <div class="ah-lib-body">
+            <div class="ah-lib-title">Echoes of Vale</div>
+            <div class="ah-lib-meta installing">installing · 64%</div>
+            <button class="ah-btn-install" type="button" disabled>Installing…</button>
+          </div>
+        </article>
+        <article class="ah-lib-game" data-lib="4">
+          <div class="ah-lib-art art-4"></div>
+          <div class="ah-lib-body">
+            <div class="ah-lib-title">Static Dawn</div>
+            <div class="ah-lib-meta">owned · not installed</div>
+            <button class="ah-btn-install" type="button">↓ Install</button>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Your shelf</div>
+      <h2>What you own. What's installed. What's running.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — ARCHITECTURE + $0 -->
+  <section class="slide ah-stack" data-slide="7">
+    <div class="ah-bloom bloom-cyan-tl"></div>
+    <div class="ah-bloom bloom-cyan-br small"></div>
+    <div class="ah-stack-wrap">
+      <div class="ah-arch">
+        <div class="ah-arch-node" data-arch="1">
+          <div class="ah-arch-icon">🦀</div>
+          <div class="ah-arch-label">Tauri Shell</div>
+          <div class="ah-arch-sub">Rust · React · TS</div>
+        </div>
+        <div class="ah-arch-edge"></div>
+        <div class="ah-arch-node" data-arch="2">
+          <div class="ah-arch-icon">λ</div>
+          <div class="ah-arch-label">AWS Lambda</div>
+          <div class="ah-arch-sub">Express 5 · serverless-express</div>
+        </div>
+        <div class="ah-arch-edge"></div>
+        <div class="ah-arch-node" data-arch="3">
+          <div class="ah-arch-icon">▤</div>
+          <div class="ah-arch-label">TiDB Cloud</div>
+          <div class="ah-arch-sub">Serverless · MySQL-wire</div>
+        </div>
+        <div class="ah-arch-edge"></div>
+        <div class="ah-arch-node final" data-arch="4">
+          <div class="ah-arch-icon">☁</div>
+          <div class="ah-arch-label">Cloudflare R2</div>
+          <div class="ah-arch-sub">Game ZIPs · zero egress</div>
+        </div>
+      </div>
+
+      <div class="ah-cost-card">
+        <div class="ah-cost-grid">
+          <div class="ah-cost-cell">
+            <div class="ah-cost-svc">AWS Lambda</div>
+            <div class="ah-cost-amt">$0</div>
+          </div>
+          <div class="ah-cost-cell">
+            <div class="ah-cost-svc">TiDB Cloud · 5 GB free</div>
+            <div class="ah-cost-amt">$0</div>
+          </div>
+          <div class="ah-cost-cell">
+            <div class="ah-cost-svc">Cloudflare R2 · 10 GB free</div>
+            <div class="ah-cost-amt">$0</div>
+          </div>
+          <div class="ah-cost-cell">
+            <div class="ah-cost-svc">Upstash Redis · 10K req/day</div>
+            <div class="ah-cost-amt">$0</div>
+          </div>
+          <div class="ah-cost-cell">
+            <div class="ah-cost-svc">Resend email · 3K/mo</div>
+            <div class="ah-cost-amt">$0</div>
+          </div>
+        </div>
+        <div class="ah-cost-total">
+          <div class="ah-cost-total-label">Monthly</div>
+          <div class="ah-cost-total-value">$0<span class="ah-cost-total-suffix">/month</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The stack</div>
+      <h2>A real marketplace, on no monthly bill.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — CLOSING -->
+  <section class="slide ah-end" data-slide="8">
+    <div class="ah-bloom bloom-cyan-tl"></div>
+    <div class="ah-bloom bloom-cyan-br"></div>
+    <div class="ah-grid-overlay"></div>
+    <div class="ah-end-inner">
+      <div class="ah-logo-stage" id="endLogo">
+        <Image src={logoIcon} alt="" widths={[120, 240]} sizes="120px" class="ah-hero-logo" />
+      </div>
+      <h1 class="ah-title ah-title-end">
+        <span class="ah-word">Asciente</span><span class="ah-word ah-accent">Hub</span>
+      </h1>
+      <p class="ah-end-tag">Pay. Install. Launch.</p>
+      <div class="ah-end-cta">
+        <span class="ah-end-cta-icon">↓</span>
+        <span class="ah-end-cta-text">Download for Windows · v1.0.2</span>
+      </div>
+    </div>
+  </section>
+
+</CinematicLayout>
+
+<style is:global>
+  /* =========================================================
+     AscienteHub — Steam-style dark marketplace theme
+     Deep navy + pure-black surfaces + teal/cyan accent.
+     ========================================================= */
+
+  :root {
+    --bg:         #0b1220;
+    --bg-deep:    #060912;
+    --surface:    #000000;
+    --surface-92: #0a0e1aeb;
+    --surface-88: #0a0e1ae0;
+    --surface-84: #0a0e1ad6;
+    --ink:        #e6edf3;
+    --muted:      #6b7280;
+    --accent:     #06b6d4;
+    --accent-deep:#0891b2;
+    --accent-2:   #22d3ee;
+    --orange:     #f59e0b;
+    --stroke:     #1f2937;
+    --stroke-soft:#1f293766;
+    --green:      #10b981;
+    --display:    "Inter", "Segoe UI", system-ui, sans-serif;
+    --mono:       "JetBrains Mono", ui-monospace, monospace;
+
+    /* AH-specific */
+    --ah-rust:    #c97a4a;
+    --ah-cyan:    #06b6d4;
+    --ah-cyan-2:  #22d3ee;
+    --ah-cyan-3:  #67e8f9;
+  }
+
+  body {
+    background:
+      radial-gradient(at 12% 10%, rgba(6, 182, 212, 0.16) 0%, transparent 50%),
+      radial-gradient(at 88% 90%, rgba(8, 145, 178, 0.14) 0%, transparent 55%),
+      linear-gradient(180deg, var(--bg) 0%, #08101c 50%, var(--bg-deep) 100%) !important;
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--ink);
+  }
+  body::after {
+    background-image:
+      linear-gradient(to right,  rgba(6, 182, 212, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(6, 182, 212, 0.04) 1px, transparent 1px) !important;
+    background-size: 48px 48px !important;
+  }
+  body::before { opacity: 0.18 !important; }
+
+  /* Brand mark text */
+  .brand-mark span {
+    color: var(--ah-cyan-2);
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 14px rgba(6, 182, 212, 0.4);
+  }
+
+  /* Progress + chrome */
+  .progress .dot { background: #e6edf31a; }
+  .progress .dot.done { background: rgba(6, 182, 212, 0.5); }
+  .progress .dot.active {
+    background: var(--ah-cyan);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.7);
+  }
+
+  .slide-num { color: var(--muted); font-family: var(--mono); }
+  .ctrl {
+    background: rgba(0, 0, 0, 0.7);
+    border-color: var(--stroke);
+    color: var(--ink);
+    font-family: var(--mono);
+  }
+  .ctrl:hover {
+    background: rgba(6, 182, 212, 0.08);
+    border-color: var(--ah-cyan);
+    color: var(--ah-cyan-2);
+  }
+  .ctrl .key {
+    background: var(--bg-deep);
+    border-color: var(--stroke);
+    color: var(--muted);
+  }
+
+  .mobile-nav button {
+    background: rgba(0, 0, 0, 0.85);
+    border-color: var(--stroke);
+    color: var(--ah-cyan-2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  }
+  .mobile-nav button:active {
+    background: var(--ah-cyan);
+    color: var(--bg);
+    border-color: var(--ah-cyan);
+  }
+  .mobile-nav .progress-mini {
+    background: rgba(0, 0, 0, 0.85);
+    border-color: var(--stroke);
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .caption .eyebrow {
+    color: var(--ah-cyan-2);
+    border-color: rgba(6, 182, 212, 0.3);
+    background: rgba(6, 182, 212, 0.08);
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+  }
+  .caption h2 {
+    font-family: var(--display);
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .caption p.sub { color: var(--muted); }
+
+  /* Blooms ----------------------------------------------- */
+  .ah-bloom {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(70px);
+    opacity: 0.4;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .bloom-cyan-tl {
+    width: 580px; height: 580px;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.55) 0%, transparent 70%);
+    top: -10%; left: -8%;
+  }
+  .bloom-cyan-br {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(8, 145, 178, 0.45) 0%, transparent 70%);
+    bottom: -10%; right: -8%;
+  }
+  .ah-bloom.small { width: 320px; height: 320px; opacity: 0.3; }
+
+  .ah-grid-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right,  rgba(6, 182, 212, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(6, 182, 212, 0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%);
+  }
+
+  .ah-word { display: inline-block; }
+  .ah-accent { color: var(--ah-cyan-2); }
+  .ah-rust { color: var(--ah-rust); }
+
+  .ah-eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--ah-cyan-2);
+    font-weight: 600;
+    margin-bottom: 22px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .ah-eyebrow {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+  }
+
+  .ah-rule {
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--ah-cyan), transparent);
+    margin: 24px auto;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+  }
+
+  /* =========================================================
+     SLIDE 1 — Opening
+     ========================================================= */
+  .ah-open { flex-direction: column; }
+  .ah-open-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 1100px;
+    padding: 0 4cqw;
+  }
+  .ah-logo-stage {
+    width: clamp(80px, 8cqw, 120px);
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: scale(0.7) translateY(20px);
+    filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.4));
+  }
+  .ah-hero-logo {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .ah-title {
+    font-family: var(--display);
+    font-size: clamp(60px, 10cqw, 144px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-shadow: 0 0 40px rgba(6, 182, 212, 0.25);
+  }
+  .ah-title .ah-word {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .ah-tagline {
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: clamp(18px, 1.8cqw, 28px);
+    color: var(--ah-cyan-2);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .ah-subtag {
+    margin-top: 14px;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(14px, 1.3cqw, 18px);
+    color: var(--muted);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  /* =========================================================
+     SLIDE 2 — Hook
+     ========================================================= */
+  .ah-hook {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 10cqw;
+    padding-right: 10cqw;
+  }
+  .ah-hook-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .ah-hook-line {
+    font-family: var(--display);
+    font-size: clamp(42px, 6.4cqw, 96px);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .ah-hook-line-2 { margin-top: 10px; }
+  .ah-hook-line-3 { margin-top: 10px; }
+  .ah-hook-line .ah-word {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .ah-hook-note {
+    margin-top: 32px;
+    font-family: var(--display);
+    font-weight: 400;
+    color: var(--muted);
+    font-size: clamp(15px, 1.35cqw, 21px);
+    line-height: 1.55;
+    max-width: 720px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .ah-hook-note {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.8s;
+  }
+  .ah-hook .caption { display: none; }
+
+  /* =========================================================
+     SLIDE 3 — Catalog
+     ========================================================= */
+  .ah-catalog { flex-direction: column; }
+  .ah-catalog-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ah-catalog-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .ah-catalog-head h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .ah-cat-filter {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+  }
+  .ah-chip {
+    padding: 6px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .ah-chip.active {
+    background: rgba(6, 182, 212, 0.15);
+    color: var(--ah-cyan-2);
+    box-shadow: inset 0 0 0 1px rgba(6, 182, 212, 0.3);
+  }
+
+  /* Featured hero banner */
+  .ah-featured {
+    position: relative;
+    height: 220px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--stroke);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .ah-featured-art {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.25) 0%, transparent 60%),
+      linear-gradient(135deg, #1e3a5f 0%, #0a1929 50%, #050a14 100%);
+  }
+  .ah-featured-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+  }
+  .ah-featured-overlay {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 32px;
+  }
+  .ah-featured-meta { max-width: 480px; }
+  .ah-featured-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(6, 182, 212, 0.18);
+    color: var(--ah-cyan-2);
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .ah-featured-meta h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 36px;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  }
+  .ah-featured-meta p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--ink);
+    opacity: 0.85;
+  }
+  .ah-featured-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .ah-featured-price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .ah-price-was {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+  .ah-price-now {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--ah-cyan-2);
+    text-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+  }
+  .ah-discount {
+    padding: 4px 10px;
+    background: linear-gradient(180deg, #f59e0b, #d97706);
+    color: #1a0e02;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+  }
+  .ah-btn-primary {
+    padding: 11px 22px;
+    background: linear-gradient(180deg, var(--ah-cyan) 0%, var(--accent-deep) 100%);
+    color: #000;
+    border: 0;
+    border-radius: 8px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(6, 182, 212, 0.35);
+  }
+
+  .ah-cat-row-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+    margin-top: 8px;
+  }
+  .ah-game-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .ah-game {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  /* Active-slide override keeps cards visible after GSAP clears inline styles */
+  .slide.active .ah-game { opacity: 1; transform: translateY(0); }
+  .slide.active .ah-featured { opacity: 1; transform: translateY(0); }
+  .ah-game-art {
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #1e3a5f 0%, #0a1929 50%, #050a14 100%);
+  }
+  .ah-game-art.art-1 { background: linear-gradient(135deg, #2a3e1f 0%, #0d1a08 100%); }
+  .ah-game-art.art-2 { background: linear-gradient(135deg, #3a1e2a 0%, #1a0810 100%); }
+  .ah-game-art.art-3 { background: linear-gradient(135deg, #1f2a3e 0%, #08101a 100%); }
+  .ah-game-art.art-4 { background: linear-gradient(135deg, #3a2a1f 0%, #1a1008 100%); }
+  .ah-game-body {
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .ah-game-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ah-game-price {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ah-cyan-2);
+    flex-shrink: 0;
+  }
+
+  /* =========================================================
+     SLIDE 4 — Purchase Flow
+     ========================================================= */
+  .ah-purchase { flex-direction: column; }
+  .ah-purchase-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    align-items: center;
+  }
+  .ah-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+  }
+  .ah-flow-step {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .slide.active .ah-flow-step { opacity: 1; transform: translateY(0); }
+  .ah-flow-card {
+    width: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(10, 14, 26, 0.85) 100%);
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    padding: 22px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+  }
+  .ah-flow-card.success {
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 12px 28px rgba(6, 182, 212, 0.15);
+  }
+  .ah-flow-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(6, 182, 212, 0.15), rgba(0, 0, 0, 0.5));
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--ah-cyan-2);
+  }
+  .ah-flow-icon.paymongo {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 18px;
+    background: linear-gradient(180deg, #1565c0, #0d47a1);
+    border-color: rgba(21, 101, 192, 0.5);
+    color: #fff;
+    letter-spacing: -0.04em;
+  }
+  .ah-flow-icon.check {
+    background: linear-gradient(180deg, var(--ah-cyan), var(--accent-deep));
+    border-color: var(--ah-cyan);
+    color: #000;
+    font-weight: 800;
+  }
+  .ah-flow-icon.webhook {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.4);
+    background: linear-gradient(180deg, rgba(251, 191, 36, 0.12), rgba(0, 0, 0, 0.5));
+  }
+  .ah-flow-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .ah-flow-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .ah-flow-arrow {
+    flex: 0 0 28px;
+    align-self: center;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--ah-cyan) 50%, transparent 100%);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .ah-flow-arrow.lit { opacity: 0.8; }
+
+  .ah-purchase-notes {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1000px;
+  }
+  .ah-note {
+    flex: 1;
+    min-width: 320px;
+    padding: 18px 22px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .ah-note strong { color: var(--ah-cyan-2); font-weight: 700; }
+  .ah-note code {
+    font-family: var(--mono);
+    background: rgba(6, 182, 212, 0.12);
+    color: var(--ah-cyan-2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  /* =========================================================
+     SLIDE 5 — Install (terminal)
+     ========================================================= */
+  .ah-install { flex-direction: column; }
+  .ah-install-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(820px, 88cqw);
+  }
+  .ah-terminal {
+    background: #050810;
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(6, 182, 212, 0.12),
+      inset 0 1px 0 rgba(6, 182, 212, 0.08);
+  }
+  .ah-terminal-head {
+    padding: 12px 16px;
+    background: linear-gradient(180deg, #0d1422, #050810);
+    border-bottom: 1px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .ah-tt-dots { display: flex; gap: 6px; }
+  .ah-tt-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #2a2f3a;
+  }
+  .ah-tt-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .ah-terminal-body {
+    padding: 22px 24px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 280px;
+  }
+  .ah-tlog-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .ah-tlog-prompt {
+    color: var(--ah-cyan);
+    font-weight: 600;
+    flex-shrink: 0;
+    width: 14px;
+  }
+  .ah-tlog-text {
+    flex: 1;
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .ah-tlog-url { color: var(--ah-cyan-2); }
+  .ah-tlog-path {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.08);
+    padding: 0 4px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+  .ah-tlog-bytes { color: var(--muted); font-size: 11px; }
+  .ah-tlog-status {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .ah-tlog-status.ok {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  .ah-tlog-status.launched {
+    background: rgba(6, 182, 212, 0.2);
+    color: var(--ah-cyan-2);
+    border: 1px solid rgba(6, 182, 212, 0.5);
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.4);
+    animation: ah-launch-pulse 1s ease-in-out 1.2s 2;
+  }
+  @keyframes ah-launch-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+  }
+  .ah-tlog-progress { flex-wrap: wrap; }
+  .ah-tlog-bar {
+    flex-basis: 100%;
+    margin-top: 6px;
+    height: 4px;
+    background: rgba(6, 182, 212, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .ah-tlog-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--ah-cyan), var(--ah-cyan-2));
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
+    transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* =========================================================
+     SLIDE 6 — Library
+     ========================================================= */
+  .ah-library { flex-direction: column; }
+  .ah-library-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(960px, 90cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .ah-library-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ah-library-head h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .ah-lib-count {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ah-library-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .ah-lib-game {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  .slide.active .ah-lib-game { opacity: 1; transform: translateX(0); }
+  .ah-lib-art {
+    width: 100px;
+    aspect-ratio: 16 / 10;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1e3a5f 0%, #0a1929 50%, #050a14 100%);
+  }
+  .ah-lib-art.art-1 { background: linear-gradient(135deg, #2a3e1f 0%, #0d1a08 100%); }
+  .ah-lib-art.art-2 { background: linear-gradient(135deg, #3a1e2a 0%, #1a0810 100%); }
+  .ah-lib-art.art-3 { background: linear-gradient(135deg, #1f2a3e 0%, #08101a 100%); }
+  .ah-lib-art.art-4 { background: linear-gradient(135deg, #3a2a1f 0%, #1a1008 100%); }
+  .ah-lib-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+  }
+  .ah-lib-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .ah-lib-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .ah-lib-meta.installing { color: #fbbf24; }
+  .ah-btn-launch, .ah-btn-install {
+    margin-top: 8px;
+    align-self: flex-start;
+    padding: 6px 14px;
+    border: 0;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .ah-btn-launch {
+    background: linear-gradient(180deg, var(--ah-cyan), var(--accent-deep));
+    color: #000;
+    box-shadow: 0 6px 16px rgba(6, 182, 212, 0.3);
+  }
+  .ah-btn-install {
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--ah-cyan-2);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+  }
+  .ah-btn-install:disabled {
+    opacity: 0.7;
+    cursor: default;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+
+  /* =========================================================
+     SLIDE 7 — Stack
+     ========================================================= */
+  .ah-stack { flex-direction: column; }
+  .ah-stack-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, 94cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
+  }
+  .ah-arch {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 1000px;
+  }
+  .ah-arch-node {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 22px 14px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(10, 14, 26, 0.9) 100%);
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .ah-arch-node.final {
+    border-color: rgba(6, 182, 212, 0.4);
+    box-shadow: 0 12px 32px rgba(6, 182, 212, 0.15);
+  }
+  .ah-arch-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(6, 182, 212, 0.12), rgba(0, 0, 0, 0.6));
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 24px;
+    color: var(--ah-cyan-2);
+  }
+  .ah-arch-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    text-align: center;
+  }
+  .ah-arch-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+  .ah-arch-edge {
+    flex: 0 0 28px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--ah-cyan) 50%, transparent 100%);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+    opacity: 0;
+    transition: opacity 0.6s;
+    align-self: center;
+    transform: translateY(28px);
+  }
+  .ah-arch-edge.lit { opacity: 0.8; }
+
+  .ah-cost-card {
+    width: 100%;
+    max-width: 1000px;
+    padding: 26px 32px;
+    background:
+      linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(0, 0, 0, 0.9) 60%);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 18px;
+    box-shadow:
+      0 0 60px rgba(6, 182, 212, 0.15),
+      0 18px 60px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  .ah-cost-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 24px;
+  }
+  .ah-cost-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--stroke-soft);
+  }
+  .ah-cost-cell:last-child,
+  .ah-cost-cell:nth-last-child(2) { border-bottom: 0; }
+  .ah-cost-svc {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .ah-cost-amt {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ah-cyan-2);
+  }
+  .ah-cost-total {
+    flex: 0 0 auto;
+    text-align: right;
+    border-left: 1px solid rgba(6, 182, 212, 0.2);
+    padding-left: 32px;
+  }
+  .ah-cost-total-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .ah-cost-total-value {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(48px, 6cqw, 80px);
+    color: var(--ah-cyan-2);
+    text-shadow: 0 0 24px rgba(6, 182, 212, 0.5);
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+  .ah-cost-total-suffix {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    text-shadow: none;
+  }
+
+  /* =========================================================
+     SLIDE 8 — Closing
+     ========================================================= */
+  .ah-end { flex-direction: column; }
+  .ah-end-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .ah-title-end { font-size: clamp(56px, 9cqw, 124px); }
+  .ah-end-tag {
+    margin-top: 22px;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(18px, 1.8cqw, 26px);
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .ah-end-cta {
+    margin-top: 32px;
+    padding: 14px 28px;
+    background: linear-gradient(180deg, var(--ah-cyan) 0%, var(--accent-deep) 100%);
+    color: #000;
+    border-radius: 10px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    box-shadow:
+      0 14px 32px rgba(6, 182, 212, 0.4),
+      0 0 0 1px rgba(34, 211, 238, 0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .ah-end-cta-icon { font-size: 18px; }
+  .ah-end .caption { display: none; }
+
+  /* Responsive (container) — small viewports */
+  @container stage (max-width: 700px) {
+    .ah-flow { flex-direction: column; gap: 10px; }
+    .ah-flow-arrow {
+      width: 2px; height: 24px;
+      background: linear-gradient(180deg, transparent 0%, var(--ah-cyan) 50%, transparent 100%);
+      transform: none;
+    }
+    .ah-arch { flex-direction: column; gap: 10px; }
+    .ah-arch-edge {
+      width: 2px; height: 24px;
+      background: linear-gradient(180deg, transparent 0%, var(--ah-cyan) 50%, transparent 100%);
+      transform: none;
+    }
+    .ah-game-grid { grid-template-columns: repeat(2, 1fr); }
+    .ah-library-grid { grid-template-columns: 1fr; }
+    .ah-cost-card { flex-direction: column; }
+    .ah-cost-total { border-left: 0; padding-left: 0; text-align: center; }
+    .ah-cost-total-value { justify-content: center; }
+    .ah-featured-overlay { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .ah-featured-cta { align-items: flex-start; }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    function whenReady(cb) {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') cb();
+      else document.addEventListener('DOMContentLoaded', cb, { once: true });
+    }
+
+    whenReady(() => {
+      if (typeof gsap === 'undefined') {
+        console.warn('GSAP not loaded — animations skipped');
+        return;
+      }
+
+      function $$(sel, root) { return (root || document).querySelectorAll(sel); }
+      function $(sel, root) { return (root || document).querySelector(sel); }
+
+      // ----- SLIDE 1: OPENING -----
+      function animOpen(s) {
+        const words = $$('.ah-title .ah-word', s);
+        gsap.fromTo($('#openingLogo', s), { opacity: 0, scale: 0.7, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'expo.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, delay: 0.5, ease: 'expo.out' });
+        gsap.fromTo($('#openingRule', s), { width: 0 },
+          { width: 220, duration: 0.8, delay: 1.3, ease: 'power3.out' });
+        gsap.fromTo($('#openingTag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 1.7, ease: 'power3.out' });
+        gsap.fromTo($('#openingSubtag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 2.0, ease: 'power3.out' });
+      }
+
+      // ----- SLIDE 2: HOOK -----
+      function animHook(s) {
+        const words = $$('.ah-hook-line .ah-word', s);
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, delay: 0.4, ease: 'back.out(1.4)' });
+      }
+
+      // ----- SLIDE 3: CATALOG -----
+      function animCatalog(s) {
+        gsap.fromTo($('.ah-catalog-head', s), { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
+        gsap.fromTo($('.ah-featured', s), { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.4, ease: 'power3.out', clearProps: 'all' });
+        gsap.fromTo($('.ah-cat-row-title', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.5, delay: 0.8 });
+        gsap.fromTo($$('.ah-game', s), { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.4, stagger: 0.08, delay: 0.95, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 4: PURCHASE FLOW -----
+      function animPurchase(s) {
+        const steps = $$('.ah-flow-step', s);
+        const arrows = $$('.ah-flow-arrow', s);
+        const notes = $$('.ah-note', s);
+        arrows.forEach((a) => a.classList.remove('lit'));
+
+        const tl = gsap.timeline({ delay: 0.3 });
+        steps.forEach((step, i) => {
+          tl.to(step, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, i === 0 ? 0 : '+=.15');
+          if (arrows[i]) tl.add(() => arrows[i].classList.add('lit'), '+=.05');
+        });
+        tl.to(notes, { opacity: 1, y: 0, duration: 0.6, stagger: 0.18, ease: 'power3.out' }, '+=.3');
+      }
+
+      // ----- SLIDE 5: INSTALL TERMINAL (signature) -----
+      function animInstall(s) {
+        const lines = $$('.ah-tlog-line', s);
+        const bar = $('#dlBar', s);
+        const bytes = $('#dlBytes', s);
+
+        // Reset
+        gsap.set(lines, { opacity: 0, y: 8 });
+        if (bar) bar.style.width = '0%';
+        if (bytes) bytes.textContent = '0.0 / 84.2 MB';
+
+        // Reveal lines in sequence
+        const tl = gsap.timeline({ delay: 0.4 });
+        tl.to(lines[0], { opacity: 1, y: 0, duration: 0.3 });
+        tl.to(lines[1], { opacity: 1, y: 0, duration: 0.3 }, '+=.35');
+        tl.to(lines[2], { opacity: 1, y: 0, duration: 0.3 }, '+=.35');
+        // Animate the progress bar + byte counter
+        tl.add(() => {
+          if (bar) bar.style.width = '100%';
+          if (bytes) {
+            const target = 84.2;
+            let val = 0;
+            const interval = setInterval(() => {
+              val += target / 24;
+              if (val >= target) {
+                val = target;
+                clearInterval(interval);
+              }
+              bytes.textContent = `${val.toFixed(1)} / ${target} MB`;
+            }, 50);
+          }
+        }, '+=.1');
+        tl.to(lines[3], { opacity: 1, y: 0, duration: 0.3 }, '+=1.3');
+        tl.to(lines[4], { opacity: 1, y: 0, duration: 0.3 }, '+=.35');
+        tl.to(lines[5], { opacity: 1, y: 0, duration: 0.3 }, '+=.45');
+      }
+
+      // ----- SLIDE 6: LIBRARY -----
+      function animLibrary(s) {
+        gsap.fromTo($('.ah-library-head', s), { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
+        gsap.fromTo($$('.ah-lib-game', s), { opacity: 0, x: -12 },
+          { opacity: 1, x: 0, duration: 0.45, stagger: 0.12, delay: 0.4, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 7: STACK -----
+      function animStack(s) {
+        const nodes = $$('.ah-arch-node', s);
+        const edges = $$('.ah-arch-edge', s);
+        edges.forEach((e) => e.classList.remove('lit'));
+
+        const tl = gsap.timeline({ delay: 0.3 });
+        nodes.forEach((node, i) => {
+          tl.to(node, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, i === 0 ? 0 : '+=.12');
+          if (edges[i]) tl.add(() => edges[i].classList.add('lit'), '+=.05');
+        });
+        tl.to($('.ah-cost-card', s), { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.5)' }, '+=.3');
+      }
+
+      // ----- SLIDE 8: END -----
+      function animEnd(s) {
+        const words = $$('.ah-title .ah-word', s);
+        gsap.fromTo($('#endLogo', s), { opacity: 0, scale: 0.7, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'expo.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, delay: 0.4, ease: 'expo.out' });
+        gsap.fromTo($('.ah-end-tag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 1.5, ease: 'power3.out' });
+        gsap.fromTo($('.ah-end-cta', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 1.9, ease: 'power3.out' });
+      }
+
+      const sceneMap = {
+        1: animOpen,
+        2: animHook,
+        3: animCatalog,
+        4: animPurchase,
+        5: animInstall,
+        6: animLibrary,
+        7: animStack,
+        8: animEnd,
+      };
+
+      document.addEventListener('cinematic:slide-changed', (e) => {
+        const { slide } = e.detail;
+        const num = +slide.dataset.slide;
+        const fn = sceneMap[num];
+        if (fn) fn(slide);
+      });
+    });
+  })();
+</script>

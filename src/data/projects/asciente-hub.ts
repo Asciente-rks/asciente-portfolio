@@ -36,6 +36,9 @@ export const ascienteHub: Project = {
   liveUrl: 'https://github.com/Asciente-rks/ascientehub-frontend/releases/download/v1.0.2/ascientehub_0.1.0_x64-setup.exe',
   liveLabel: 'Download .exe',
   sourceUrl: 'https://github.com/Asciente-rks/ascientehub-backend',
+  cinematicUrl: '/cinematics/asciente-hub',
+  cinematicCaption:
+    'An 8-scene walkthrough of AscienteHub — the Tauri-Rust desktop game marketplace with PayMongo 3-D Secure checkout and native install + launch. Click anywhere or press → / Space to advance.',
   thumbnail: 'AscienteHub/LoginAscienteHub.png',
   gallery: [
     { src: 'AscienteHub/LoginAscienteHub.png', caption: 'Sign-in screen' },
