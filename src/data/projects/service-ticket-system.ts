@@ -38,7 +38,7 @@ export const serviceTicketSystem: Project = {
   cinematicUrl: '/cinematics/service-ticket-system',
   cinematicCaption:
     'A scene-by-scene walkthrough of Nexus Track — a multi-tenant QA tracker with per-collection workspaces, a six-status lifecycle, multiple assignees, platform/version tagging, and a built-in AI assistant. Click anywhere or press → / Space to advance.',
-  thumbnail: 'ServiceTicket/Dashboard_NT.png',
+  thumbnail: 'ServiceTicket/Login_NT.png',
   gallery: [
     { src: 'ServiceTicket/Login_NT.png', caption: 'Login · email-OTP onboarding' },
     { src: 'ServiceTicket/Collections_NT.png', caption: 'Collections · pick a project workspace (the high-level gate)' },
@@ -162,7 +162,7 @@ export const serviceTicketSystem: Project = {
     participant API as Express on Lambda
     participant DB as TiDB (MySQL)
 
-    Tester->>API: POST /tickets (title, desc, priority, assigneeIds[], platformVersionIds[])
+    Tester->>API: POST /tickets — title, priority, assignees, platform/versions
     API->>DB: INSERT ticket (Open) + ticket_assignees + ticket_platform_versions
     API-->>Tester: 201 created
 

@@ -1,7 +1,7 @@
 ---
 import CinematicLayout from '../../layouts/CinematicLayout.astro';
 import { Image } from 'astro:assets';
-// Reuse the existing Asciente brand mark (same "A" used in the actual STS app).
+// Reuse the existing Asciente brand mark (same "A" used in the actual Nexus Track app).
 import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
 ---
 
@@ -21,15 +21,14 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
       <div class="sts-mark" id="openingMark">
         <Image src={logoIcon} alt="" widths={[80, 160]} sizes="80px" class="sts-mark-img" />
       </div>
-      <div class="sts-pre" id="openingPre">A defect-tracking platform</div>
+      <div class="sts-pre" id="openingPre">A multi-tenant QA platform</div>
       <h1 class="sts-title" id="openingTitle">
-        <span class="sts-word">Service</span>
-        <span class="sts-word">Ticket</span>
-        <span class="sts-word sts-accent">System.</span>
+        <span class="sts-word">Nexus</span>
+        <span class="sts-word sts-accent">Track.</span>
       </h1>
       <div class="sts-rule" id="openingRule"></div>
       <p class="sts-tagline" id="openingTag">
-        From report to resolved.
+        From report to resolved — with AI.
       </p>
     </div>
   </section>
@@ -47,8 +46,9 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
         <span class="sts-word sts-rose">noise.</span>
       </h2>
       <p class="sts-hook-note">
-        Tester reports. Admin triages. Developer fixes. Approver signs off.
-        Four roles, six states, one immutable audit row per decision.
+        Nexus Track gives every team its own workspace — tickets split into collections,
+        routed to multiple assignees, tagged to the exact build, and watched by an AI
+        that answers questions and flags duplicates before they pile up.
       </p>
     </div>
   </section>
@@ -69,13 +69,13 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
           <div class="sts-lc-node node-progress" data-node="2">
             <div class="sts-lc-dot"></div>
             <div class="sts-lc-label">In Progress</div>
-            <div class="sts-lc-meta">Assigned dev</div>
+            <div class="sts-lc-meta">→ the developer</div>
           </div>
           <div class="sts-lc-edge" data-edge="2"></div>
           <div class="sts-lc-node node-qa" data-node="3">
             <div class="sts-lc-dot"></div>
             <div class="sts-lc-label">Ready for QA</div>
-            <div class="sts-lc-meta">Awaiting approval</div>
+            <div class="sts-lc-meta">→ the reporter</div>
           </div>
           <div class="sts-lc-edge" data-edge="3"></div>
           <div class="sts-lc-node node-resolved" data-node="4">
@@ -103,7 +103,7 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
         </div>
       </div>
       <p class="sts-lc-foot">
-        Six statuses live in <code>TICKET_STATUS</code>. Adding one is a row insert, not a schema change.
+        Status drives ownership — <code>In Progress</code> routes to the developer, <code>Ready for QA</code> back to the reporter — and a ticket can carry several assignees.
       </p>
     </div>
     <div class="caption">
@@ -119,41 +119,41 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
         <article class="sts-role-card" data-role="1">
           <div class="sts-role-tag role-super">SUPER_ADMIN</div>
           <h3>Super Admin</h3>
-          <p>System-wide. Sees every ticket, every user, every audit row.</p>
+          <p>Workspace-wide. Sees every collection, ticket, user and audit row.</p>
           <ul>
-            <li>Promote / demote roles</li>
-            <li>Hard-delete users</li>
+            <li>Manage members &amp; roles</li>
+            <li>Create / delete collections</li>
             <li>Override any approval</li>
           </ul>
         </article>
         <article class="sts-role-card" data-role="2">
           <div class="sts-role-tag role-admin">ADMIN</div>
           <h3>Admin</h3>
-          <p>Triage and assignment. Cannot touch other admins.</p>
+          <p>Triage and assignment. Curates each collection's build catalog.</p>
           <ul>
             <li>Assign tickets to devs</li>
             <li>Approve or reject</li>
-            <li>Manage testers + developers</li>
+            <li>Manage platform/versions</li>
           </ul>
         </article>
         <article class="sts-role-card" data-role="3">
           <div class="sts-role-tag role-tester">TESTER</div>
           <h3>Tester</h3>
-          <p>Reports defects. Sees only what they reported.</p>
+          <p>Reports defects. Tracks the tickets they raised.</p>
           <ul>
             <li>Create tickets</li>
-            <li>Set priority &amp; severity</li>
-            <li>Watch status flow</li>
+            <li>Tag platform &amp; version</li>
+            <li>Verify fixes in QA</li>
           </ul>
         </article>
         <article class="sts-role-card" data-role="4">
           <div class="sts-role-tag role-dev">DEVELOPER</div>
           <h3>Developer</h3>
-          <p>Resolves defects. Sees only their assignments.</p>
+          <p>Resolves defects. Works the tickets assigned to them.</p>
           <ul>
             <li>Move to In Progress</li>
             <li>Mark Ready for QA</li>
-            <li>Bounce-backs go straight here</li>
+            <li>Bounce-backs come straight here</li>
           </ul>
         </article>
       </div>
@@ -164,19 +164,28 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
     </div>
   </section>
 
-  <!-- SLIDE 5 — DASHBOARD -->
+  <!-- SLIDE 5 — DASHBOARD (collections · assignees · platform/version · AI) -->
   <section class="slide sts-dash" data-slide="5">
     <div class="sts-dash-wrap">
       <div class="sts-dash-head">
         <div class="sts-dash-title">
-          <h2>All tickets</h2>
-          <span class="sts-count">5 of 18</span>
+          <h2>Mobile App</h2>
+          <span class="sts-count">collection · 18 tickets</span>
         </div>
         <div class="sts-filters">
           <span class="sts-filter active">All</span>
-          <span class="sts-filter">My team</span>
-          <span class="sts-filter">Mine</span>
+          <span class="sts-filter">Assigned to me</span>
+          <span class="sts-filter">My reports</span>
         </div>
+      </div>
+
+      <!-- AI duplicate-detection banner (self-contained inline styles) -->
+      <div style="display:flex;align-items:center;gap:.7rem;padding:.7rem .9rem;margin:0 0 .85rem;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.10);border-radius:14px;">
+        <span style="display:grid;place-items:center;width:1.9rem;height:1.9rem;border-radius:.6rem;background:rgba(245,158,11,.16);color:#fbbf24;font-size:.95rem;">✦</span>
+        <span style="font-size:.82rem;line-height:1.3;color:#cbd5e1;">
+          <strong style="color:#fbbf24;">AI</strong> detected <strong style="color:#fbbf24;">1 potential duplicate group</strong> in this collection —
+          <span style="color:#fbbf24;font-weight:600;">Verify with AI →</span>
+        </span>
       </div>
 
       <div class="sts-ticket-list">
@@ -186,11 +195,12 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
             <div class="sts-tk-title">Login form rejects valid passwords with leading whitespace</div>
             <div class="sts-tk-meta">
               <span class="sts-tk-reporter">tester · marcus</span>
-              <span class="sts-tk-assignee">→ developer · lena</span>
+              <span class="sts-tk-assignee">→ lena, david</span>
             </div>
           </div>
           <div class="sts-tk-tags">
-            <span class="sts-prio prio-critical">CRITICAL</span>
+            <span style="display:inline-flex;align-items:center;gap:.25rem;padding:.12rem .5rem;border-radius:.5rem;font-size:.62rem;font-weight:700;background:rgba(99,102,241,.14);color:#a5b4fc;">Mobile · 128.80.2</span>
+            <span class="sts-prio prio-high">HIGH</span>
             <span class="sts-status status-progress">In Progress</span>
           </div>
         </article>
@@ -204,6 +214,7 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
             </div>
           </div>
           <div class="sts-tk-tags">
+            <span style="display:inline-flex;align-items:center;gap:.25rem;padding:.12rem .5rem;border-radius:.5rem;font-size:.62rem;font-weight:700;background:rgba(99,102,241,.14);color:#a5b4fc;">Web · 1.1.0</span>
             <span class="sts-prio prio-low">LOW</span>
             <span class="sts-status status-qa">Ready for QA</span>
           </div>
@@ -214,10 +225,11 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
             <div class="sts-tk-title">Notification preferences not persisting after refresh</div>
             <div class="sts-tk-meta">
               <span class="sts-tk-reporter">tester · marcus</span>
-              <span class="sts-tk-assignee">→ developer · lena</span>
+              <span class="sts-tk-assignee">→ lena, ana</span>
             </div>
           </div>
           <div class="sts-tk-tags">
+            <span style="display:inline-flex;align-items:center;gap:.25rem;padding:.12rem .5rem;border-radius:.5rem;font-size:.62rem;font-weight:700;background:rgba(99,102,241,.14);color:#a5b4fc;">Web · 1.1.0</span>
             <span class="sts-prio prio-high">HIGH</span>
             <span class="sts-status status-error">Error Persists</span>
           </div>
@@ -225,13 +237,14 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
         <article class="sts-ticket" data-tk="4">
           <div class="sts-tk-id">#1242</div>
           <div class="sts-tk-body">
-            <div class="sts-tk-title">Audit log shows wrong timezone on resolved tickets</div>
+            <div class="sts-tk-title">Activity timeline shows wrong timezone on resolved tickets</div>
             <div class="sts-tk-meta">
               <span class="sts-tk-reporter">tester · yuki</span>
               <span class="sts-tk-assignee">→ developer · david</span>
             </div>
           </div>
           <div class="sts-tk-tags">
+            <span style="display:inline-flex;align-items:center;gap:.25rem;padding:.12rem .5rem;border-radius:.5rem;font-size:.62rem;font-weight:700;background:rgba(99,102,241,.14);color:#a5b4fc;">Mobile · 128.80.2</span>
             <span class="sts-prio prio-medium">MEDIUM</span>
             <span class="sts-status status-resolved">Resolved</span>
           </div>
@@ -253,8 +266,8 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
       </div>
     </div>
     <div class="caption">
-      <div class="eyebrow">Mission control</div>
-      <h2>Every status. Every priority. One surface.</h2>
+      <div class="eyebrow">Per-collection mission control</div>
+      <h2>Collections, assignees, builds — and an AI watching for duplicates.</h2>
     </div>
   </section>
 
@@ -297,7 +310,7 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
         <article class="sts-audit">
           <div class="sts-audit-head">
             <div class="sts-audit-tag">Immutable history</div>
-            <h3>Audit trail · #1246</h3>
+            <h3>Activity timeline · #1246</h3>
           </div>
           <ol class="sts-audit-list">
             <li class="sts-audit-item" data-audit="1">
@@ -350,35 +363,35 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
     </div>
   </section>
 
-  <!-- SLIDE 7 — STACK + $0 -->
+  <!-- SLIDE 7 — STACK + $0 (AWS serverless) -->
   <section class="slide sts-stack" data-slide="7">
     <div class="sts-stack-wrap">
       <div class="sts-arch">
         <div class="sts-arch-node" data-arch="1">
           <div class="sts-arch-icon">⚛</div>
           <div class="sts-arch-label">React SPA</div>
-          <div class="sts-arch-sub">Vite · Tailwind 4</div>
+          <div class="sts-arch-sub">Vite 8 · Tailwind 4</div>
           <div class="sts-arch-host">Vercel · CDN edge</div>
         </div>
         <div class="sts-arch-edge"></div>
         <div class="sts-arch-node" data-arch="2">
-          <div class="sts-arch-icon">⊞</div>
-          <div class="sts-arch-label">Express API</div>
-          <div class="sts-arch-sub">JWT · helmet · rate-limit</div>
-          <div class="sts-arch-host">Render · free web service</div>
+          <div class="sts-arch-icon">λ</div>
+          <div class="sts-arch-label">Express · AWS Lambda</div>
+          <div class="sts-arch-sub">serverless-http · JWT · Groq + Gemini AI</div>
+          <div class="sts-arch-host">Lambda Function URL</div>
         </div>
         <div class="sts-arch-edge"></div>
         <div class="sts-arch-node final" data-arch="3">
           <div class="sts-arch-icon">▤</div>
-          <div class="sts-arch-label">MySQL</div>
-          <div class="sts-arch-sub">Sequelize · auto-seed</div>
-          <div class="sts-arch-host">Aiven · free MySQL</div>
+          <div class="sts-arch-label">TiDB Cloud</div>
+          <div class="sts-arch-sub">Sequelize 6 · serverless MySQL</div>
+          <div class="sts-arch-host">TLS · no VPC</div>
         </div>
         <div class="sts-arch-cron">
           <div class="sts-arch-cron-line"></div>
           <div class="sts-arch-cron-box">
             <span class="sts-cron-dot"></span>
-            <strong>node-cron</strong> · in-process · SLA reminders
+            <strong>EventBridge</strong> · scheduled · SLA stale-ticket scan
           </div>
         </div>
       </div>
@@ -386,8 +399,8 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
       <div class="sts-cost-card">
         <div class="sts-cost-rows">
           <div class="sts-cost-row"><span>Vercel Hobby · frontend</span><span class="sts-cost-amt">$0</span></div>
-          <div class="sts-cost-row"><span>Render Web Service · backend</span><span class="sts-cost-amt">$0</span></div>
-          <div class="sts-cost-row"><span>Aiven · MySQL free tier</span><span class="sts-cost-amt">$0</span></div>
+          <div class="sts-cost-row"><span>AWS Lambda + Function URL</span><span class="sts-cost-amt">$0</span></div>
+          <div class="sts-cost-row"><span>TiDB Cloud Serverless · MySQL</span><span class="sts-cost-amt">$0</span></div>
         </div>
         <div class="sts-cost-total">
           <div class="sts-cost-total-label">Monthly</div>
@@ -397,7 +410,7 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
     </div>
     <div class="caption">
       <div class="eyebrow">The stack</div>
-      <h2>Three layers. Three free tiers. One cron.</h2>
+      <h2>Serverless top to bottom. Still $0 a month.</h2>
     </div>
   </section>
 
@@ -409,12 +422,11 @@ import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
         <Image src={logoIcon} alt="" widths={[72, 144]} sizes="72px" class="sts-mark-img" />
       </div>
       <h1 class="sts-title sts-title-end">
-        <span class="sts-word">Service</span>
-        <span class="sts-word">Ticket</span>
-        <span class="sts-word sts-accent">System.</span>
+        <span class="sts-word">Nexus</span>
+        <span class="sts-word sts-accent">Track.</span>
       </h1>
       <div class="sts-rule"></div>
-      <p class="sts-end-tag">From report to resolved.</p>
+      <p class="sts-end-tag">From report to resolved — with AI.</p>
       <div class="sts-end-url">service-ticket-system-frontend.vercel.app</div>
     </div>
   </section>
