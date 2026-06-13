@@ -1,0 +1,1678 @@
+---
+import CinematicLayout from '../../layouts/CinematicLayout.astro';
+import { Image } from 'astro:assets';
+// Reuse the existing Asciente brand mark (same "A" used in the actual STS app).
+import logoIcon from '../../assets/cinematics/ascientehub-icon.png';
+---
+
+<CinematicLayout
+  title="Service Ticket System — Cinematic"
+  brandName="Service Ticket System"
+  brandLogoIcon={logoIcon}
+  brandMarkHeight={36}
+  totalSlides={8}
+  fontsUrl="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+>
+
+  <!-- SLIDE 1 — OPENING -->
+  <section class="slide sts-open active" data-slide="1">
+    <div class="sts-grid-overlay"></div>
+    <div class="sts-open-inner">
+      <div class="sts-mark" id="openingMark">
+        <Image src={logoIcon} alt="" widths={[80, 160]} sizes="80px" class="sts-mark-img" />
+      </div>
+      <div class="sts-pre" id="openingPre">A defect-tracking platform</div>
+      <h1 class="sts-title" id="openingTitle">
+        <span class="sts-word">Service</span>
+        <span class="sts-word">Ticket</span>
+        <span class="sts-word sts-accent">System.</span>
+      </h1>
+      <div class="sts-rule" id="openingRule"></div>
+      <p class="sts-tagline" id="openingTag">
+        From report to resolved.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — THE HOOK -->
+  <section class="slide sts-hook" data-slide="2">
+    <div class="sts-hook-inner">
+      <div class="sts-eyebrow">The premise</div>
+      <h2 class="sts-hook-line">
+        <span class="sts-word">Bugs without</span>
+        <span class="sts-word">a workflow</span>
+      </h2>
+      <h2 class="sts-hook-line sts-hook-line-2">
+        <span class="sts-word">are just</span>
+        <span class="sts-word sts-rose">noise.</span>
+      </h2>
+      <p class="sts-hook-note">
+        Tester reports. Admin triages. Developer fixes. Approver signs off.
+        Four roles, six states, one immutable audit row per decision.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — THE LIFECYCLE (signature scene) -->
+  <section class="slide sts-lifecycle" data-slide="3">
+    <div class="sts-lifecycle-wrap">
+      <div class="sts-lc-title">The ticket lifecycle</div>
+      <div class="sts-lc-rail">
+        <!-- Horizontal status chain (Open → In Progress → Ready for QA → Resolved → Closed) -->
+        <div class="sts-lc-row" id="lcRow">
+          <div class="sts-lc-node node-open" data-node="1">
+            <div class="sts-lc-dot"></div>
+            <div class="sts-lc-label">Open</div>
+            <div class="sts-lc-meta">Reported</div>
+          </div>
+          <div class="sts-lc-edge" data-edge="1"></div>
+          <div class="sts-lc-node node-progress" data-node="2">
+            <div class="sts-lc-dot"></div>
+            <div class="sts-lc-label">In Progress</div>
+            <div class="sts-lc-meta">Assigned dev</div>
+          </div>
+          <div class="sts-lc-edge" data-edge="2"></div>
+          <div class="sts-lc-node node-qa" data-node="3">
+            <div class="sts-lc-dot"></div>
+            <div class="sts-lc-label">Ready for QA</div>
+            <div class="sts-lc-meta">Awaiting approval</div>
+          </div>
+          <div class="sts-lc-edge" data-edge="3"></div>
+          <div class="sts-lc-node node-resolved" data-node="4">
+            <div class="sts-lc-dot"></div>
+            <div class="sts-lc-label">Resolved</div>
+            <div class="sts-lc-meta">Approved</div>
+          </div>
+          <div class="sts-lc-edge" data-edge="4"></div>
+          <div class="sts-lc-node node-closed" data-node="5">
+            <div class="sts-lc-dot"></div>
+            <div class="sts-lc-label">Closed</div>
+            <div class="sts-lc-meta">Done</div>
+          </div>
+        </div>
+
+        <!-- "Error Persists" branch (rose) — loops back to In Progress -->
+        <div class="sts-lc-branch" id="lcBranch">
+          <div class="sts-lc-branch-arc"></div>
+          <div class="sts-lc-node node-error sts-lc-node-floating" data-node="error">
+            <div class="sts-lc-dot"></div>
+            <div class="sts-lc-label">Error Persists</div>
+            <div class="sts-lc-meta">Rejected → bounce back</div>
+          </div>
+          <div class="sts-lc-branch-arrow"></div>
+        </div>
+      </div>
+      <p class="sts-lc-foot">
+        Six statuses live in <code>TICKET_STATUS</code>. Adding one is a row insert, not a schema change.
+      </p>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The state machine</div>
+      <h2>Five forward states. One bounce back.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — FOUR ROLES -->
+  <section class="slide sts-roles" data-slide="4">
+    <div class="sts-roles-wrap">
+      <div class="sts-roles-grid">
+        <article class="sts-role-card" data-role="1">
+          <div class="sts-role-tag role-super">SUPER_ADMIN</div>
+          <h3>Super Admin</h3>
+          <p>System-wide. Sees every ticket, every user, every audit row.</p>
+          <ul>
+            <li>Promote / demote roles</li>
+            <li>Hard-delete users</li>
+            <li>Override any approval</li>
+          </ul>
+        </article>
+        <article class="sts-role-card" data-role="2">
+          <div class="sts-role-tag role-admin">ADMIN</div>
+          <h3>Admin</h3>
+          <p>Triage and assignment. Cannot touch other admins.</p>
+          <ul>
+            <li>Assign tickets to devs</li>
+            <li>Approve or reject</li>
+            <li>Manage testers + developers</li>
+          </ul>
+        </article>
+        <article class="sts-role-card" data-role="3">
+          <div class="sts-role-tag role-tester">TESTER</div>
+          <h3>Tester</h3>
+          <p>Reports defects. Sees only what they reported.</p>
+          <ul>
+            <li>Create tickets</li>
+            <li>Set priority &amp; severity</li>
+            <li>Watch status flow</li>
+          </ul>
+        </article>
+        <article class="sts-role-card" data-role="4">
+          <div class="sts-role-tag role-dev">DEVELOPER</div>
+          <h3>Developer</h3>
+          <p>Resolves defects. Sees only their assignments.</p>
+          <ul>
+            <li>Move to In Progress</li>
+            <li>Mark Ready for QA</li>
+            <li>Bounce-backs go straight here</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">RBAC, server-enforced</div>
+      <h2>Four roles. No overlap. No surprises.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — DASHBOARD -->
+  <section class="slide sts-dash" data-slide="5">
+    <div class="sts-dash-wrap">
+      <div class="sts-dash-head">
+        <div class="sts-dash-title">
+          <h2>All tickets</h2>
+          <span class="sts-count">5 of 18</span>
+        </div>
+        <div class="sts-filters">
+          <span class="sts-filter active">All</span>
+          <span class="sts-filter">My team</span>
+          <span class="sts-filter">Mine</span>
+        </div>
+      </div>
+
+      <div class="sts-ticket-list">
+        <article class="sts-ticket" data-tk="1">
+          <div class="sts-tk-id">#1247</div>
+          <div class="sts-tk-body">
+            <div class="sts-tk-title">Login form rejects valid passwords with leading whitespace</div>
+            <div class="sts-tk-meta">
+              <span class="sts-tk-reporter">tester · marcus</span>
+              <span class="sts-tk-assignee">→ developer · lena</span>
+            </div>
+          </div>
+          <div class="sts-tk-tags">
+            <span class="sts-prio prio-critical">CRITICAL</span>
+            <span class="sts-status status-progress">In Progress</span>
+          </div>
+        </article>
+        <article class="sts-ticket" data-tk="2">
+          <div class="sts-tk-id">#1246</div>
+          <div class="sts-tk-body">
+            <div class="sts-tk-title">Dashboard chart legend overflows on narrow viewport</div>
+            <div class="sts-tk-meta">
+              <span class="sts-tk-reporter">tester · yuki</span>
+              <span class="sts-tk-assignee">→ developer · david</span>
+            </div>
+          </div>
+          <div class="sts-tk-tags">
+            <span class="sts-prio prio-low">LOW</span>
+            <span class="sts-status status-qa">Ready for QA</span>
+          </div>
+        </article>
+        <article class="sts-ticket" data-tk="3">
+          <div class="sts-tk-id">#1245</div>
+          <div class="sts-tk-body">
+            <div class="sts-tk-title">Notification preferences not persisting after refresh</div>
+            <div class="sts-tk-meta">
+              <span class="sts-tk-reporter">tester · marcus</span>
+              <span class="sts-tk-assignee">→ developer · lena</span>
+            </div>
+          </div>
+          <div class="sts-tk-tags">
+            <span class="sts-prio prio-high">HIGH</span>
+            <span class="sts-status status-error">Error Persists</span>
+          </div>
+        </article>
+        <article class="sts-ticket" data-tk="4">
+          <div class="sts-tk-id">#1242</div>
+          <div class="sts-tk-body">
+            <div class="sts-tk-title">Audit log shows wrong timezone on resolved tickets</div>
+            <div class="sts-tk-meta">
+              <span class="sts-tk-reporter">tester · yuki</span>
+              <span class="sts-tk-assignee">→ developer · david</span>
+            </div>
+          </div>
+          <div class="sts-tk-tags">
+            <span class="sts-prio prio-medium">MEDIUM</span>
+            <span class="sts-status status-resolved">Resolved</span>
+          </div>
+        </article>
+        <article class="sts-ticket" data-tk="5">
+          <div class="sts-tk-id">#1238</div>
+          <div class="sts-tk-body">
+            <div class="sts-tk-title">Add bulk-assign action to admin triage view</div>
+            <div class="sts-tk-meta">
+              <span class="sts-tk-reporter">admin · ralph</span>
+              <span class="sts-tk-assignee">→ unassigned</span>
+            </div>
+          </div>
+          <div class="sts-tk-tags">
+            <span class="sts-prio prio-low">LOW</span>
+            <span class="sts-status status-open">Open</span>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">Mission control</div>
+      <h2>Every status. Every priority. One surface.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — APPROVAL + AUDIT -->
+  <section class="slide sts-approval" data-slide="6">
+    <div class="sts-approval-wrap">
+      <div class="sts-approval-grid">
+        <!-- Approval modal mockup -->
+        <article class="sts-modal" id="approvalModal">
+          <div class="sts-modal-head">
+            <div class="sts-modal-tag">Ticket #1246 · Review</div>
+            <h3>Approval decision</h3>
+          </div>
+          <div class="sts-modal-body">
+            <div class="sts-modal-row">
+              <span class="sts-modal-label">Current status</span>
+              <span class="sts-status status-qa">Ready for QA</span>
+            </div>
+            <div class="sts-modal-row">
+              <span class="sts-modal-label">Comment</span>
+              <div class="sts-modal-input" id="approvalComment">Verified on staging. Ship it.</div>
+            </div>
+            <div class="sts-modal-actions">
+              <button class="sts-btn-reject" type="button">Reject</button>
+              <button class="sts-btn-approve" type="button" id="approveBtn">
+                <span class="sts-btn-check">✓</span> Approve
+              </button>
+            </div>
+          </div>
+          <div class="sts-modal-result" id="approvalResult">
+            <span class="sts-result-flow">
+              <span class="sts-status status-qa">Ready for QA</span>
+              <span class="sts-result-arrow">→</span>
+              <span class="sts-status status-resolved">Resolved</span>
+            </span>
+          </div>
+        </article>
+
+        <!-- Audit trail timeline -->
+        <article class="sts-audit">
+          <div class="sts-audit-head">
+            <div class="sts-audit-tag">Immutable history</div>
+            <h3>Audit trail · #1246</h3>
+          </div>
+          <ol class="sts-audit-list">
+            <li class="sts-audit-item" data-audit="1">
+              <span class="sts-audit-dot dot-resolved"></span>
+              <div class="sts-audit-body">
+                <div class="sts-audit-meta">
+                  <span class="sts-audit-actor">Admin · ralph</span>
+                  <span class="sts-audit-time">just now</span>
+                </div>
+                <div class="sts-audit-action">Approved <span class="sts-audit-note">"Verified on staging. Ship it."</span></div>
+              </div>
+            </li>
+            <li class="sts-audit-item" data-audit="2">
+              <span class="sts-audit-dot dot-error"></span>
+              <div class="sts-audit-body">
+                <div class="sts-audit-meta">
+                  <span class="sts-audit-actor">Admin · ralph</span>
+                  <span class="sts-audit-time">3 days ago</span>
+                </div>
+                <div class="sts-audit-action">Rejected <span class="sts-audit-note">"Still showing on iPhone SE viewport"</span></div>
+              </div>
+            </li>
+            <li class="sts-audit-item" data-audit="3">
+              <span class="sts-audit-dot dot-qa"></span>
+              <div class="sts-audit-body">
+                <div class="sts-audit-meta">
+                  <span class="sts-audit-actor">Developer · david</span>
+                  <span class="sts-audit-time">3 days ago</span>
+                </div>
+                <div class="sts-audit-action">Marked <span class="sts-audit-status">Ready for QA</span></div>
+              </div>
+            </li>
+            <li class="sts-audit-item" data-audit="4">
+              <span class="sts-audit-dot dot-progress"></span>
+              <div class="sts-audit-body">
+                <div class="sts-audit-meta">
+                  <span class="sts-audit-actor">Admin · ralph</span>
+                  <span class="sts-audit-time">4 days ago</span>
+                </div>
+                <div class="sts-audit-action">Assigned <span class="sts-audit-note">to developer · david</span></div>
+              </div>
+            </li>
+          </ol>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The approval loop</div>
+      <h2>Sign off. Or send it back. Every decision logged.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — STACK + $0 -->
+  <section class="slide sts-stack" data-slide="7">
+    <div class="sts-stack-wrap">
+      <div class="sts-arch">
+        <div class="sts-arch-node" data-arch="1">
+          <div class="sts-arch-icon">⚛</div>
+          <div class="sts-arch-label">React SPA</div>
+          <div class="sts-arch-sub">Vite · Tailwind 4</div>
+          <div class="sts-arch-host">Vercel · CDN edge</div>
+        </div>
+        <div class="sts-arch-edge"></div>
+        <div class="sts-arch-node" data-arch="2">
+          <div class="sts-arch-icon">⊞</div>
+          <div class="sts-arch-label">Express API</div>
+          <div class="sts-arch-sub">JWT · helmet · rate-limit</div>
+          <div class="sts-arch-host">Render · free web service</div>
+        </div>
+        <div class="sts-arch-edge"></div>
+        <div class="sts-arch-node final" data-arch="3">
+          <div class="sts-arch-icon">▤</div>
+          <div class="sts-arch-label">MySQL</div>
+          <div class="sts-arch-sub">Sequelize · auto-seed</div>
+          <div class="sts-arch-host">Aiven · free MySQL</div>
+        </div>
+        <div class="sts-arch-cron">
+          <div class="sts-arch-cron-line"></div>
+          <div class="sts-arch-cron-box">
+            <span class="sts-cron-dot"></span>
+            <strong>node-cron</strong> · in-process · SLA reminders
+          </div>
+        </div>
+      </div>
+
+      <div class="sts-cost-card">
+        <div class="sts-cost-rows">
+          <div class="sts-cost-row"><span>Vercel Hobby · frontend</span><span class="sts-cost-amt">$0</span></div>
+          <div class="sts-cost-row"><span>Render Web Service · backend</span><span class="sts-cost-amt">$0</span></div>
+          <div class="sts-cost-row"><span>Aiven · MySQL free tier</span><span class="sts-cost-amt">$0</span></div>
+        </div>
+        <div class="sts-cost-total">
+          <div class="sts-cost-total-label">Monthly</div>
+          <div class="sts-cost-total-value">$0<span class="sts-cost-total-suffix">/month</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The stack</div>
+      <h2>Three layers. Three free tiers. One cron.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — CLOSING -->
+  <section class="slide sts-end" data-slide="8">
+    <div class="sts-grid-overlay"></div>
+    <div class="sts-end-inner">
+      <div class="sts-mark" id="endMark">
+        <Image src={logoIcon} alt="" widths={[72, 144]} sizes="72px" class="sts-mark-img" />
+      </div>
+      <h1 class="sts-title sts-title-end">
+        <span class="sts-word">Service</span>
+        <span class="sts-word">Ticket</span>
+        <span class="sts-word sts-accent">System.</span>
+      </h1>
+      <div class="sts-rule"></div>
+      <p class="sts-end-tag">From report to resolved.</p>
+      <div class="sts-end-url">service-ticket-system-frontend.vercel.app</div>
+    </div>
+  </section>
+
+</CinematicLayout>
+
+<style is:global>
+  /* =========================================================
+     Service Ticket System — monochromatic dark + status colors
+     ========================================================= */
+
+  :root {
+    --bg:         #010101;
+    --bg-deep:    #000000;
+    --surface:    #0a0a0a;
+    --surface-92: #0a0a0aeb;
+    --surface-88: #0a0a0ae0;
+    --surface-84: #0a0a0ad6;
+    --ink:        #ffffff;
+    --muted:      #9a9a9a;
+    --accent:     #3b82f6;
+    --accent-deep:#2563eb;
+    --accent-2:   #60a5fa;
+    --orange:     #f97316;
+    --stroke:     #ffffff22;
+    --stroke-soft:#ffffff14;
+    --green:      #10b981;
+    --display:    "Inter", "Segoe UI", system-ui, sans-serif;
+    --mono:       "JetBrains Mono", ui-monospace, monospace;
+
+    /* Status palette — used across multiple slides */
+    --sts-open:     #0ea5e9;   /* sky-500 */
+    --sts-progress: #f97316;   /* orange-500 */
+    --sts-qa:       #8b5cf6;   /* violet-500 */
+    --sts-resolved: #10b981;   /* emerald-500 */
+    --sts-error:    #f43f5e;   /* rose-500 */
+    --sts-closed:   #9a9a9a;   /* muted */
+
+    /* Priority palette */
+    --sts-crit:     #f43f5e;
+    --sts-high:     #f97316;
+    --sts-med:      #f59e0b;
+    --sts-low:      #10b981;
+  }
+
+  body {
+    background:
+      radial-gradient(at 12% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+      radial-gradient(at 88% 90%, rgba(139, 92, 246, 0.06) 0%, transparent 55%),
+      linear-gradient(180deg, var(--bg) 0%, #050505 60%, var(--bg-deep) 100%) !important;
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--ink);
+  }
+  body::after {
+    background-image:
+      linear-gradient(to right,  rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px) !important;
+    background-size: 56px 56px !important;
+  }
+  body::before { opacity: 0.15 !important; }
+
+  /* Brand-mark wordmark */
+  .brand-mark span {
+    color: var(--ink);
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Progress + chrome */
+  .progress .dot { background: #ffffff1a; }
+  .progress .dot.done { background: rgba(59, 130, 246, 0.6); }
+  .progress .dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+  }
+
+  .slide-num { color: var(--muted); font-family: var(--mono); }
+  .ctrl {
+    background: rgba(0, 0, 0, 0.85);
+    border-color: var(--stroke);
+    color: var(--ink);
+    font-family: var(--mono);
+  }
+  .ctrl:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--accent);
+    color: var(--accent-2);
+  }
+  .ctrl .key {
+    background: #000;
+    border-color: var(--stroke);
+    color: var(--muted);
+  }
+
+  .mobile-nav button {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: var(--stroke);
+    color: var(--ink);
+  }
+  .mobile-nav button:active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .mobile-nav .progress-mini {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: var(--stroke);
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .caption .eyebrow {
+    color: var(--accent-2);
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.08);
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+  }
+  .caption h2 {
+    font-family: var(--display);
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .caption p.sub { color: var(--muted); }
+
+  .sts-grid-overlay {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(to right,  rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, #000 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 75%);
+  }
+
+  .sts-word { display: inline-block; }
+  .sts-accent { color: var(--accent-2); }
+  .sts-rose { color: var(--sts-error); }
+
+  .sts-eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    font-weight: 600;
+    margin-bottom: 22px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .sts-eyebrow {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+  }
+
+  .sts-rule {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ink), transparent);
+    margin: 22px auto;
+  }
+
+  /* Status badges — used across multiple slides */
+  .sts-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+  }
+  .status-open     { color: var(--sts-open);     background: rgba(14, 165, 233, 0.08); }
+  .status-progress { color: var(--sts-progress); background: rgba(249, 115, 22, 0.08); }
+  .status-qa       { color: var(--sts-qa);       background: rgba(139, 92, 246, 0.08); }
+  .status-resolved { color: var(--sts-resolved); background: rgba(16, 185, 129, 0.08); }
+  .status-error    { color: var(--sts-error);    background: rgba(244, 63, 94, 0.08); }
+  .status-closed   { color: var(--sts-closed);   background: rgba(154, 154, 154, 0.08); }
+
+  /* Priority badges */
+  .sts-prio {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+  }
+  .prio-critical { color: var(--sts-crit); background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); }
+  .prio-high     { color: var(--sts-high); background: rgba(249, 115, 22, 0.12); border: 1px solid rgba(249, 115, 22, 0.4); }
+  .prio-medium   { color: var(--sts-med);  background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); }
+  .prio-low      { color: var(--sts-low);  background: rgba(16, 185, 129, 0.10); border: 1px solid rgba(16, 185, 129, 0.4); }
+
+  /* =========================================================
+     SLIDE 1 — Opening
+     ========================================================= */
+  .sts-open { flex-direction: column; }
+  .sts-open-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 1100px;
+    padding: 0 4cqw;
+  }
+  .sts-mark {
+    width: clamp(60px, 6.5cqw, 88px);
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: scale(0.7) translateY(20px);
+    filter: drop-shadow(0 0 26px rgba(59, 130, 246, 0.35));
+  }
+  .sts-mark-img { width: 100%; height: auto; display: block; }
+  .sts-pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 26px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .sts-title {
+    font-family: var(--display);
+    font-size: clamp(56px, 9.5cqw, 144px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.15em;
+  }
+  .sts-title .sts-word {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .sts-tagline {
+    margin-top: 0;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: clamp(15px, 1.5cqw, 22px);
+    color: var(--accent-2);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  /* =========================================================
+     SLIDE 2 — Hook
+     ========================================================= */
+  .sts-hook {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 10cqw;
+    padding-right: 10cqw;
+  }
+  .sts-hook-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .sts-hook-line {
+    font-family: var(--display);
+    font-size: clamp(42px, 6.4cqw, 96px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .sts-hook-line .sts-word {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .sts-hook-line-2 { margin-top: 10px; }
+  .sts-hook-note {
+    margin-top: 32px;
+    font-family: var(--display);
+    font-weight: 400;
+    color: var(--muted);
+    font-size: clamp(15px, 1.35cqw, 21px);
+    line-height: 1.55;
+    max-width: 720px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .sts-hook-note {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.6s;
+  }
+  .sts-hook .caption { display: none; }
+
+  /* =========================================================
+     SLIDE 3 — Lifecycle state machine (signature)
+     ========================================================= */
+  .sts-lifecycle { flex-direction: column; }
+  .sts-lifecycle-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    align-items: center;
+  }
+  .sts-lc-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .sts-lc-rail {
+    position: relative;
+    width: 100%;
+    padding: 60px 0 90px 0;
+  }
+  .sts-lc-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+  .sts-lc-node {
+    flex: 1;
+    min-width: 0;
+    background: #050505;
+    border: 1px solid currentColor;
+    border-radius: 10px;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+  }
+  .sts-lc-node.node-open     { color: var(--sts-open);     box-shadow: 0 0 0 1px var(--sts-open) inset, 0 0 28px rgba(14, 165, 233, 0.15); }
+  .sts-lc-node.node-progress { color: var(--sts-progress); box-shadow: 0 0 0 1px var(--sts-progress) inset, 0 0 28px rgba(249, 115, 22, 0.15); }
+  .sts-lc-node.node-qa       { color: var(--sts-qa);       box-shadow: 0 0 0 1px var(--sts-qa) inset, 0 0 28px rgba(139, 92, 246, 0.15); }
+  .sts-lc-node.node-resolved { color: var(--sts-resolved); box-shadow: 0 0 0 1px var(--sts-resolved) inset, 0 0 28px rgba(16, 185, 129, 0.15); }
+  .sts-lc-node.node-closed   { color: var(--sts-closed);   box-shadow: 0 0 0 1px var(--sts-closed) inset; }
+  .sts-lc-node.node-error    { color: var(--sts-error);    box-shadow: 0 0 0 1px var(--sts-error) inset, 0 0 28px rgba(244, 63, 94, 0.2); }
+
+  .sts-lc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 12px currentColor;
+  }
+  .sts-lc-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .sts-lc-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .sts-lc-edge {
+    flex: 0 0 36px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+    opacity: 0;
+    transition: opacity 0.6s;
+    align-self: center;
+  }
+  .sts-lc-edge.lit { opacity: 0.8; }
+
+  /* Error Persists branch — absolutely positioned arc loop-back */
+  .sts-lc-branch {
+    position: absolute;
+    left: 22%;
+    right: 22%;
+    top: 76%;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  .sts-lc-branch.lit { opacity: 1; }
+  .sts-lc-branch-arc {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    border: 2px dashed var(--sts-error);
+    border-top: 0;
+    border-radius: 0 0 60% 60% / 0 0 100% 100%;
+    opacity: 0.55;
+    box-shadow: 0 0 14px rgba(244, 63, 94, 0.15);
+  }
+  .sts-lc-node-floating {
+    position: relative;
+    flex: 0 0 220px;
+    background: #050505;
+    margin: 0 auto;
+    z-index: 2;
+  }
+  .sts-lc-branch-arrow {
+    position: absolute;
+    bottom: -2px;
+    left: 8%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 6px 0 6px;
+    border-color: var(--sts-error) transparent transparent transparent;
+    filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.5));
+  }
+  .sts-lc-foot {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  .sts-lc-foot code {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: var(--mono);
+  }
+
+  /* =========================================================
+     SLIDE 4 — Roles
+     ========================================================= */
+  .sts-roles { flex-direction: column; }
+  .sts-roles-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1200px, 94cqw);
+  }
+  .sts-roles-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .sts-role-card {
+    background: #050505;
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .slide.active .sts-role-card { opacity: 1; transform: translateY(0); }
+  .sts-role-tag {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--accent-2);
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+  .sts-role-card .role-super   { color: #c084fc; background: rgba(192, 132, 252, 0.08); border-color: rgba(192, 132, 252, 0.3); }
+  .sts-role-card .role-admin   { color: #60a5fa; background: rgba(96, 165, 250, 0.08); border-color: rgba(96, 165, 250, 0.3); }
+  .sts-role-card .role-tester  { color: #fbbf24; background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.3); }
+  .sts-role-card .role-dev     { color: #34d399; background: rgba(52, 211, 153, 0.08); border-color: rgba(52, 211, 153, 0.3); }
+  .sts-role-card h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .sts-role-card p {
+    font-family: var(--display);
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .sts-role-card ul {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sts-role-card ul li {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink);
+    padding-left: 14px;
+    position: relative;
+    letter-spacing: 0.02em;
+  }
+  .sts-role-card ul li::before {
+    content: "+";
+    position: absolute;
+    left: 0;
+    color: var(--accent-2);
+    font-weight: 700;
+  }
+
+  /* =========================================================
+     SLIDE 5 — Dashboard
+     ========================================================= */
+  .sts-dash { flex-direction: column; }
+  .sts-dash-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .sts-dash-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sts-dash-title {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .sts-dash-title h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .sts-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .sts-filters {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+    background: #050505;
+    border: 1px solid var(--stroke);
+    border-radius: 8px;
+  }
+  .sts-filter {
+    padding: 5px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .sts-filter.active {
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--accent-2);
+    box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3);
+  }
+  .sts-ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sts-ticket {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 18px;
+    background: #050505;
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  .slide.active .sts-ticket { opacity: 1; transform: translateX(0); }
+  .sts-tk-id {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .sts-tk-body { min-width: 0; }
+  .sts-tk-title {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sts-tk-meta {
+    margin-top: 4px;
+    display: flex;
+    gap: 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .sts-tk-assignee { color: var(--accent-2); }
+  .sts-tk-tags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* =========================================================
+     SLIDE 6 — Approval + Audit
+     ========================================================= */
+  .sts-approval { flex-direction: column; }
+  .sts-approval-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1200px, 94cqw);
+  }
+  .sts-approval-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+  .sts-modal, .sts-audit {
+    background: #050505;
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    padding: 22px 22px 18px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .slide.active .sts-modal,
+  .slide.active .sts-audit { opacity: 1; transform: translateY(0); }
+  .sts-modal-head, .sts-audit-head {
+    margin-bottom: 16px;
+  }
+  .sts-modal-tag, .sts-audit-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    background: rgba(59, 130, 246, 0.08);
+    color: var(--accent-2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .sts-modal h3, .sts-audit h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .sts-modal-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-top: 1px solid var(--stroke-soft);
+  }
+  .sts-modal-row:first-of-type { border-top: 0; }
+  .sts-modal-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .sts-modal-input {
+    background: #000;
+    border: 1px solid var(--stroke);
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-family: var(--display);
+    font-size: 13px;
+    color: var(--ink);
+    flex: 1;
+    margin-left: 18px;
+    max-width: 280px;
+    font-style: italic;
+  }
+  .sts-modal-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .sts-btn-reject, .sts-btn-approve {
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid currentColor;
+    background: transparent;
+  }
+  .sts-btn-reject {
+    color: var(--sts-error);
+  }
+  .sts-btn-approve {
+    color: var(--sts-resolved);
+    background: rgba(16, 185, 129, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sts-btn-approve.fired {
+    background: var(--sts-resolved);
+    color: #000;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+  }
+  .sts-btn-check {
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sts-modal-result {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--stroke);
+    opacity: 0;
+  }
+  .sts-result-flow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sts-result-arrow {
+    font-family: var(--mono);
+    color: var(--accent-2);
+    font-weight: 700;
+  }
+
+  /* Audit timeline */
+  .sts-audit-list {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    padding-left: 20px;
+  }
+  .sts-audit-list::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--stroke);
+  }
+  .sts-audit-item {
+    position: relative;
+    padding-left: 12px;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .slide.active .sts-audit-item { opacity: 1; transform: translateY(0); }
+  .sts-audit-dot {
+    position: absolute;
+    left: -20px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #050505;
+    border: 2px solid var(--ink);
+  }
+  .dot-resolved { border-color: var(--sts-resolved); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+  .dot-error    { border-color: var(--sts-error);    box-shadow: 0 0 10px rgba(244, 63, 94, 0.5); }
+  .dot-qa       { border-color: var(--sts-qa);       box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+  .dot-progress { border-color: var(--sts-progress); box-shadow: 0 0 10px rgba(249, 115, 22, 0.5); }
+  .sts-audit-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .sts-audit-actor { color: var(--ink); font-weight: 600; }
+  .sts-audit-action {
+    margin-top: 3px;
+    font-family: var(--display);
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .sts-audit-note {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 12px;
+  }
+  .sts-audit-status {
+    font-family: var(--mono);
+    color: var(--sts-qa);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* =========================================================
+     SLIDE 7 — Stack + Cost
+     ========================================================= */
+  .sts-stack { flex-direction: column; }
+  .sts-stack-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1200px, 94cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    align-items: center;
+  }
+  .sts-arch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 1000px;
+    padding-bottom: 70px;
+  }
+  .sts-arch-node {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 22px 14px;
+    background: #050505;
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .sts-arch-node.final {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 24px rgba(59, 130, 246, 0.1);
+  }
+  .sts-arch-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.06);
+    border: 1px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 24px;
+    color: var(--accent-2);
+  }
+  .sts-arch-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    text-align: center;
+  }
+  .sts-arch-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+  .sts-arch-host {
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent-2);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .sts-arch-edge {
+    flex: 0 0 32px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    opacity: 0;
+    transition: opacity 0.6s;
+    align-self: center;
+    transform: translateY(20px);
+  }
+  .sts-arch-edge.lit { opacity: 0.8; }
+
+  .sts-arch-cron {
+    position: absolute;
+    left: 33%;
+    right: 33%;
+    bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  .sts-arch-cron.lit { opacity: 1; }
+  .sts-arch-cron-line {
+    width: 1px;
+    height: 18px;
+    background: var(--accent-2);
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+  }
+  .sts-arch-cron-box {
+    background: #050505;
+    border: 1px dashed var(--accent);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.06em;
+  }
+  .sts-arch-cron-box strong { color: var(--accent-2); }
+  .sts-cron-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-2);
+    box-shadow: 0 0 8px var(--accent-2);
+    animation: sts-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes sts-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.85); }
+    50%      { opacity: 1;   transform: scale(1.15); }
+  }
+
+  .sts-cost-card {
+    width: 100%;
+    max-width: 1000px;
+    padding: 22px 28px;
+    background: #050505;
+    border: 1px solid var(--stroke);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  .sts-cost-rows {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sts-cost-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--stroke-soft);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .sts-cost-row:last-child { border-bottom: 0; }
+  .sts-cost-row span:first-child { color: var(--ink); font-weight: 500; }
+  .sts-cost-amt {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--accent-2);
+  }
+  .sts-cost-total {
+    flex: 0 0 auto;
+    text-align: right;
+    border-left: 1px solid var(--stroke);
+    padding-left: 28px;
+  }
+  .sts-cost-total-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .sts-cost-total-value {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(40px, 5cqw, 64px);
+    color: var(--accent-2);
+    text-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+  .sts-cost-total-suffix {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    text-shadow: none;
+  }
+
+  /* =========================================================
+     SLIDE 8 — Closing
+     ========================================================= */
+  .sts-end { flex-direction: column; }
+  .sts-end-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .sts-title-end { font-size: clamp(48px, 8cqw, 112px); }
+  .sts-end-tag {
+    margin-top: 14px;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(16px, 1.7cqw, 24px);
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .sts-end-url {
+    margin-top: 28px;
+    padding: 11px 22px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--accent-2);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .sts-end .caption { display: none; }
+
+  /* Container responsive */
+  @container stage (max-width: 800px) {
+    .sts-lc-row { flex-direction: column; gap: 12px; }
+    .sts-lc-edge { width: 2px; height: 22px; background: linear-gradient(180deg, transparent, var(--accent) 50%, transparent); }
+    .sts-lc-branch { display: none; } /* mobile: drop the loop-back arc for legibility */
+    .sts-roles-grid { grid-template-columns: repeat(2, 1fr); }
+    .sts-approval-grid { grid-template-columns: 1fr; }
+    .sts-arch { flex-direction: column; }
+    .sts-arch-edge { width: 2px; height: 22px; background: linear-gradient(180deg, transparent, var(--accent) 50%, transparent); transform: none; }
+    .sts-arch-cron { display: none; }
+    .sts-cost-card { flex-direction: column; }
+    .sts-cost-total { border-left: 0; padding-left: 0; text-align: center; }
+    .sts-cost-total-value { justify-content: center; }
+    .sts-ticket { grid-template-columns: 60px 1fr; }
+    .sts-tk-tags { grid-column: 1 / -1; justify-content: flex-start; margin-top: 4px; }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    function whenReady(cb) {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') cb();
+      else document.addEventListener('DOMContentLoaded', cb, { once: true });
+    }
+
+    whenReady(() => {
+      if (typeof gsap === 'undefined') return;
+
+      function $$(sel, root) { return (root || document).querySelectorAll(sel); }
+      function $(sel, root) { return (root || document).querySelector(sel); }
+
+      // ----- SLIDE 1 -----
+      function animOpen(s) {
+        const words = $$('.sts-title .sts-word', s);
+        gsap.fromTo($('#openingMark', s), { opacity: 0, scale: 0.7, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'expo.out' });
+        gsap.fromTo($('#openingPre', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 0.4, ease: 'power3.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, delay: 0.7, ease: 'expo.out' });
+        gsap.fromTo($('#openingRule', s), { width: 0 },
+          { width: 200, duration: 0.8, delay: 1.5, ease: 'power3.out' });
+        gsap.fromTo($('#openingTag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 1.9, ease: 'power3.out' });
+      }
+
+      // ----- SLIDE 2 -----
+      function animHook(s) {
+        const words = $$('.sts-hook-line .sts-word', s);
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, delay: 0.4, ease: 'back.out(1.4)' });
+      }
+
+      // ----- SLIDE 3: LIFECYCLE -----
+      function animLifecycle(s) {
+        const nodes = $$('.sts-lc-row .sts-lc-node', s);
+        const edges = $$('.sts-lc-edge', s);
+        const branch = $('#lcBranch', s);
+        edges.forEach((e) => e.classList.remove('lit'));
+        if (branch) branch.classList.remove('lit');
+
+        const tl = gsap.timeline({ delay: 0.3 });
+        nodes.forEach((node, i) => {
+          tl.to(node, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, i === 0 ? 0 : '+=.18');
+          if (edges[i]) tl.add(() => edges[i].classList.add('lit'), '+=.06');
+        });
+        // Finally reveal the Error Persists branch (loop-back arc)
+        tl.add(() => { if (branch) branch.classList.add('lit'); }, '+=.3');
+        // Animate the error node within the branch separately
+        const errorNode = branch && branch.querySelector('.sts-lc-node');
+        if (errorNode) {
+          tl.fromTo(errorNode, { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=.3');
+        }
+      }
+
+      // ----- SLIDE 4 -----
+      function animRoles(s) {
+        gsap.fromTo($$('.sts-role-card', s), { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 5 -----
+      function animDash(s) {
+        gsap.fromTo($('.sts-dash-head', s), { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
+        gsap.fromTo($$('.sts-ticket', s), { opacity: 0, x: -12 },
+          { opacity: 1, x: 0, duration: 0.4, stagger: 0.1, delay: 0.4, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 6: APPROVAL + AUDIT -----
+      function animApproval(s) {
+        const modal = $('.sts-modal', s);
+        const audit = $('.sts-audit', s);
+        const items = $$('.sts-audit-item', s);
+        const approveBtn = $('#approveBtn', s);
+        const result = $('#approvalResult', s);
+
+        gsap.fromTo(modal, { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out', clearProps: 'all' });
+        gsap.fromTo(audit, { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.4, ease: 'power3.out', clearProps: 'all' });
+        gsap.fromTo(items, { opacity: 0, y: 8 },
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.1, delay: 0.7, ease: 'power3.out', clearProps: 'all' });
+
+        // Fire the approve button after audit items load
+        setTimeout(() => {
+          if (approveBtn) approveBtn.classList.add('fired');
+          if (result) gsap.fromTo(result, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+        }, 2000);
+      }
+
+      // ----- SLIDE 7: STACK -----
+      function animStack(s) {
+        const nodes = $$('.sts-arch-node', s);
+        const edges = $$('.sts-arch-edge', s);
+        const cron = $('.sts-arch-cron', s);
+        edges.forEach((e) => e.classList.remove('lit'));
+        if (cron) cron.classList.remove('lit');
+
+        const tl = gsap.timeline({ delay: 0.3 });
+        nodes.forEach((node, i) => {
+          tl.to(node, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, i === 0 ? 0 : '+=.14');
+          if (edges[i]) tl.add(() => edges[i].classList.add('lit'), '+=.05');
+        });
+        tl.add(() => { if (cron) cron.classList.add('lit'); }, '+=.2');
+        tl.to($('.sts-cost-card', s), { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.5)' }, '+=.2');
+      }
+
+      // ----- SLIDE 8 -----
+      function animEnd(s) {
+        const words = $$('.sts-title .sts-word', s);
+        gsap.fromTo($('#endMark', s), { opacity: 0, scale: 0.7, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.0, ease: 'expo.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, delay: 0.4, ease: 'expo.out' });
+        gsap.fromTo($('.sts-rule', s), { width: 0 },
+          { width: 200, duration: 0.8, delay: 1.2, ease: 'power3.out' });
+        gsap.fromTo($('.sts-end-tag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 1.6, ease: 'power3.out' });
+        gsap.fromTo($('.sts-end-url', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 2.0, ease: 'power3.out' });
+      }
+
+      const sceneMap = {
+        1: animOpen,
+        2: animHook,
+        3: animLifecycle,
+        4: animRoles,
+        5: animDash,
+        6: animApproval,
+        7: animStack,
+        8: animEnd,
+      };
+
+      document.addEventListener('cinematic:slide-changed', (e) => {
+        const { slide } = e.detail;
+        const num = +slide.dataset.slide;
+        const fn = sceneMap[num];
+        if (fn) fn(slide);
+      });
+    });
+  })();
+</script>

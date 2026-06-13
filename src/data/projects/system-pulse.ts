@@ -31,6 +31,9 @@ export const systemPulse: Project = {
   ],
   liveUrl: 'https://system-pulse-sn3w.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/system-pulse',
+  cinematicUrl: '/cinematics/system-pulse',
+  cinematicCaption:
+    'An 8-scene walkthrough of System Pulse — the multi-tenant uptime + health-check platform running on AWS free tier forever. Click anywhere or press → / Space to advance.',
   thumbnail: 'SystemPulse/LoginPage_SystemPulse.png',
   gallery: [
     { src: 'SystemPulse/LoginPage_SystemPulse.png', caption: 'Tabbed login · sign in / forgot / sign up' },
@@ -358,6 +361,7 @@ export const systemPulse: Project = {
     { method: 'POST', path: '/me/email/start', auth: 'session + password', purpose: 'Send OTP to a new email' },
     { method: 'POST', path: '/me/email/verify', auth: 'session + OTP', purpose: 'Commit the email change' },
     { method: 'POST', path: '/users/invite', auth: 'canCreateUser', purpose: 'Email an invite link to a teammate' },
+    { method: 'POST', path: '/users/:id/systems', auth: 'canUpdateUser', purpose: "Replace a user's allowedSystemIds access list" },
     { method: 'POST', path: '/users/:id/permissions', auth: 'canUpdateUser', purpose: 'System access + status + permission toggles in one call' },
     { method: 'POST', path: '/users/:id/role', auth: 'owner', purpose: 'Promote / demote within the org' },
     { method: 'POST', path: '/users/:id/unlock', auth: 'canUpdateUser + pwd', purpose: 'Clear failed-login lockout' },

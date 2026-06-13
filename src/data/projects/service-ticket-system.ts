@@ -8,7 +8,7 @@ export const serviceTicketSystem: Project = {
   tagline:
     'Internal IT/QA ticketing platform with a built-in approval workflow — testers report defects, developers fix them, admins triage, approvers sign off before tickets close.',
   summary:
-    'Four-role ticket workflow (SUPER_ADMIN, ADMIN, TESTER, DEVELOPER) with six lifecycle statuses, per-ticket approval/rejection, granular per-user notification settings, and node-cron-driven SLA housekeeping.',
+    'Four-role ticket workflow (SUPER_ADMIN, ADMIN, TESTER, DEVELOPER) with six lifecycle statuses (Open → In Progress → Ready for QA → Resolved / Error Persists → Closed), per-ticket approval/rejection (Approval rows are an immutable audit log), granular per-user in-app notification settings, and a node-cron-driven stale-ticket scan.',
   language: 'TypeScript',
   tech: ['Express 4', 'Sequelize', 'MySQL', 'node-cron', 'React 19', 'Vite 8', 'Tailwind 4', 'Render', 'Vercel'],
   techGroups: [
@@ -31,6 +31,9 @@ export const serviceTicketSystem: Project = {
   ],
   liveUrl: 'https://service-ticket-system-frontend.vercel.app/login',
   sourceUrl: 'https://github.com/Asciente-rks/service-ticket-system',
+  cinematicUrl: '/cinematics/service-ticket-system',
+  cinematicCaption:
+    'An 8-scene walkthrough of the Service Ticket System — internal IT/QA defect tracker with a six-status lifecycle, four roles, and an immutable approval audit trail. Click anywhere or press → / Space to advance.',
   thumbnail: 'ServiceTicket/Login_STS.png',
   gallery: [
     { src: 'ServiceTicket/Login_STS.png', caption: 'Login' },
@@ -119,28 +122,28 @@ export const serviceTicketSystem: Project = {
     actor Tester
     actor Admin
     actor Developer
-    actor Approver as Admin / Super Admin
+    actor Approver
     participant API as Express API
     participant DB as MySQL
 
-    Tester->>API: POST /tickets { title, description, priority }
-    API->>DB: INSERT ticket (status=Open, reportedBy=tester)
+    Tester->>API: POST /tickets (title, description, priority)
+    API->>DB: INSERT ticket (statusId=Open, reportedBy=tester)
     API-->>Tester: 201 ticket created
 
-    Admin->>API: PUT /tickets/:id { assignedTo, status=In Progress }
+    Admin->>API: PATCH /tickets/:id (assignedTo, statusId=In Progress)
     API->>DB: UPDATE ticket + INSERT notification for developer
     API-->>Admin: 200 updated
 
-    Developer->>API: PUT /tickets/:id { status=Resolved }
+    Developer->>API: PATCH /tickets/:id (statusId=Ready for QA)
     API->>DB: UPDATE ticket + INSERT notification for admin
-    API-->>Developer: 200 resolved
+    API-->>Developer: 200 ready for review
 
-    Approver->>API: POST /tickets/:id/approval { status=Approved, comment }
-    API->>DB: INSERT approval + UPDATE ticket status=Approved
-    API->>DB: INSERT notification for reporter + developer
+    Approver->>API: POST /tickets/:id/approval (status=Approved, comment)
+    API->>DB: INSERT approval + UPDATE ticket statusId=Resolved
+    API->>DB: INSERT notification for reporter
     API-->>Approver: 201 approval recorded
 
-    Note over Approver,DB: If Rejected: status → Rejected, developer re-assigned for next cycle`,
+    Note over Approver,DB: On reject, ticket statusId becomes Error Persists and the developer iterates.`,
         notes: [
           'Each approval is its own immutable APPROVAL row — multiple decisions over a ticket\'s lifetime are preserved as a full audit trail.',
           'Notifications respect each user\'s NOTIFICATION_SETTINGS row — opt-in per event type (assigned, updated, approved, rejected).',
@@ -152,13 +155,16 @@ export const serviceTicketSystem: Project = {
           'Six lifecycle statuses, with a Rejected → InProgress loop for rework. Statuses live in the TICKET_STATUS reference table — adding a status is a row insert, not a schema change.',
         mermaid: `stateDiagram-v2
     [*] --> Open: Tester creates ticket
-    Open --> InProgress: Admin assigns + updates status
-    InProgress --> Resolved: Developer marks resolved
-    Resolved --> PendingApproval: System or admin transitions
-    PendingApproval --> Approved: Admin / Super Admin approves
-    PendingApproval --> Rejected: Admin / Super Admin rejects
-    Rejected --> InProgress: Re-assigned for rework
-    Approved --> [*]`,
+    Open --> InProgress: Developer picks up / Admin assigns
+    InProgress --> ReadyForQA: Developer marks complete
+    ReadyForQA --> Resolved: Admin / Super Admin approves (Approval row status=Approved)
+    ReadyForQA --> ErrorPersists: Admin / Super Admin rejects (Approval row status=Rejected)
+    ErrorPersists --> InProgress: Developer iterates
+    Resolved --> Closed: Admin closes
+    Closed --> [*]`,
+        notes: [
+          'Approved and Rejected are values on APPROVAL rows, not ticket statuses. The ticket itself transitions to Resolved (on approve) or Error Persists (on reject) — see approval.service.ts.',
+        ],
       },
     ],
   },
@@ -218,6 +224,7 @@ export const serviceTicketSystem: Project = {
         uuid id PK
         uuid userId FK
         bool notifyAssignedTicket
+        bool notifyReportedTicketUpdated
         bool notifyTicketApproved
         bool notifyTicketRejected
     }`,
@@ -274,22 +281,21 @@ export const serviceTicketSystem: Project = {
     ],
   },
   apiEndpoints: [
-    { method: 'POST', path: '/auth/login', auth: 'none', purpose: 'Email + password → JWT' },
-    { method: 'POST', path: '/auth/register', auth: 'none', purpose: 'Create account (dev / open registration)' },
-    { method: 'GET', path: '/users', auth: 'ADMIN+', purpose: 'List all users' },
-    { method: 'GET', path: '/users/:id', auth: 'ADMIN+', purpose: 'Get a single user' },
-    { method: 'POST', path: '/users', auth: 'SUPER_ADMIN / ADMIN', purpose: 'Create user with role assignment' },
-    { method: 'PUT', path: '/users/:id', auth: 'SUPER_ADMIN / ADMIN', purpose: 'Update user details' },
-    { method: 'DELETE', path: '/users/:id', auth: 'SUPER_ADMIN', purpose: 'Hard delete user' },
-    { method: 'GET', path: '/users/:id/role', auth: 'session', purpose: 'Fetch the user\'s role' },
-    { method: 'GET', path: '/users/:id/notification-settings', auth: 'session', purpose: 'Get notification preferences' },
-    { method: 'PUT', path: '/users/:id/notification-settings', auth: 'session', purpose: 'Update notification preferences' },
-    { method: 'GET', path: '/tickets', auth: 'session', purpose: 'List tickets (role-filtered)' },
+    { method: 'POST', path: '/auth/login', auth: 'none', purpose: 'Email + password → JWT (accounts are admin-created via POST /users, no public register endpoint)' },
+    { method: 'GET', path: '/users', auth: 'session + ADMIN / DEVELOPER / TESTER', purpose: 'List users (role-filtered server-side)' },
+    { method: 'GET', path: '/users/:id', auth: 'session + owner-or-admin', purpose: 'Get a single user' },
+    { method: 'POST', path: '/users', auth: 'session + admin', purpose: 'Create user with role assignment' },
+    { method: 'PUT', path: '/users/:id', auth: 'session + owner-or-admin + role-hierarchy check', purpose: 'Update user details' },
+    { method: 'DELETE', path: '/users/:id', auth: 'session + owner-or-admin + role-hierarchy check', purpose: 'Hard delete user' },
+    { method: 'GET', path: '/users/roles', auth: 'none', purpose: 'List all roles (lookup table)' },
+    { method: 'GET', path: '/users/notification-settings', auth: 'session', purpose: "Get the current user's notification preferences" },
+    { method: 'PATCH', path: '/users/notification-settings', auth: 'session', purpose: "Update the current user's notification preferences" },
+    { method: 'GET', path: '/tickets/statuses', auth: 'none', purpose: 'List all ticket statuses (reference data, no auth)' },
+    { method: 'GET', path: '/tickets', auth: 'session', purpose: 'List tickets (role-filtered server-side)' },
     { method: 'GET', path: '/tickets/:id', auth: 'session', purpose: 'Ticket detail' },
-    { method: 'POST', path: '/tickets', auth: 'TESTER / ADMIN+', purpose: 'Create a ticket' },
-    { method: 'PUT', path: '/tickets/:id', auth: 'ADMIN+ / owner', purpose: 'Update status, assignee, details' },
-    { method: 'POST', path: '/tickets/:id/approval', auth: 'ADMIN+', purpose: 'Approve or reject a resolved ticket' },
-    { method: 'GET', path: '/tickets/statuses', auth: 'session', purpose: 'List all ticket statuses (reference table)' },
+    { method: 'POST', path: '/tickets', auth: 'session + SUPER_ADMIN / ADMIN / TESTER', purpose: 'Create a ticket' },
+    { method: 'PATCH', path: '/tickets/:id', auth: 'session', purpose: 'Update status, assignee, details (deeper permission checks live in the service)' },
+    { method: 'POST', path: '/tickets/:id/approval', auth: 'session + SUPER_ADMIN / ADMIN', purpose: 'Approve (→ Resolved) or reject (→ Error Persists) a Ready-for-QA ticket' },
     { method: 'GET', path: '/notifications', auth: 'session', purpose: 'List notifications for the current user' },
     { method: 'GET', path: '/health', auth: 'none', purpose: '{ status: "UP", service, timestamp } — Render health check' },
   ],

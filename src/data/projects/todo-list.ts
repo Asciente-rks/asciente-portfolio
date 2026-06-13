@@ -36,6 +36,9 @@ export const todoList: Project = {
   liveUrl: 'https://expo.dev/accounts/asciente-rks/projects/to-do-list-ts-frontend/builds/b3c0fe0b-93d5-4a8d-a56f-7ebd12440418',
   liveLabel: 'Download APK',
   sourceUrl: 'https://github.com/Asciente-rks/todo-list',
+  cinematicUrl: '/cinematics/todo-list',
+  cinematicCaption:
+    'An 8-scene walkthrough of TaskFlow — a real native Android todo app with cloud sync. Login flow, the honest cold-start banner, task list, add modal, and the $0/month full stack. Click anywhere or press → / Space to advance.',
   thumbnail: 'Todo/Login_Todo.jpg',
   gallery: [
     { src: 'Todo/Login_Todo.jpg', caption: 'Sign-in' },

@@ -1,0 +1,407 @@
+/* ============================================================
+   Cinematic — shared layout & chrome
+   Used by every cinematic page (src/pages/cinematics/*.astro).
+   Per-project scene CSS lives inside each page's <style> block.
+   ============================================================ */
+
+:root {
+  --bg: #f7f1e8;
+  --bg-deep: #efe6d6;
+  --surface: #fff7ee;
+  --surface-92: #fff7eeeb;
+  --surface-88: #fff7eee0;
+  --surface-84: #fff7eed6;
+  --ink: #1b1b1b;
+  --muted: #6d655b;
+  --accent: #0f766e;
+  --accent-deep: #0b5e57;
+  --accent-2: #0ea5a0;
+  --orange: #ff6b35;
+  --orange-soft: #fbe7d3;
+  --stroke: #e6d5c2;
+  --stroke-soft: #e6d5c266;
+  --green: #22c55e;
+  --display: "Bricolage Grotesque", "Segoe UI", sans-serif;
+  --mono: "Space Mono", "SFMono-Regular", ui-monospace, monospace;
+  --radius: 18px;
+  --shadow: 0 18px 34px #1c161214;
+  --shadow-soft: 0 10px 18px #1c16120f;
+  --shadow-lg: 0 30px 80px #1c161230;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: var(--display);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background:
+    radial-gradient(at 15% 20%, #d7efe9 0%, transparent 40%),
+    radial-gradient(at 85% 0%, #ffe4d3 0%, transparent 45%),
+    radial-gradient(at 30% 100%, #fbe7d3 0%, transparent 50%),
+    var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    linear-gradient(to right, #ffffff14 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff14 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.03 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: 0.3;
+}
+
+/* Fixed 1440x900 design canvas — uses CSS `zoom` to scale.
+   Unlike `transform: scale()` (which bitmap-scales text = blur), `zoom` actually
+   re-renders content at the target size so everything stays pixel-crisp. */
+.canvas {
+  width: 1440px;
+  height: 900px;
+  zoom: var(--scale, 1);
+  container-type: size;
+  container-name: stage;
+  z-index: 2;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.stage {
+  position: absolute; inset: 0;
+  z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  perspective: 1600px;
+}
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition:
+    opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0.65s;
+  will-change: transform, opacity;
+  padding: 6cqh 6cqw;
+  backface-visibility: hidden;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s;
+}
+
+/* Captions ------------------------------------------------- */
+.caption {
+  position: absolute;
+  left: 6cqw; right: 6cqw;
+  bottom: 7cqh;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.caption .eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  padding: 6px 14px;
+  border: 1px solid #0f766e40;
+  border-radius: 999px;
+  background: #0f766e0d;
+  backdrop-filter: blur(8px);
+  margin-bottom: 14px;
+}
+
+.caption h2 {
+  font-size: clamp(28px, 3.6cqw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  max-width: 880px;
+}
+
+.caption p.sub {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: clamp(14px, 1.2cqw, 18px);
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+/* Progress dots ----------------------------------------------- */
+.progress {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 200;
+}
+
+.progress .dot {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  background: #1b1b1b1f;
+  transition: background 0.3s, width 0.3s;
+  cursor: pointer;
+}
+
+.progress .dot.active { background: var(--accent); width: 36px; }
+.progress .dot.done { background: #0f766e80; }
+
+/* Desktop nav controls --------------------------------------- */
+.controls {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  z-index: 200;
+  display: flex;
+  gap: 12px;
+}
+
+.ctrl {
+  background: var(--surface-88);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  padding: 14px 22px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.ctrl:hover {
+  background: #fff;
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.ctrl .key {
+  font-size: 12px;
+  background: var(--bg);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--stroke);
+  font-weight: 700;
+}
+
+.slide-num {
+  position: absolute;
+  bottom: 24px;
+  left: 28px;
+  z-index: 200;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+}
+
+/* Brand mark (top-left) -------------------------------------- */
+.brand-mark {
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+}
+
+.brand-mark img {
+  height: var(--brand-mark-h, 38px);
+  width: auto;
+  display: block;
+  /* Cap width for very wide logos so they don't push the brand text off-screen */
+  max-width: calc(var(--brand-mark-h, 38px) * 4);
+  object-fit: contain;
+}
+
+/* Logo sizing utilities ---------------------------------- */
+.logo-img { display: block; }
+.logo-icon { width: 36px; height: auto; }
+.logo-md { width: 120px; height: auto; }
+.logo-lg { width: 240px; height: auto; }
+.logo-xl { width: clamp(220px, 28cqw, 440px); height: auto; }
+
+/* Shared UI primitives ---------------------------------- */
+.ui-frame {
+  background: var(--surface-88);
+  border: 1px solid var(--surface-84);
+  border-radius: 28px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  transform: scale(0.94) translateY(20px);
+  opacity: 0;
+  transition:
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s,
+    opacity 0.8s ease 0.15s;
+}
+
+.slide.active .ui-frame {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.btn-primary {
+  padding: 12px 22px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 14px 4px 14px 4px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 18px #0f766e33;
+  transition: all 0.25s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px #0f766e44;
+}
+
+.badge {
+  background: #0f766e1f;
+  color: var(--accent);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.field-mock { display: flex; flex-direction: column; gap: 8px; }
+.field-mock .label { font-size: 13px; font-weight: 700; color: var(--muted); }
+.field-mock .input {
+  padding: 12px 14px;
+  background: var(--surface-92);
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink);
+  position: relative;
+}
+
+.field-mock .input.focused {
+  border-color: #0f766ea6;
+  box-shadow: 0 0 0 4px #0f766e1f;
+}
+
+/* Mobile viewport-level nav buttons ---------------------- */
+.mobile-nav {
+  position: fixed;
+  bottom: max(env(safe-area-inset-bottom), 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: none;
+  gap: 14px;
+  pointer-events: auto;
+}
+
+.mobile-nav button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px #0000001f;
+  font-size: 22px;
+  font-weight: 700;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav button:active {
+  transform: scale(0.92);
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.mobile-nav .progress-mini {
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  min-width: 74px;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .mobile-nav { display: flex; }
+  .controls { display: none; }
+}
+
+/* Respect users who prefer reduced motion ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

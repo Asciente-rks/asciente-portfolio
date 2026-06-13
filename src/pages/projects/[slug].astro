@@ -161,6 +161,62 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       </section>
     )}
 
+    <!-- CINEMATIC SHOWCASE (only for projects with cinematicUrl set) -->
+    {project.cinematicUrl && (
+      <section class="detail-section" id="cinematic">
+        <div class="section-eyebrow">
+          <span class="section-num">▶ · cinematic</span>
+        </div>
+        <h2>Walk through the product</h2>
+        {project.cinematicCaption && (
+          <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
+            {project.cinematicCaption}
+          </p>
+        )}
+        {/* Auto-load with deferred iframe injection.
+            The 600 KB iframe is NOT in the initial HTML. We render the project
+            thumbnail as an instant placeholder, then inject the iframe after
+            the browser becomes idle (requestIdleCallback) — so the rest of the
+            page paints first. When the iframe finishes loading, it fades in
+            over the poster. Full quality preserved; just deferred a few hundred
+            milliseconds so the page becomes interactive sooner. */}
+        <div
+          class="cinematic-frame"
+          data-cinematic-url={project.cinematicUrl}
+          data-cinematic-title={`${project.title} — interactive cinematic`}
+        >
+          <div class="cinematic-poster" aria-hidden="true">
+            {getImageAsset(project.thumbnail) && (
+              <Image
+                src={getImageAsset(project.thumbnail)!}
+                alt=""
+                widths={[800, 1200, 1600]}
+                sizes="(min-width: 900px) 1100px, 100vw"
+                loading="lazy"
+                decoding="async"
+                class="cinematic-poster-img"
+              />
+            )}
+            <span class="cinematic-poster-veil"></span>
+            <span class="cinematic-loading" role="status" aria-live="polite">
+              <span class="cinematic-loading-dot" aria-hidden="true"></span>
+              <span class="cinematic-loading-text">Loading cinematic</span>
+            </span>
+          </div>
+          <a
+            href={project.cinematicUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cinematic-fullscreen"
+            aria-label="Open cinematic in fullscreen"
+          >
+            <span>Open fullscreen</span>
+            <span style="font-family:'JetBrains Mono', monospace; font-size: 0.85em;">↗</span>
+          </a>
+        </div>
+      </section>
+    )}
+
     <!-- SUMMARY ============================================== -->
     <section class="detail-section" id="summary">
       <div class="section-eyebrow">
@@ -534,11 +590,164 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         transition: none;
       }
     }
+
+    /* Cinematic embed — interactive product showcase iframe */
+    .cinematic-frame {
+      position: relative;
+      margin-top: 2rem;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(94, 234, 212, 0.18);
+      background: #f7f1e8;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(94, 234, 212, 0.05);
+      isolation: isolate;
+    }
+    .cinematic-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #f7f1e8;
+    }
+    .cinematic-fullscreen {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(15, 20, 34, 0.85);
+      color: #5eead4;
+      border: 1px solid rgba(94, 234, 212, 0.35);
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      z-index: 2;
+    }
+    .cinematic-fullscreen:hover {
+      transform: translateY(-1px);
+      background: rgba(15, 20, 34, 0.95);
+      border-color: rgba(94, 234, 212, 0.6);
+    }
+
+    /* Poster shown briefly while the iframe is deferred-loaded.
+       Once iframe.onload fires, the poster fades out and the iframe fades in. */
+    .cinematic-poster {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f1422;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.5s ease;
+    }
+    .cinematic-poster.is-fading {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .cinematic-poster-img {
+      position: absolute !important;
+      inset: 0;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover;
+    }
+    .cinematic-poster-veil {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at center, rgba(15, 20, 34, 0.18) 0%, rgba(15, 20, 34, 0.5) 100%),
+        linear-gradient(180deg, rgba(15, 20, 34, 0.2) 0%, rgba(15, 20, 34, 0.45) 100%);
+      z-index: 1;
+    }
+    /* Subtle loading pill in the corner — non-intrusive while iframe boots */
+    .cinematic-loading {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(15, 20, 34, 0.85);
+      color: rgba(226, 232, 240, 0.92);
+      border: 1px solid rgba(94, 234, 212, 0.25);
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+    .cinematic-loading-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5eead4;
+      box-shadow: 0 0 12px rgba(94, 234, 212, 0.7);
+      animation: cinematicDotPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes cinematicDotPulse {
+      0%, 100% { opacity: 0.45; transform: scale(0.85); }
+      50%      { opacity: 1;    transform: scale(1.12); }
+    }
+    /* Iframe injected by JS — fade in for a smooth handoff from poster */
+    .cinematic-frame iframe.cinematic-iframe-active {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .cinematic-frame iframe.cinematic-iframe-active.is-ready {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .cinematic-frame {
+        /* Keep 16:10 across screens — cinematic is a fixed-design canvas (1440x900).
+           Matching the iframe ratio to the design avoids wasted letterbox bars. */
+        margin-top: 1.25rem;
+      }
+      .cinematic-fullscreen {
+        font-size: 0.65rem;
+        padding: 6px 12px;
+        top: 10px;
+        right: 10px;
+      }
+      .cinematic-loading {
+        font-size: 0.62rem;
+        padding: 6px 10px;
+        bottom: 10px;
+        left: 10px;
+      }
+    }
   </style>
 
   <!-- MERMAID LAZY INITIALIZATION -->
+  {/* Mermaid is ~1 MB. We don't import it until the FIRST diagram is about
+      to enter the viewport. That removes the entire mermaid network + parse
+      cost from any project page where the user doesn't scroll to a diagram.
+      Quality is preserved — diagrams render at full resolution when reached. */}
   <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs';
+    let mermaidModule = null;
+    function loadMermaid() {
+      if (!mermaidModule) {
+        mermaidModule = import('https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs')
+          .then((m) => m.default);
+      }
+      return mermaidModule;
+    }
 
     const LIGHT_THEME = {
       primaryColor: '#f1f5f9',
@@ -581,9 +790,13 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
 
     let observer = null;
     let renderQueue = Promise.resolve();
+    let initializedForTheme = null; // tracks which theme mermaid is currently configured for
 
-    function initMermaid() {
+    async function ensureInitialized() {
       const isLight = document.documentElement.classList.contains('theme-light');
+      const themeKey = isLight ? 'light' : 'dark';
+      if (initializedForTheme === themeKey) return;
+      const mermaid = await loadMermaid();
       mermaid.initialize({
         startOnLoad: false,
         theme: 'base',
@@ -591,6 +804,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         fontFamily: '"JetBrains Mono", ui-monospace, monospace',
         themeVariables: isLight ? LIGHT_THEME : DARK_THEME,
       });
+      initializedForTheme = themeKey;
     }
 
     function captureOriginalSource() {
@@ -609,6 +823,10 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       el.dataset.lazyRendered = 'true';
       renderQueue = renderQueue.then(async () => {
         try {
+          // First-render: fetch + init mermaid here, not at script-parse time.
+          // Subsequent diagrams reuse the cached module.
+          await ensureInitialized();
+          const mermaid = await loadMermaid();
           await mermaid.run({ nodes: [el] });
           el.classList.add('mermaid-rendered');
         } catch (err) {
@@ -664,25 +882,84 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
       });
     }
 
-    // First load
+    // First load — DO NOT fetch mermaid here. Only set up the observer.
+    // Mermaid module is fetched lazily inside renderOne() when the first
+    // diagram enters the viewport.
     captureOriginalSource();
-    initMermaid();
     setupObserver();
 
     // After a view-transition swap brings us into a new case-study page
     document.addEventListener('astro:page-load', () => {
       captureOriginalSource();
-      initMermaid();
       setupObserver();
     });
 
     // Theme toggle: reset and re-observe so visible diagrams re-render with
-    // the new palette.
+    // the new palette. Only forces a re-init if mermaid was already loaded.
     document.addEventListener('theme-changed', () => {
-      resetForRerender();
-      initMermaid();
-      setupObserver();
+      if (initializedForTheme !== null) {
+        initializedForTheme = null; // force re-init on next render with new theme
+        resetForRerender();
+        setupObserver();
+      }
     });
+  </script>
+
+  <!-- CINEMATIC AUTO-LOAD (deferred) -->
+  <script>
+    // Defer the cinematic iframe until the browser is idle, so the rest of the
+    // page paints and becomes interactive first. The thumbnail poster shows
+    // immediately as a graceful placeholder. When the iframe loads, it fades
+    // in over the poster. Full quality preserved; ~300-600 ms delay vs being
+    // in initial HTML — but the page becomes interactive significantly sooner.
+    function bindCinematic() {
+      document.querySelectorAll<HTMLElement>('.cinematic-frame[data-cinematic-url]').forEach((frame) => {
+        if (frame.dataset.bound === 'true') return;
+        frame.dataset.bound = 'true';
+
+        const url = frame.dataset.cinematicUrl;
+        const title = frame.dataset.cinematicTitle || 'Interactive cinematic';
+        if (!url) return;
+
+        function injectIframe() {
+          // Guard against double-injection across page-load events
+          if (frame.querySelector('iframe.cinematic-iframe-active')) return;
+          const poster = frame.querySelector<HTMLElement>('.cinematic-poster');
+          const iframe = document.createElement('iframe');
+          iframe.src = url;
+          iframe.title = title;
+          iframe.setAttribute('allow', 'fullscreen');
+          iframe.setAttribute('allowfullscreen', 'true');
+          iframe.className = 'cinematic-iframe-active';
+          iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;background:#f7f1e8;position:absolute;inset:0;z-index:3;';
+          iframe.addEventListener('load', () => {
+            // Iframe content finished loading → reveal it + fade out poster
+            iframe.classList.add('is-ready');
+            if (poster) poster.classList.add('is-fading');
+            // Remove poster after fade completes to free DOM
+            setTimeout(() => poster?.remove(), 600);
+          }, { once: true });
+          frame.appendChild(iframe);
+        }
+
+        // Schedule injection AFTER the browser becomes idle. Falls back to a
+        // small timeout for browsers without requestIdleCallback (Safari).
+        const schedule = (cb: () => void) => {
+          if ('requestIdleCallback' in window) {
+            (window as any).requestIdleCallback(cb, { timeout: 1500 });
+          } else {
+            setTimeout(cb, 400);
+          }
+        };
+        if (document.readyState === 'complete') {
+          schedule(injectIframe);
+        } else {
+          window.addEventListener('load', () => schedule(injectIframe), { once: true });
+        }
+      });
+    }
+    bindCinematic();
+    document.addEventListener('astro:page-load', bindCinematic);
   </script>
 
   <script>

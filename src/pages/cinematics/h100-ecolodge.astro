@@ -1,0 +1,1548 @@
+---
+import CinematicLayout from '../../layouts/CinematicLayout.astro';
+// H100 Ecolodge has no clean small logo file accessible (org repo behind OAuth).
+// Render brand mark text-only; the lodge house icon appears as a custom SVG
+// in scene 1 + 8 instead.
+---
+
+<CinematicLayout
+  title="H100 Ecolodge — Cinematic"
+  brandName="H100 Ecolodge"
+  totalSlides={8}
+  fontsUrl="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700&display=swap"
+>
+
+  <!-- SLIDE 1 — OPENING -->
+  <section class="slide eco-open active" data-slide="1">
+    <div class="eco-bloom bloom-leaf"></div>
+    <div class="eco-bloom bloom-warm"></div>
+    <div class="eco-open-inner">
+      <svg class="eco-logo-svg" id="openingLogo" viewBox="0 0 120 120" aria-hidden="true">
+        <!-- Stylized green house/lodge mark -->
+        <defs>
+          <linearGradient id="ecoGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#5ab355"/>
+            <stop offset="100%" stop-color="#2e7d32"/>
+          </linearGradient>
+          <linearGradient id="ecoLeafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7cc97a"/>
+            <stop offset="100%" stop-color="#3d8b3f"/>
+          </linearGradient>
+        </defs>
+        <!-- Roof triangle -->
+        <path d="M 60 14 L 100 56 L 20 56 Z" fill="url(#ecoGrad)"/>
+        <!-- Roof shadow line -->
+        <path d="M 60 14 L 100 56 L 20 56 Z" fill="none" stroke="#1b5e20" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- House body -->
+        <rect x="28" y="56" width="64" height="46" fill="#f0ece2" stroke="#2e7d32" stroke-width="1.5"/>
+        <!-- Door -->
+        <rect x="52" y="74" width="16" height="28" fill="#6d4c2f"/>
+        <!-- Window left -->
+        <rect x="35" y="64" width="12" height="10" fill="#a8d2a3" stroke="#2e7d32" stroke-width="1"/>
+        <!-- Window right -->
+        <rect x="73" y="64" width="12" height="10" fill="#a8d2a3" stroke="#2e7d32" stroke-width="1"/>
+        <!-- Leaf accent (left of roof) -->
+        <path d="M 18 50 Q 8 38 16 24 Q 24 38 18 50 Z" fill="url(#ecoLeafGrad)" opacity="0.9"/>
+        <!-- Leaf accent (right of roof) -->
+        <path d="M 102 50 Q 112 38 104 24 Q 96 38 102 50 Z" fill="url(#ecoLeafGrad)" opacity="0.9"/>
+      </svg>
+      <div class="eco-pre" id="openingPre">A booking engine for an ecolodge</div>
+      <h1 class="eco-title" id="openingTitle">
+        <span class="eco-tword">H100</span>
+        <span class="eco-tword eco-italic">Ecolodge</span>
+      </h1>
+      <div class="eco-rule" id="openingRule"></div>
+      <p class="eco-tagline" id="openingTag">
+        Built for one lodge.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — THE BRIEF -->
+  <section class="slide eco-brief" data-slide="2">
+    <div class="eco-brief-inner">
+      <div class="eco-eyebrow">The brief</div>
+      <h2 class="eco-brief-line">
+        <span class="eco-tword">A real client.</span>
+      </h2>
+      <h2 class="eco-brief-line eco-brief-line-2">
+        <span class="eco-tword">A real booking engine.</span>
+      </h2>
+      <h2 class="eco-brief-line eco-brief-line-3">
+        <span class="eco-tword">Built as a</span>
+        <span class="eco-tword eco-accent">school capstone.</span>
+      </h2>
+      <p class="eco-brief-note">
+        Rooms, function halls, catering, payments, audit trails — the operational shape
+        of a real hospitality business. Delivered to a Filipino ecolodge, then handed off.
+      </p>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — THE STOREFRONT -->
+  <section class="slide eco-store" data-slide="3">
+    <div class="eco-store-wrap">
+      <!-- Browser-style mock window -->
+      <div class="eco-browser">
+        <div class="eco-browser-head">
+          <div class="eco-browser-dots"><span></span><span></span><span></span></div>
+          <div class="eco-browser-url">h100-ecolodge.local</div>
+        </div>
+        <div class="eco-browser-body">
+          <!-- Top nav -->
+          <div class="eco-store-nav">
+            <div class="eco-store-brand">
+              <span class="eco-store-brand-icon">▲</span>
+              <span class="eco-store-brand-text">H100 ECOLODGE</span>
+            </div>
+            <div class="eco-store-links">
+              <span class="active">Home</span>
+              <span>Rooms</span>
+              <span>Halls</span>
+              <span>Catering</span>
+              <span>Booking</span>
+            </div>
+          </div>
+          <!-- Hero -->
+          <div class="eco-hero">
+            <div class="eco-hero-bg"></div>
+            <div class="eco-hero-content">
+              <div class="eco-hero-eyebrow">Comfort &amp; nature in harmony</div>
+              <h3>Welcome to <em>H100</em></h3>
+              <p>Nature-inspired rooms. Versatile halls. A complete hospitality experience.</p>
+              <button class="eco-store-cta" type="button">Book Now →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The storefront</div>
+      <h2>The guest's first door.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — ROOMS + HALLS CATALOG -->
+  <section class="slide eco-catalog" data-slide="4">
+    <div class="eco-catalog-wrap">
+      <div class="eco-cat-section">
+        <div class="eco-cat-title-row">
+          <h3 class="eco-cat-title">Rooms</h3>
+          <span class="eco-cat-sub">4 types · nature-inspired</span>
+        </div>
+        <div class="eco-room-grid">
+          <article class="eco-room" data-room="1">
+            <div class="eco-room-art room-art-1"></div>
+            <div class="eco-room-body">
+              <div class="eco-room-name">Standard</div>
+              <div class="eco-room-price">₱ 1,800<span> / night</span></div>
+            </div>
+          </article>
+          <article class="eco-room" data-room="2">
+            <div class="eco-room-art room-art-2"></div>
+            <div class="eco-room-body">
+              <div class="eco-room-name">Barkada</div>
+              <div class="eco-room-price">₱ 3,200<span> / night</span></div>
+            </div>
+          </article>
+          <article class="eco-room" data-room="3">
+            <div class="eco-room-art room-art-3"></div>
+            <div class="eco-room-body">
+              <div class="eco-room-name">Family</div>
+              <div class="eco-room-price">₱ 4,500<span> / night</span></div>
+            </div>
+          </article>
+          <article class="eco-room" data-room="4">
+            <div class="eco-room-art room-art-4"></div>
+            <div class="eco-room-body">
+              <div class="eco-room-name">Executive</div>
+              <div class="eco-room-price">₱ 6,800<span> / night</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="eco-cat-section">
+        <div class="eco-cat-title-row">
+          <h3 class="eco-cat-title">Halls</h3>
+          <span class="eco-cat-sub">Weddings · conferences · banquets</span>
+        </div>
+        <div class="eco-hall-grid">
+          <article class="eco-hall" data-hall="1">
+            <span class="eco-hall-tag">Grand</span>
+            <div class="eco-hall-name">Grand Hall</div>
+            <div class="eco-hall-meta">up to 300 guests</div>
+          </article>
+          <article class="eco-hall" data-hall="2">
+            <span class="eco-hall-tag">Conference</span>
+            <div class="eco-hall-name">Conference Hall</div>
+            <div class="eco-hall-meta">up to 80 seats</div>
+          </article>
+          <article class="eco-hall" data-hall="3">
+            <span class="eco-hall-tag">Banquet</span>
+            <div class="eco-hall-name">Banquet Hall</div>
+            <div class="eco-hall-meta">up to 150 guests</div>
+          </article>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The catalog</div>
+      <h2>Four rooms. Three halls. One booking engine.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — THE BOOKING FLOW -->
+  <section class="slide eco-flow" data-slide="5">
+    <div class="eco-flow-wrap">
+      <div class="eco-flow-rail">
+        <div class="eco-flow-step" data-step="1">
+          <div class="eco-flow-num">1</div>
+          <div class="eco-flow-card">
+            <div class="eco-flow-label">Browse</div>
+            <div class="eco-flow-sub">Rooms · Halls · Catering</div>
+          </div>
+        </div>
+        <div class="eco-flow-edge"></div>
+        <div class="eco-flow-step" data-step="2">
+          <div class="eco-flow-num">2</div>
+          <div class="eco-flow-card">
+            <div class="eco-flow-label">Select dates</div>
+            <div class="eco-flow-sub">Check-in · Check-out · Guests</div>
+          </div>
+        </div>
+        <div class="eco-flow-edge"></div>
+        <div class="eco-flow-step" data-step="3">
+          <div class="eco-flow-num">3</div>
+          <div class="eco-flow-card">
+            <div class="eco-flow-label">Review</div>
+            <div class="eco-flow-sub">Total in ₱ · Cancellation terms</div>
+          </div>
+        </div>
+        <div class="eco-flow-edge"></div>
+        <div class="eco-flow-step" data-step="4">
+          <div class="eco-flow-num">4</div>
+          <div class="eco-flow-card eco-flow-final">
+            <div class="eco-flow-label">Pay</div>
+            <div class="eco-flow-sub">GCash · cards · cash on arrival</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking confirmation receipt -->
+      <div class="eco-receipt" id="ecoReceipt">
+        <div class="eco-receipt-head">
+          <span class="eco-receipt-check">✓</span>
+          <span class="eco-receipt-title">Booking confirmed</span>
+        </div>
+        <div class="eco-receipt-row">
+          <span>Room</span>
+          <span>Family · Apr 14 → Apr 17</span>
+        </div>
+        <div class="eco-receipt-row">
+          <span>Total</span>
+          <span class="eco-receipt-amt">₱ 13,500</span>
+        </div>
+        <div class="eco-receipt-row">
+          <span>Reference</span>
+          <span class="eco-receipt-ref">H100-2024-08-44132</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The customer journey</div>
+      <h2>Four steps. No phone calls.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — ADMIN CONSOLE -->
+  <section class="slide eco-admin" data-slide="6">
+    <div class="eco-admin-wrap">
+      <div class="eco-admin-head">
+        <h3>Operations dashboard</h3>
+        <span class="eco-admin-stamp">admin · localhost:8080</span>
+      </div>
+
+      <div class="eco-kpi-grid">
+        <article class="eco-kpi" data-kpi="1">
+          <div class="eco-kpi-icon icon-bookings">⊟</div>
+          <div class="eco-kpi-label">Total bookings</div>
+          <div class="eco-kpi-value">248</div>
+          <div class="eco-kpi-meta">this month</div>
+        </article>
+        <article class="eco-kpi" data-kpi="2">
+          <div class="eco-kpi-icon icon-rooms">⌂</div>
+          <div class="eco-kpi-label">Available rooms</div>
+          <div class="eco-kpi-value">12 <span>/ 24</span></div>
+          <div class="eco-kpi-meta">tonight</div>
+        </article>
+        <article class="eco-kpi" data-kpi="3">
+          <div class="eco-kpi-icon icon-today">$</div>
+          <div class="eco-kpi-label">Collected today</div>
+          <div class="eco-kpi-value">₱ 47,200</div>
+          <div class="eco-kpi-meta">7 payments</div>
+        </article>
+        <article class="eco-kpi" data-kpi="4">
+          <div class="eco-kpi-icon icon-revenue">▲</div>
+          <div class="eco-kpi-label">Monthly revenue</div>
+          <div class="eco-kpi-value">₱ 612K</div>
+          <div class="eco-kpi-meta">apr 2024</div>
+        </article>
+      </div>
+
+      <div class="eco-admin-actions">
+        <button class="eco-action" type="button">Manage Users</button>
+        <button class="eco-action" type="button">System Logs</button>
+        <button class="eco-action" type="button">Content Management</button>
+        <button class="eco-action ghost" type="button">Reports</button>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The operator's side</div>
+      <h2>Every booking. Every peso.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — AUDIT TRAIL -->
+  <section class="slide eco-audit" data-slide="7">
+    <div class="eco-audit-wrap">
+      <div class="eco-audit-stack">
+        <article class="eco-audit-table" data-audit="1">
+          <div class="eco-audit-head-bar">
+            <span class="eco-audit-icon">▤</span>
+            <span class="eco-audit-name">payment_logs</span>
+            <span class="eco-audit-count">2,847 rows</span>
+          </div>
+          <div class="eco-audit-rows">
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 14 · 14:32</span>
+              <span class="eco-audit-action">GCash · ₱4,500 received</span>
+            </div>
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 14 · 11:08</span>
+              <span class="eco-audit-action">Card · ₱2,800 captured</span>
+            </div>
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 13 · 19:47</span>
+              <span class="eco-audit-action">Refund issued · ₱1,800</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="eco-audit-table" data-audit="2">
+          <div class="eco-audit-head-bar">
+            <span class="eco-audit-icon">▤</span>
+            <span class="eco-audit-name">reservation_logs</span>
+            <span class="eco-audit-count">1,932 rows</span>
+          </div>
+          <div class="eco-audit-rows">
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 14 · 14:30</span>
+              <span class="eco-audit-action">Booking #44132 confirmed</span>
+            </div>
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 14 · 09:11</span>
+              <span class="eco-audit-action">Room 12B reassigned to Family</span>
+            </div>
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 13 · 18:00</span>
+              <span class="eco-audit-action">Booking #44089 canceled</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="eco-audit-table" data-audit="3">
+          <div class="eco-audit-head-bar">
+            <span class="eco-audit-icon">▤</span>
+            <span class="eco-audit-name">system_logs</span>
+            <span class="eco-audit-count">5,418 rows</span>
+          </div>
+          <div class="eco-audit-rows">
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 14 · 14:32</span>
+              <span class="eco-audit-action">admin@h100 · UPDATE booking_status</span>
+            </div>
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 14 · 13:50</span>
+              <span class="eco-audit-action">admin@h100 · login ok · 192.168.x.x</span>
+            </div>
+            <div class="eco-audit-row">
+              <span class="eco-audit-stamp">Apr 14 · 13:48</span>
+              <span class="eco-audit-action">admin@h100 · login attempt failed</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="eyebrow">The audit trail</div>
+      <h2>Three log tables. Every action remembered.</h2>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — HANDOFF / CLOSING -->
+  <section class="slide eco-end" data-slide="8">
+    <div class="eco-bloom bloom-leaf"></div>
+    <div class="eco-bloom bloom-warm"></div>
+    <div class="eco-end-inner">
+      <svg class="eco-logo-svg eco-logo-end" id="endLogo" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="ecoGradEnd" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#5ab355"/>
+            <stop offset="100%" stop-color="#2e7d32"/>
+          </linearGradient>
+          <linearGradient id="ecoLeafGradEnd" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7cc97a"/>
+            <stop offset="100%" stop-color="#3d8b3f"/>
+          </linearGradient>
+        </defs>
+        <path d="M 60 14 L 100 56 L 20 56 Z" fill="url(#ecoGradEnd)"/>
+        <path d="M 60 14 L 100 56 L 20 56 Z" fill="none" stroke="#1b5e20" stroke-width="1.5" stroke-linejoin="round"/>
+        <rect x="28" y="56" width="64" height="46" fill="#f0ece2" stroke="#2e7d32" stroke-width="1.5"/>
+        <rect x="52" y="74" width="16" height="28" fill="#6d4c2f"/>
+        <rect x="35" y="64" width="12" height="10" fill="#a8d2a3" stroke="#2e7d32" stroke-width="1"/>
+        <rect x="73" y="64" width="12" height="10" fill="#a8d2a3" stroke="#2e7d32" stroke-width="1"/>
+        <path d="M 18 50 Q 8 38 16 24 Q 24 38 18 50 Z" fill="url(#ecoLeafGradEnd)" opacity="0.9"/>
+        <path d="M 102 50 Q 112 38 104 24 Q 96 38 102 50 Z" fill="url(#ecoLeafGradEnd)" opacity="0.9"/>
+      </svg>
+      <h1 class="eco-title eco-title-end">
+        <span class="eco-tword">H100</span>
+        <span class="eco-tword eco-italic">Ecolodge.</span>
+      </h1>
+      <div class="eco-rule"></div>
+      <p class="eco-end-tag">A school capstone. Built for a real Philippine ecolodge.</p>
+      <div class="eco-end-meta">
+        <span>Spring Boot 3</span>
+        <span class="eco-meta-dot"></span>
+        <span>MySQL · Aiven</span>
+        <span class="eco-meta-dot"></span>
+        <span>Status · archived</span>
+      </div>
+    </div>
+  </section>
+
+</CinematicLayout>
+
+<style is:global>
+  /* =========================================================
+     H100 Ecolodge — warm hospitality + forest green theme
+     ========================================================= */
+
+  :root {
+    --bg:         #faf8f3;
+    --bg-deep:    #f0ece2;
+    --surface:    #ffffff;
+    --surface-92: #ffffffeb;
+    --surface-88: #ffffffe0;
+    --surface-84: #ffffffd6;
+    --ink:        #1a2e1f;
+    --muted:      #6d6d5e;
+    --accent:     #2e7d32;
+    --accent-deep:#1b5e20;
+    --accent-2:   #5ab355;
+    --orange:     #d99553;
+    --stroke:     #d5cfc2;
+    --stroke-soft:#d5cfc266;
+    --green:      #5ab355;
+    --display:    "Playfair Display", "Georgia", serif;
+    --mono:       "Inter", "Segoe UI", system-ui, sans-serif;
+
+    /* Eco-specific */
+    --eco-forest: #2e7d32;
+    --eco-forest-d:#1b5e20;
+    --eco-leaf:  #5ab355;
+    --eco-leaf-l:#7cc97a;
+    --eco-cream: #faf8f3;
+    --eco-paper: #f0ece2;
+    --eco-earth: #6d4c2f;
+    --eco-amber: #d99553;
+    --eco-ink:   #1a2e1f;
+  }
+
+  body {
+    background:
+      radial-gradient(at 12% 12%, rgba(90, 179, 85, 0.10) 0%, transparent 50%),
+      radial-gradient(at 88% 88%, rgba(217, 149, 83, 0.08) 0%, transparent 55%),
+      linear-gradient(180deg, var(--eco-cream) 0%, #f4f0e6 50%, var(--eco-paper) 100%) !important;
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--eco-ink);
+  }
+  body::after {
+    background-image: none !important;
+  }
+  body::before { opacity: 0.12 !important; }
+
+  /* Brand mark */
+  .brand-mark span {
+    color: var(--eco-forest);
+    font-family: var(--display);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-size: 13px;
+  }
+
+  /* Progress + chrome */
+  .progress .dot { background: rgba(46, 125, 50, 0.18); }
+  .progress .dot.done { background: rgba(46, 125, 50, 0.5); }
+  .progress .dot.active {
+    background: var(--eco-forest);
+    box-shadow: 0 0 12px rgba(46, 125, 50, 0.5);
+  }
+
+  .slide-num {
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.2em;
+  }
+  .ctrl {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: var(--stroke);
+    color: var(--eco-ink);
+    font-family: var(--mono);
+    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.08);
+  }
+  .ctrl:hover {
+    background: var(--surface);
+    border-color: var(--eco-forest);
+    color: var(--eco-forest);
+  }
+  .ctrl .key {
+    background: var(--eco-paper);
+    border-color: var(--stroke);
+    color: var(--muted);
+  }
+
+  .mobile-nav button {
+    background: var(--surface);
+    border-color: var(--stroke);
+    color: var(--eco-forest);
+    box-shadow: 0 4px 14px rgba(46, 125, 50, 0.12);
+  }
+  .mobile-nav button:active {
+    background: var(--eco-forest);
+    color: #fff;
+    border-color: var(--eco-forest);
+  }
+  .mobile-nav .progress-mini {
+    background: var(--surface);
+    border-color: var(--stroke);
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .caption .eyebrow {
+    color: var(--eco-forest);
+    border-color: rgba(46, 125, 50, 0.3);
+    background: rgba(90, 179, 85, 0.08);
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.32em;
+  }
+  .caption h2 {
+    font-family: var(--display);
+    color: var(--eco-ink);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .caption p.sub { color: var(--muted); }
+
+  /* =========================================================
+     Decorative blooms
+     ========================================================= */
+  .eco-bloom {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(80px);
+    opacity: 0.4;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .bloom-leaf {
+    width: 560px; height: 560px;
+    background: radial-gradient(circle, rgba(90, 179, 85, 0.5) 0%, transparent 70%);
+    top: -10%; left: -8%;
+  }
+  .bloom-warm {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(217, 149, 83, 0.45) 0%, transparent 70%);
+    bottom: -10%; right: -8%;
+  }
+
+  .eco-tword { display: inline-block; }
+  .eco-italic { font-style: italic; color: var(--eco-forest); }
+  .eco-accent { color: var(--eco-forest); font-style: italic; }
+
+  .eco-eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--eco-forest);
+    font-weight: 600;
+    margin-bottom: 22px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .eco-eyebrow {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s;
+  }
+
+  .eco-rule {
+    width: 0;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, var(--eco-forest), transparent);
+    margin: 24px auto;
+  }
+
+  /* =========================================================
+     SLIDE 1 — Opening
+     ========================================================= */
+  .eco-open { flex-direction: column; }
+  .eco-open-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 1100px;
+    padding: 0 4cqw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .eco-logo-svg {
+    width: clamp(80px, 9cqw, 120px);
+    height: auto;
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: scale(0.7) translateY(20px);
+    filter: drop-shadow(0 6px 24px rgba(46, 125, 50, 0.3));
+  }
+  .eco-pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .eco-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(60px, 10cqw, 144px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--eco-ink);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25em;
+  }
+  .eco-title .eco-tword {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .eco-tagline {
+    margin-top: 4px;
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(20px, 2.2cqw, 32px);
+    color: var(--muted);
+    letter-spacing: 0.01em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  /* =========================================================
+     SLIDE 2 — Brief
+     ========================================================= */
+  .eco-brief {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 10cqw;
+    padding-right: 10cqw;
+  }
+  .eco-brief-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .eco-brief-line {
+    font-family: var(--display);
+    font-size: clamp(40px, 6cqw, 92px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--eco-ink);
+  }
+  .eco-brief-line-2 { margin-top: 10px; }
+  .eco-brief-line-3 { margin-top: 10px; }
+  .eco-brief-line .eco-tword {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .eco-brief-note {
+    margin-top: 36px;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: clamp(15px, 1.35cqw, 21px);
+    line-height: 1.6;
+    max-width: 740px;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .slide.active .eco-brief-note {
+    opacity: 1; transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.8s;
+  }
+  .eco-brief .caption { display: none; }
+
+  /* =========================================================
+     SLIDE 3 — Storefront mock
+     ========================================================= */
+  .eco-store { flex-direction: column; }
+  .eco-store-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+  }
+  .eco-browser {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(26, 46, 31, 0.15);
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  .slide.active .eco-browser {
+    opacity: 1; transform: translateY(0) scale(1);
+    transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s;
+  }
+  .eco-browser-head {
+    padding: 10px 14px;
+    background: var(--eco-paper);
+    border-bottom: 1px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .eco-browser-dots {
+    display: flex; gap: 6px;
+  }
+  .eco-browser-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--stroke);
+  }
+  .eco-browser-url {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 4px;
+    padding: 3px 12px;
+    letter-spacing: 0.04em;
+  }
+  .eco-browser-body { background: var(--surface); }
+
+  /* Storefront top nav */
+  .eco-store-nav {
+    padding: 14px 24px;
+    background: var(--eco-forest);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+  }
+  .eco-store-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eco-store-brand-icon {
+    color: var(--eco-leaf-l);
+    font-size: 22px;
+    line-height: 1;
+  }
+  .eco-store-brand-text {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+  }
+  .eco-store-links {
+    display: flex;
+    gap: 20px;
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .eco-store-links span {
+    cursor: pointer;
+    opacity: 0.8;
+    padding: 4px 0;
+    border-bottom: 1.5px solid transparent;
+    transition: all 0.2s;
+  }
+  .eco-store-links span.active {
+    opacity: 1;
+    border-bottom-color: var(--eco-leaf-l);
+  }
+
+  /* Hero */
+  .eco-hero {
+    position: relative;
+    height: 320px;
+    overflow: hidden;
+  }
+  .eco-hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 70%, rgba(90, 179, 85, 0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 30%, rgba(217, 149, 83, 0.2) 0%, transparent 50%),
+      linear-gradient(135deg, #2a5a2a 0%, #4a7a3e 30%, #6b8e5a 60%, #8aa66e 100%);
+  }
+  .eco-hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(26, 46, 31, 0.55) 0%, rgba(26, 46, 31, 0.15) 60%, transparent 100%);
+  }
+  .eco-hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 56px;
+    max-width: 540px;
+    color: #fff;
+  }
+  .eco-hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--eco-leaf-l);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .eco-hero-content h3 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  }
+  .eco-hero-content h3 em {
+    color: var(--eco-leaf-l);
+    font-style: italic;
+  }
+  .eco-hero-content p {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #fff;
+    opacity: 0.92;
+    line-height: 1.5;
+  }
+  .eco-store-cta {
+    margin-top: 20px;
+    align-self: flex-start;
+    padding: 12px 24px;
+    background: var(--eco-leaf);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(46, 125, 50, 0.4);
+    transition: all 0.2s;
+  }
+  .eco-store-cta:hover {
+    background: var(--eco-forest);
+    transform: translateY(-1px);
+  }
+
+  /* =========================================================
+     SLIDE 4 — Catalog
+     ========================================================= */
+  .eco-catalog { flex-direction: column; }
+  .eco-catalog-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .eco-cat-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .eco-cat-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .eco-cat-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--eco-ink);
+    letter-spacing: -0.01em;
+  }
+  .eco-cat-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Rooms grid */
+  .eco-room-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .eco-room {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.06);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .slide.active .eco-room { opacity: 1; transform: translateY(0); }
+  .eco-room-art {
+    aspect-ratio: 16 / 11;
+    background: linear-gradient(135deg, #6b8e5a 0%, #4a7a3e 50%, #2a5a2a 100%);
+  }
+  .eco-room-art.room-art-1 { background: linear-gradient(135deg, #a8d2a3 0%, #6b8e5a 100%); }
+  .eco-room-art.room-art-2 { background: linear-gradient(135deg, #d4b88e 0%, #8a6e4a 100%); }
+  .eco-room-art.room-art-3 { background: linear-gradient(135deg, #f0c98a 0%, #c48a4a 100%); }
+  .eco-room-art.room-art-4 { background: linear-gradient(135deg, #6b8e5a 0%, #2e5a2e 50%, #1a3a1a 100%); }
+  .eco-room-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .eco-room-name {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--eco-ink);
+  }
+  .eco-room-price {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--eco-forest);
+  }
+  .eco-room-price span {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 11px;
+  }
+
+  /* Halls grid */
+  .eco-hall-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .eco-hall {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--eco-paper) 100%);
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.06);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .slide.active .eco-hall { opacity: 1; transform: translateY(0); }
+  .eco-hall-tag {
+    align-self: flex-start;
+    padding: 4px 10px;
+    background: rgba(46, 125, 50, 0.1);
+    color: var(--eco-forest);
+    border: 1px solid rgba(46, 125, 50, 0.3);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .eco-hall-name {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--eco-ink);
+    letter-spacing: -0.01em;
+  }
+  .eco-hall-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* =========================================================
+     SLIDE 5 — Booking flow
+     ========================================================= */
+  .eco-flow { flex-direction: column; }
+  .eco-flow-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, 94cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    align-items: center;
+  }
+  .eco-flow-rail {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 1000px;
+  }
+  .eco-flow-step {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .eco-flow-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--eco-forest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--eco-forest);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.15);
+  }
+  .eco-flow-card {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    padding: 16px 14px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.06);
+  }
+  .eco-flow-card.eco-flow-final {
+    background: var(--eco-forest);
+    border-color: var(--eco-forest);
+    color: #fff;
+  }
+  .eco-flow-card.eco-flow-final .eco-flow-label { color: #fff; }
+  .eco-flow-card.eco-flow-final .eco-flow-sub { color: rgba(255, 255, 255, 0.85); }
+  .eco-flow-label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--eco-ink);
+  }
+  .eco-flow-sub {
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .eco-flow-edge {
+    flex: 0 0 26px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--eco-leaf), transparent);
+    opacity: 0;
+    transition: opacity 0.6s;
+    align-self: center;
+    transform: translateY(-22px);
+  }
+  .eco-flow-edge.lit { opacity: 0.8; }
+
+  /* Receipt mock */
+  .eco-receipt {
+    width: 100%;
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--eco-forest);
+    border-radius: 10px;
+    padding: 22px 26px;
+    box-shadow: 0 16px 40px rgba(46, 125, 50, 0.15);
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  .eco-receipt-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--stroke);
+    margin-bottom: 14px;
+  }
+  .eco-receipt-check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--eco-leaf);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: 0 0 14px rgba(90, 179, 85, 0.4);
+  }
+  .eco-receipt-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--eco-ink);
+  }
+  .eco-receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .eco-receipt-row span:first-child {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  .eco-receipt-row span:last-child { color: var(--eco-ink); }
+  .eco-receipt-amt {
+    color: var(--eco-forest) !important;
+    font-weight: 700;
+    font-size: 15px !important;
+  }
+  .eco-receipt-ref { color: var(--eco-amber) !important; }
+
+  /* =========================================================
+     SLIDE 6 — Admin
+     ========================================================= */
+  .eco-admin { flex-direction: column; }
+  .eco-admin-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .eco-admin-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .eco-admin-head h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--eco-ink);
+    letter-spacing: -0.01em;
+  }
+  .eco-admin-stamp {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+
+  .eco-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .eco-kpi {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 6px 18px rgba(46, 125, 50, 0.06);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .slide.active .eco-kpi { opacity: 1; transform: translateY(0); }
+  .eco-kpi-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .eco-kpi-icon.icon-bookings { background: rgba(46, 125, 50, 0.12); color: var(--eco-forest); }
+  .eco-kpi-icon.icon-rooms    { background: rgba(217, 149, 83, 0.14); color: var(--eco-amber); }
+  .eco-kpi-icon.icon-today    { background: rgba(90, 179, 85, 0.14); color: var(--eco-leaf); }
+  .eco-kpi-icon.icon-revenue  { background: rgba(109, 76, 47, 0.14); color: var(--eco-earth); }
+  .eco-kpi-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .eco-kpi-value {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--eco-ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .eco-kpi-value span {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 16px;
+  }
+  .eco-kpi-meta {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .eco-admin-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .eco-action {
+    padding: 10px 18px;
+    background: var(--eco-leaf);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(90, 179, 85, 0.3);
+    transition: all 0.2s;
+  }
+  .eco-action:hover {
+    background: var(--eco-forest);
+    transform: translateY(-1px);
+  }
+  .eco-action.ghost {
+    background: transparent;
+    color: var(--eco-forest);
+    border: 1px solid var(--eco-forest);
+    box-shadow: none;
+  }
+  .eco-action.ghost:hover {
+    background: rgba(46, 125, 50, 0.08);
+  }
+
+  /* =========================================================
+     SLIDE 7 — Audit
+     ========================================================= */
+  .eco-audit { flex-direction: column; }
+  .eco-audit-wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 92cqw);
+  }
+  .eco-audit-stack {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .eco-audit-table {
+    background: var(--surface);
+    border: 1px solid var(--stroke);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.06);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .slide.active .eco-audit-table { opacity: 1; transform: translateY(0); }
+  .eco-audit-head-bar {
+    padding: 10px 14px;
+    background: var(--eco-paper);
+    border-bottom: 1px solid var(--stroke);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eco-audit-icon {
+    color: var(--eco-forest);
+    font-size: 14px;
+  }
+  .eco-audit-name {
+    flex: 1;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--eco-ink);
+    letter-spacing: 0.02em;
+  }
+  .eco-audit-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .eco-audit-rows {
+    padding: 8px 0;
+  }
+  .eco-audit-row {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--stroke-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+  }
+  .eco-audit-row:last-child { border-bottom: 0; }
+  .eco-audit-stamp {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .eco-audit-action {
+    font-family: "Inter", sans-serif;
+    color: var(--eco-ink);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  /* =========================================================
+     SLIDE 8 — Closing
+     ========================================================= */
+  .eco-end { flex-direction: column; }
+  .eco-end-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1100px;
+    padding: 0 4cqw;
+  }
+  .eco-logo-end {
+    width: clamp(60px, 7cqw, 90px);
+    margin-bottom: 22px;
+    opacity: 0;
+    transform: scale(0.7) translateY(20px);
+    filter: drop-shadow(0 6px 20px rgba(46, 125, 50, 0.25));
+  }
+  .eco-title-end { font-size: clamp(48px, 8cqw, 112px); }
+  .eco-end-tag {
+    margin-top: 14px;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(16px, 1.8cqw, 24px);
+    color: var(--muted);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .eco-end-meta {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .eco-meta-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--eco-leaf);
+    box-shadow: 0 0 6px rgba(90, 179, 85, 0.5);
+  }
+  .eco-end .caption { display: none; }
+
+  /* Container responsive */
+  @container stage (max-width: 700px) {
+    .eco-room-grid { grid-template-columns: repeat(2, 1fr); }
+    .eco-hall-grid { grid-template-columns: 1fr; }
+    .eco-flow-rail { flex-direction: column; gap: 12px; }
+    .eco-flow-edge {
+      width: 2px; height: 22px;
+      background: linear-gradient(180deg, transparent, var(--eco-leaf), transparent);
+      transform: none;
+    }
+    .eco-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .eco-audit-stack { grid-template-columns: 1fr; }
+    .eco-store-links { display: none; }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    function whenReady(cb) {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') cb();
+      else document.addEventListener('DOMContentLoaded', cb, { once: true });
+    }
+
+    whenReady(() => {
+      if (typeof gsap === 'undefined') return;
+
+      function $$(sel, root) { return (root || document).querySelectorAll(sel); }
+      function $(sel, root) { return (root || document).querySelector(sel); }
+
+      // ----- SLIDE 1: OPENING -----
+      function animOpen(s) {
+        const words = $$('.eco-title .eco-tword', s);
+        gsap.fromTo($('#openingLogo', s), { opacity: 0, scale: 0.7, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'expo.out' });
+        gsap.fromTo($('#openingPre', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 0.5, ease: 'power3.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.9, stagger: 0.2, delay: 0.8, ease: 'expo.out' });
+        gsap.fromTo($('#openingRule', s), { width: 0 },
+          { width: 220, duration: 0.9, delay: 1.7, ease: 'power3.out' });
+        gsap.fromTo($('#openingTag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 2.1, ease: 'power3.out' });
+      }
+
+      // ----- SLIDE 2: BRIEF -----
+      function animBrief(s) {
+        const words = $$('.eco-brief-line .eco-tword', s);
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.7, stagger: 0.18, delay: 0.4, ease: 'expo.out' });
+      }
+
+      // ----- SLIDE 3: STOREFRONT -----
+      function animStore(s) {
+        // Browser already animates via .slide.active CSS
+      }
+
+      // ----- SLIDE 4: CATALOG -----
+      function animCatalog(s) {
+        gsap.fromTo($$('.eco-room', s), { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+        gsap.fromTo($$('.eco-hall', s), { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, delay: 0.7, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 5: FLOW -----
+      function animFlow(s) {
+        const steps = $$('.eco-flow-step', s);
+        const edges = $$('.eco-flow-edge', s);
+        const receipt = $('#ecoReceipt', s);
+        edges.forEach((e) => e.classList.remove('lit'));
+
+        const tl = gsap.timeline({ delay: 0.3 });
+        steps.forEach((step, i) => {
+          tl.to(step, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, i === 0 ? 0 : '+=.14');
+          if (edges[i]) tl.add(() => edges[i].classList.add('lit'), '+=.05');
+        });
+        tl.to(receipt, { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.5)' }, '+=.3');
+      }
+
+      // ----- SLIDE 6: ADMIN -----
+      function animAdmin(s) {
+        gsap.fromTo($('.eco-admin-head', s), { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
+        gsap.fromTo($$('.eco-kpi', s), { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, delay: 0.4, ease: 'power3.out', clearProps: 'all' });
+        gsap.fromTo($$('.eco-action', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, delay: 1.0, ease: 'power3.out' });
+      }
+
+      // ----- SLIDE 7: AUDIT -----
+      function animAudit(s) {
+        gsap.fromTo($$('.eco-audit-table', s), { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.15, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+      }
+
+      // ----- SLIDE 8: CLOSING -----
+      function animEnd(s) {
+        const words = $$('.eco-title .eco-tword', s);
+        gsap.fromTo($('#endLogo', s), { opacity: 0, scale: 0.7, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.0, ease: 'expo.out' });
+        gsap.fromTo(words, { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.9, stagger: 0.18, delay: 0.4, ease: 'expo.out' });
+        gsap.fromTo($('.eco-rule', s), { width: 0 },
+          { width: 220, duration: 0.9, delay: 1.4, ease: 'power3.out' });
+        gsap.fromTo($('.eco-end-tag', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 1.8, ease: 'power3.out' });
+        gsap.fromTo($('.eco-end-meta', s), { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.7, delay: 2.2, ease: 'power3.out' });
+      }
+
+      const sceneMap = {
+        1: animOpen,
+        2: animBrief,
+        3: animStore,
+        4: animCatalog,
+        5: animFlow,
+        6: animAdmin,
+        7: animAudit,
+        8: animEnd,
+      };
+
+      document.addEventListener('cinematic:slide-changed', (e) => {
+        const { slide } = e.detail;
+        const num = +slide.dataset.slide;
+        const fn = sceneMap[num];
+        if (fn) fn(slide);
+      });
+    });
+  })();
+</script>

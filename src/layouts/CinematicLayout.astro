@@ -1,0 +1,240 @@
+---
+/**
+ * CinematicLayout
+ * ----------------
+ * Shared scaffolding for all cinematic pages under /cinematics/[project].
+ * Wraps the page's slot content (the unique scene <section>s) in:
+ *   - HTML head with Google Fonts + cinematic.css
+ *   - GSAP CDN script
+ *   - Body backgrounds, grid texture, grain
+ *   - Brand mark (top-left)
+ *   - Progress dots (top-center)
+ *   - Slide counter (bottom-left)
+ *   - Desktop Prev/Next controls (bottom-right)
+ *   - Mobile viewport-level nav (always full size, regardless of canvas zoom)
+ *   - 1440x900 design canvas with CSS `zoom` for crisp rendering at any size
+ *   - Slide navigation + keyboard/swipe handling
+ *   - Custom event `cinematic:slide-changed` for per-project animations to listen to
+ *
+ * Props:
+ *   - title (string): document title
+ *   - brandName (string): brand text next to the icon
+ *   - brandLogoIcon (ImageMetadata): the small icon shown in the brand mark
+ *   - totalSlides (number): how many slides for the progress counter
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import '../styles/cinematic.css';
+
+export interface Props {
+  title: string;
+  brandName: string;
+  /**
+   * Optional brand mark icon. If omitted, the brand-mark renders text-only —
+   * useful for projects with no clean small-size logo (e.g. games with key
+   * art that doesn't reduce well).
+   */
+  brandLogoIcon?: ImageMetadata;
+  totalSlides: number;
+  /**
+   * Optional Google Fonts URL — pass a project-specific font set so we don't
+   * bloat every cinematic with fonts it doesn't use. Defaults to Bricolage
+   * Grotesque + Space Mono (the SwiftRace warm-editorial palette).
+   */
+  fontsUrl?: string;
+  /**
+   * Optional brand mark icon height in px (default 38). Use a smaller value
+   * for logos that look soft when enlarged.
+   */
+  brandMarkHeight?: number;
+}
+
+const {
+  title,
+  brandName,
+  brandLogoIcon,
+  totalSlides,
+  fontsUrl = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Space+Mono:wght@400;700&display=swap',
+  brandMarkHeight = 38,
+} = Astro.props;
+const initialLabel = `01 / ${String(totalSlides).padStart(2, '0')}`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>{title}</title>
+
+  <!-- Font preconnect + load — Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href={fontsUrl} />
+
+  <!-- GSAP for slide animations -->
+  <script
+    is:inline
+    src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/gsap.min.js"
+  ></script>
+</head>
+<body>
+
+  <!-- Mobile-only viewport-level nav (full size regardless of canvas zoom) -->
+  <nav class="mobile-nav" aria-label="Cinematic navigation">
+    <button id="mobilePrev" aria-label="Previous slide">&larr;</button>
+    <span class="progress-mini" id="mobileProgress">{initialLabel}</span>
+    <button id="mobileNext" aria-label="Next slide">&rarr;</button>
+  </nav>
+
+  <!-- Fixed 1440x900 design canvas -->
+  <div class="canvas" id="canvas">
+
+    <div class="brand-mark" style={`--brand-mark-h:${brandMarkHeight}px`}>
+      {brandLogoIcon && (
+        <Image src={brandLogoIcon} alt={brandName} widths={[brandMarkHeight * 2, brandMarkHeight * 4]} sizes={`${brandMarkHeight}px`} loading="eager" />
+      )}
+      <span>{brandName}</span>
+    </div>
+
+    <div class="progress" id="progress"></div>
+    <div class="slide-num" id="slideNum">{initialLabel}</div>
+
+    <div class="controls">
+      <button class="ctrl" id="prevBtn" type="button">
+        <span class="key">&larr;</span>Prev
+      </button>
+      <button class="ctrl" id="nextBtn" type="button">
+        Next<span class="key">&rarr;</span>
+      </button>
+    </div>
+
+    <div class="stage" id="stage">
+      <slot />
+    </div>
+
+  </div>
+
+  <!-- Canvas fit + navigation. Inlined so it runs immediately, no extra JS file fetch. -->
+  <script is:inline>
+    (() => {
+      const html = document.documentElement;
+
+      // --- Canvas scale: fit 1440x900 into the viewport, never upscale. ---
+      let rafId = 0;
+      function updateScale() {
+        const sw = window.innerWidth / 1440;
+        const sh = window.innerHeight / 900;
+        const scale = Math.min(sw, sh, 1);
+        html.style.setProperty('--scale', scale);
+      }
+      function scheduleScale() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(updateScale);
+      }
+      updateScale();
+      window.addEventListener('resize', scheduleScale, { passive: true });
+      window.addEventListener('orientationchange', scheduleScale, { passive: true });
+
+      // --- Slide navigation ---
+      const slides = document.querySelectorAll('.slide');
+      const progress = document.getElementById('progress');
+      const slideNum = document.getElementById('slideNum');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const mobilePrev = document.getElementById('mobilePrev');
+      const mobileNext = document.getElementById('mobileNext');
+      const mobileProgress = document.getElementById('mobileProgress');
+
+      let current = 0;
+      let isAnimating = false;
+      const total = slides.length;
+
+      // Build progress dots
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        progress?.appendChild(dot);
+      });
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+
+      function updateProgress() {
+        progress?.childNodes.forEach((d, i) => {
+          if (!(d instanceof Element)) return;
+          d.classList.remove('active', 'done');
+          if (i < current) d.classList.add('done');
+          else if (i === current) d.classList.add('active');
+        });
+        const label = `${pad(current + 1)} / ${pad(total)}`;
+        if (slideNum) slideNum.textContent = label;
+        if (mobileProgress) mobileProgress.textContent = label;
+      }
+
+      function goTo(idx) {
+        if (idx < 0 || idx >= total || idx === current || isAnimating) return;
+        isAnimating = true;
+        slides[current].classList.remove('active');
+        slides[idx].classList.add('active');
+        current = idx;
+        updateProgress();
+        // Tell the page to run its scene-specific animation for the new slide.
+        document.dispatchEvent(new CustomEvent('cinematic:slide-changed', {
+          detail: { index: idx, slide: slides[idx] }
+        }));
+        setTimeout(() => { isAnimating = false; }, 120);
+      }
+
+      function next() { goTo(current + 1); }
+      function prev() { goTo(current - 1); }
+
+      // Keyboard
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          next();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          prev();
+        } else if (e.key === 'Home') {
+          goTo(0);
+        } else if (e.key === 'End') {
+          goTo(total - 1);
+        }
+      });
+
+      // Buttons
+      prevBtn?.addEventListener('click', prev);
+      nextBtn?.addEventListener('click', next);
+      mobilePrev?.addEventListener('click', prev);
+      mobileNext?.addEventListener('click', next);
+
+      // Touch swipe (passive for smooth scroll handling)
+      let touchX = 0;
+      document.addEventListener('touchstart', (e) => {
+        touchX = e.touches[0].clientX;
+      }, { passive: true });
+      document.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 60) (dx < 0 ? next : prev)();
+      }, { passive: true });
+
+      // Initial: fire slide-changed for slide 0 so the page can run its
+      // opening animation. We delay slightly so the page's listener has
+      // a chance to bind first (Astro's deferred scripts run after this
+      // inline one — but the cinematic:slide-changed listener registration
+      // happens in DOMContentLoaded handler in the page).
+      window.addEventListener('DOMContentLoaded', () => {
+        updateProgress();
+        document.dispatchEvent(new CustomEvent('cinematic:slide-changed', {
+          detail: { index: 0, slide: slides[0] }
+        }));
+      });
+    })();
+  </script>
+
+  <slot name="scripts" />
+</body>
+</html>
