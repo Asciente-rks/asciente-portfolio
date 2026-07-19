@@ -1701,6 +1701,7 @@ html.show-qa-engineer #qa-engineer {
 
   .hero-portrait {
     max-width: 240px;
+    margin-inline: auto;
   }
 
   .qa-stats,
