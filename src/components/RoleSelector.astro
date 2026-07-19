@@ -1,0 +1,190 @@
+---
+/**
+ * RoleSelector — the "Which role would you like to explore?" section.
+ *
+ * Renders two large buttons. Selecting one reveals its panel:
+ *   · Software Engineer → tech stack + all projects
+ *   · QA Engineer       → QA practice, toolkit and highlights
+ *
+ * Wording comes from src/data/roles.ts.
+ * Stack comes from src/data/stack.ts.
+ * Projects come from src/data/projects/.
+ */
+import ProjectCard from './ProjectCard.astro';
+import { roleExplorer } from '../data/roles';
+import { stackGroups } from '../data/stack';
+import { projects } from '../data/projects';
+
+const { softwareEngineer: se, qaEngineer: qa } = roleExplorer;
+
+// Resolve project thumbnails from src/assets/
+const thumbModules = import.meta.glob<{ default: ImageMetadata }>('../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
+function getThumb(rel: string | undefined): ImageMetadata | undefined {
+  if (!rel) return undefined;
+  return thumbModules[`../assets/${rel}`]?.default;
+}
+
+const liveCount = projects.filter((p) => p.status === 'live').length;
+---
+
+<section class="role-section" id="roles">
+  <div class="section-head reveal">
+    <p class="eyebrow">{roleExplorer.eyebrow}</p>
+    <h2 class="section-title">{roleExplorer.heading}</h2>
+    <p class="section-sub">{roleExplorer.subline}</p>
+  </div>
+
+  <div class="role-choice reveal" role="tablist" aria-label="Choose a role">
+    <button
+      class="role-btn"
+      id="tab-software"
+      role="tab"
+      aria-selected="false"
+      aria-controls="software-engineer"
+      data-role-btn="software-engineer"
+    >
+      <span class="role-btn-kicker">01</span>
+      <span class="role-btn-label">{se.label}</span>
+      <span class="role-btn-hint">{se.buttonHint}</span>
+    </button>
+
+    <button
+      class="role-btn"
+      id="tab-qa"
+      role="tab"
+      aria-selected="false"
+      aria-controls="qa-engineer"
+      data-role-btn="qa-engineer"
+    >
+      <span class="role-btn-kicker">02</span>
+      <span class="role-btn-label">{qa.label}</span>
+      <span class="role-btn-hint">{qa.buttonHint}</span>
+    </button>
+  </div>
+
+  <!-- ============ SOFTWARE ENGINEER PANEL ============ -->
+  <div class="role-panel" id="software-engineer" role="tabpanel" aria-labelledby="tab-software" hidden>
+    <p class="role-panel-intro">{se.intro}</p>
+
+    <div class="subsection">
+      <div class="subsection-head">
+        <h3 class="subsection-title">Technical stack</h3>
+        <p class="subsection-sub">{stackGroups.length} categories · production-tested across the projects below</p>
+      </div>
+      <div class="stack-grid">
+        {stackGroups.map((group) => (
+          <div class="stack-card">
+            <p class="stack-card-label">{group.label}</p>
+            <div class="stack-card-items">
+              {group.items.map((item) => <span class="tech-chip">{item}</span>)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-head">
+        <h3 class="subsection-title">Projects</h3>
+        <p class="subsection-sub">{projects.length} systems · {liveCount} live in production · all at $0/month</p>
+      </div>
+      <div class="projects-grid">
+        {projects.map((project) => (
+          <ProjectCard project={project} thumbSrc={getThumb(project.thumbnail)} />
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ QA ENGINEER PANEL ============ -->
+  <div class="role-panel" id="qa-engineer" role="tabpanel" aria-labelledby="tab-qa" hidden>
+    <p class="role-panel-intro">{qa.intro}</p>
+
+    <div class="qa-stats">
+      {qa.stats.map((stat) => (
+        <div class="qa-stat">
+          <span class="qa-stat-value">{stat.value}</span>
+          <span class="qa-stat-label">{stat.label}</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-head">
+        <h3 class="subsection-title">How I practice QA</h3>
+      </div>
+      <div class="qa-grid">
+        {qa.practices.map((practice) => (
+          <div class="qa-card">
+            <h4 class="qa-card-title">{practice.title}</h4>
+            <p class="qa-card-body">{practice.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-head">
+        <h3 class="subsection-title">QA toolkit</h3>
+      </div>
+      <div class="qa-toolkit">
+        {qa.toolkit.map((tool) => <span class="tech-chip">{tool}</span>)}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Role panel switching — plain JS, no dependencies.
+  function initRoleSelector() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-role-btn]');
+    if (!buttons.length) return;
+
+    function openPanel(id: string, scroll: boolean) {
+      buttons.forEach((btn) => {
+        const target = document.getElementById(btn.dataset.roleBtn || '');
+        const isMatch = btn.dataset.roleBtn === id;
+        btn.classList.toggle('is-active', isMatch);
+        btn.setAttribute('aria-selected', String(isMatch));
+        if (target) {
+          if (isMatch) {
+            target.hidden = false;
+            // restart the reveal animation
+            target.classList.remove('is-open');
+            void target.offsetWidth;
+            target.classList.add('is-open');
+          } else {
+            target.hidden = true;
+            target.classList.remove('is-open');
+          }
+        }
+      });
+      if (scroll) {
+        const panel = document.getElementById(id);
+        if (panel) {
+          const y = panel.getBoundingClientRect().top + window.scrollY - 96;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }
+    }
+
+    buttons.forEach((btn) => {
+      if (btn.dataset.bound === 'yes') return;
+      btn.dataset.bound = 'yes';
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.roleBtn!;
+        openPanel(id, true);
+        history.replaceState(null, '', `#${id}`);
+      });
+    });
+
+    // Deep link support: /#software-engineer or /#qa-engineer
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'software-engineer' || hash === 'qa-engineer') {
+      openPanel(hash, true);
+    }
+  }
+
+  initRoleSelector();
+  document.addEventListener('astro:page-load', initRoleSelector);
+</script>

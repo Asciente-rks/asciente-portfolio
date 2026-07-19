@@ -1,0 +1,60 @@
+---
+/**
+ * Hero — the first thing visitors see: photo, name, role line,
+ * summary, quick facts and contact buttons.
+ * All text comes from src/data/site.ts — edit it there.
+ */
+import { Image } from 'astro:assets';
+import { siteConfig } from '../data/site';
+import PortraitSrc from '../assets/GradPic_Sonio.jpg';
+
+const { identity, hero, contact } = siteConfig;
+---
+
+<section class="hero" id="about">
+  <div class="hero-grid">
+    <div class="hero-portrait reveal is-visible">
+      <Image
+        src={PortraitSrc}
+        width={460}
+        alt={identity.fullName}
+        class="hero-portrait-img"
+        format="avif"
+        quality={82}
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+
+    <div class="hero-copy">
+      <p class="eyebrow">{hero.eyebrow}</p>
+      <h1 class="hero-name">{identity.fullName}</h1>
+      <p class="hero-role">{identity.roleTitle}</p>
+      <p class="hero-summary">{hero.summary}</p>
+
+      <dl class="hero-facts">
+        {hero.facts.map((fact) => (
+          <div class="hero-fact">
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="hero-actions">
+        <a href={`mailto:${contact.email}`} class="action-btn is-primary">
+          <span>Get in touch</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href={contact.github} target="_blank" rel="noopener noreferrer" class="action-btn">
+          <span>GitHub</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" class="action-btn">
+          <span>LinkedIn</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

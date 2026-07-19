@@ -1,5 +1,20 @@
 ---
+/**
+ * PROJECT DETAIL PAGE — /projects/<slug>
+ *
+ * Sections, in order:
+ *   1. Title, tagline, status + action buttons (GitHub / live)
+ *   2. Cinematic walkthrough  (the highlight — if the project has one)
+ *   3. Demo video             (if the project has one)
+ *   4. Overview
+ *   5. Gallery                (the second highlight)
+ *   6. Stack used
+ *   7. Cost breakdown ($0/month table)
+ *
+ * All content comes from the project's file in src/data/projects/.
+ */
 import MainLayout from '../../layouts/MainLayout.astro';
+import Lightbox from '../../components/Lightbox.astro';
 import { Image } from 'astro:assets';
 import { projects } from '../../data/projects';
 
@@ -16,26 +31,20 @@ if (!project) {
   return Astro.redirect('/');
 }
 
-// Glob image assets for the gallery + thumbnail
+// Resolve images + videos from src/assets/
 const imageModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
-
-// Glob video assets — Vite resolves these to URL strings via `?url`
 const videoModules = import.meta.glob<string>('../../assets/**/*.mp4', { eager: true, query: '?url', import: 'default' });
 
 function getImageAsset(rel: string | undefined): ImageMetadata | undefined {
   if (!rel) return undefined;
-  const key = `../../assets/${rel}`;
-  return imageModules[key]?.default;
+  return imageModules[`../../assets/${rel}`]?.default;
 }
 
 function getVideoUrl(rel: string | undefined): string | undefined {
   if (!rel) return undefined;
-  const key = `../../assets/${rel}`;
-  return videoModules[key];
+  return videoModules[`../../assets/${rel}`];
 }
 
-// Resolve gallery items, distinguishing images from videos by either explicit
-// type or file extension.
 const gallery = project.gallery
   .map((g) => {
     const isVideo = g.type === 'video' || /\.mp4$/i.test(g.src);
@@ -47,47 +56,39 @@ const gallery = project.gallery
   .filter((g) => (g.kind === 'image' ? !!g.asset : !!g.url));
 
 const featuredVideoUrl = project.featuredVideo ? getVideoUrl(project.featuredVideo.src) : undefined;
-
 const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
 const totalTechCount = project.techGroups.reduce((acc, g) => acc + g.items.length, 0);
-const liveLabel = project.liveLabel ?? 'Live Demo';
-
-// Dynamic section numbering based on what data the project has.
-const sectionOrder = ['about', 'stack', 'architecture'];
-if (project.conversion) sectionOrder.push('conversion');
-if (project.database) sectionOrder.push('data');
-if (project.apiEndpoints && project.apiEndpoints.length > 0) sectionOrder.push('api');
-sectionOrder.push('costs');
-if (gallery.length > 0) sectionOrder.push('gallery');
-const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padStart(2, '0');
+const liveLabel = project.liveLabel ?? 'Live demo';
 ---
 
-<MainLayout
-  title={`${project.title} · Ralph Sonio`}
-  description={project.tagline}
->
+<MainLayout title={`${project.title} · Ralph Kenneth Sonio`} description={project.tagline}>
   <article>
     <!-- HERO ================================================= -->
     <section class="detail-hero">
-      <a href="/" class="detail-back">
-        <span style="font-family:'JetBrains Mono', monospace">←</span>
-        <span>back to projects</span>
+      <a href="/#software-engineer" class="detail-back">
+        <span aria-hidden="true">←</span>
+        <span>All projects</span>
       </a>
 
       <div>
         <span class="detail-status-pill">
           <span class={`status-dot ${project.status}`}></span>
           <span>{statusLabel}</span>
-          <span style="margin: 0 0.4rem; opacity: 0.4;">·</span>
-          <span>{project.role}</span>
         </span>
 
         <h1 class="detail-title">{project.title}</h1>
-
         <p class="detail-tagline">{project.tagline}</p>
       </div>
 
       <div class="detail-meta-strip">
+        <div class="meta-cell">
+          <span class="meta-label">Monthly cost</span>
+          <span class="meta-value is-accent">{project.cost.monthlyTotal}</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-label">Stack</span>
+          <span class="meta-value">{totalTechCount} technologies</span>
+        </div>
         <div class="meta-cell">
           <span class="meta-label">Status</span>
           <span class="meta-value">
@@ -95,91 +96,32 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
             {statusLabel}
           </span>
         </div>
-        <div class="meta-cell">
-          <span class="meta-label">Language</span>
-          <span class="meta-value">{project.language}</span>
-        </div>
-        <div class="meta-cell">
-          <span class="meta-label">Cost</span>
-          <span class="meta-value" style="color: var(--accent)">{project.cost.monthlyTotal}</span>
-        </div>
-        <div class="meta-cell">
-          <span class="meta-label">Stack</span>
-          <span class="meta-value" style="font-size:0.82rem; line-height:1.4;">{totalTechCount} technologies</span>
-        </div>
       </div>
 
       <div class="detail-actions">
-        {project.sourceUrl ? (
+        {project.sourceUrl && (
           <a class="action-btn" href={project.sourceUrl} target="_blank" rel="noopener noreferrer">
-            <span>source code</span>
-            <span style="color:var(--accent); font-size:0.7rem">↗</span>
+            <span>GitHub</span>
+            <span aria-hidden="true">↗</span>
           </a>
-        ) : (
-          <span class="action-btn is-disabled" aria-disabled="true" title="Source not on GitHub">
-            <span>source code</span>
-            <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-          </span>
         )}
-        {project.liveUrl ? (
-          <a class="action-btn" href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-            <span>{liveLabel.toLowerCase()}</span>
-            <span style="color:var(--accent); font-size:0.7rem">↗</span>
+        {project.liveUrl && (
+          <a class="action-btn is-primary" href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+            <span>{liveLabel}</span>
+            <span aria-hidden="true">↗</span>
           </a>
-        ) : (
-          <span class="action-btn is-disabled" aria-disabled="true" title="No live deployment">
-            <span>live demo</span>
-            <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-          </span>
         )}
       </div>
     </section>
 
-    <!-- FEATURED VIDEO (only for projects with featuredVideo set) -->
-    {featuredVideoUrl && (
-      <section class="detail-section" id="demo-video">
-        <div class="section-eyebrow">
-          <span class="section-num">▶ · demo</span>
-        </div>
-        <h2>Gameplay demonstration</h2>
-        {project.featuredVideo?.caption && (
-          <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
-            {project.featuredVideo.caption}
-          </p>
-        )}
-        <div class="featured-video-frame">
-          <video
-            controls
-            preload="metadata"
-            playsinline
-            poster={getImageAsset('TheLastLight/MainMenu.png')?.src}
-          >
-            <source src={featuredVideoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      </section>
-    )}
-
-    <!-- CINEMATIC SHOWCASE (only for projects with cinematicUrl set) -->
+    <!-- CINEMATIC WALKTHROUGH (highlight) ==================== -->
     {project.cinematicUrl && (
       <section class="detail-section" id="cinematic">
-        <div class="section-eyebrow">
-          <span class="section-num">▶ · cinematic</span>
+        <div class="section-head">
+          <p class="eyebrow">Cinematic</p>
+          <h2 class="section-title">Walk through the product.</h2>
+          {project.cinematicCaption && <p class="section-sub">{project.cinematicCaption}</p>}
         </div>
-        <h2>Walk through the product</h2>
-        {project.cinematicCaption && (
-          <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
-            {project.cinematicCaption}
-          </p>
-        )}
-        {/* Auto-load with deferred iframe injection.
-            The 600 KB iframe is NOT in the initial HTML. We render the project
-            thumbnail as an instant placeholder, then inject the iframe after
-            the browser becomes idle (requestIdleCallback) — so the rest of the
-            page paints first. When the iframe finishes loading, it fades in
-            over the poster. Full quality preserved; just deferred a few hundred
-            milliseconds so the page becomes interactive sooner. */}
         <div
           class="cinematic-frame"
           data-cinematic-url={project.cinematicUrl}
@@ -200,7 +142,7 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
             <span class="cinematic-poster-veil"></span>
             <span class="cinematic-loading" role="status" aria-live="polite">
               <span class="cinematic-loading-dot" aria-hidden="true"></span>
-              <span class="cinematic-loading-text">Loading cinematic</span>
+              <span>Loading cinematic</span>
             </span>
           </div>
           <a
@@ -210,323 +152,53 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
             class="cinematic-fullscreen"
             aria-label="Open cinematic in fullscreen"
           >
-            <span>Open fullscreen</span>
-            <span style="font-family:'JetBrains Mono', monospace; font-size: 0.85em;">↗</span>
+            <span>Fullscreen</span>
+            <span aria-hidden="true">↗</span>
           </a>
         </div>
       </section>
     )}
 
-    <!-- SUMMARY ============================================== -->
-    <section class="detail-section" id="summary">
-      <div class="section-eyebrow">
-        <span class="section-num">{sectionNum('about')} · about</span>
-      </div>
-      <h2>What it is</h2>
-      <p style="margin-top: 1rem; max-width: 64ch; font-size: 1.05rem; line-height: 1.65; color: var(--fg-muted);">
-        {project.summary}
-      </p>
-
-      {project.repos && project.repos.length > 0 && (
-        <>
-          <h3>Repositories</h3>
-          <div class="repos-strip">
-            {project.repos.map((repo) => (
-              <a href={repo.url} target="_blank" rel="noopener noreferrer" class="repo-card">
-                <span class="repo-card-row">
-                  <span class="name">
-                    <span class="repo-icon" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1-.02-1.96-3.2.69-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.16 1.18.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.2-1.49 3.16-1.18 3.16-1.18.62 1.57.23 2.73.11 3.02.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.21 0 .31.21.68.8.56C20.71 21.39 24 17.08 24 12 24 5.65 18.85.5 12 .5z" />
-                      </svg>
-                    </span>
-                    {repo.name}
-                  </span>
-                  <span class="repo-arrow">↗</span>
-                </span>
-                <span class="stack">{repo.stack}</span>
-              </a>
-            ))}
-          </div>
-        </>
-      )}
-    </section>
-
-    <!-- TECH STACK ========================================== -->
-    <section class="detail-section" id="stack">
-      <div class="section-eyebrow">
-        <span class="section-num">{sectionNum('stack')} · stack</span>
-      </div>
-      <h2>Tech stack</h2>
-      <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
-        {totalTechCount} technologies across {project.techGroups.length} groups — every layer documented, no abstractions hidden.
-      </p>
-
-      <div class="stack-grid" style="margin-top: 1.5rem;">
-        {project.techGroups.map((group) => (
-          <div class="stack-card">
-            <p class="stack-card-label">{group.label}</p>
-            <div class="stack-card-items">
-              {group.items.map((item) => <span class="tech-chip">{item}</span>)}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- ARCHITECTURE ========================================= -->
-    <section class="detail-section" id="architecture">
-      <div class="section-eyebrow">
-        <span class="section-num">{sectionNum('architecture')} · architecture</span>
-      </div>
-      <h2>System architecture</h2>
-
-      <div class="diagram-frame">
-        <div class="diagram-frame-header">
-          <span class="dot" style="background:#ff5f56"></span>
-          <span class="dot" style="background:#ffbd2e"></span>
-          <span class="dot" style="background:#27c93f"></span>
-          <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.architecture.mmd</span>
+    <!-- FEATURED VIDEO ======================================= -->
+    {featuredVideoUrl && (
+      <section class="detail-section" id="demo-video">
+        <div class="section-head">
+          <p class="eyebrow">Demo</p>
+          <h2 class="section-title">See it running.</h2>
+          {project.featuredVideo?.caption && <p class="section-sub">{project.featuredVideo.caption}</p>}
         </div>
-        <div class="mermaid-container">
-          <pre class="mermaid">{project.architecture.mermaid}</pre>
-        </div>
-      </div>
-
-      {project.architecture.notes.length > 0 && (
-        <>
-          <h3>Notable choices</h3>
-          <ul class="notes-list">
-            {project.architecture.notes.map((note) => (
-              <li>{note}</li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {project.architecture.flows && project.architecture.flows.length > 0 && (
-        <>
-          {project.architecture.flows.map((flow) => (
-            <div style="margin-top: 2.75rem;">
-              <h3 style="font-family: 'Instrument Serif', ui-serif, Georgia, serif; font-weight: 400; font-size: clamp(1.3rem, 1rem + 1vw, 1.7rem); line-height: 1.2; letter-spacing: -0.01em; color: var(--fg); text-transform: none; margin-top: 0;">{flow.title}</h3>
-              {flow.blurb && (
-                <p style="margin-top: 0.6rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">{flow.blurb}</p>
-              )}
-              <div class="diagram-frame">
-                <div class="diagram-frame-header">
-                  <span class="dot" style="background:#ff5f56"></span>
-                  <span class="dot" style="background:#ffbd2e"></span>
-                  <span class="dot" style="background:#27c93f"></span>
-                  <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.{flow.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.mmd</span>
-                </div>
-                <div class="mermaid-container">
-                  <pre class="mermaid">{flow.mermaid}</pre>
-                </div>
-              </div>
-              {flow.notes && flow.notes.length > 0 && (
-                <ul class="notes-list">
-                  {flow.notes.map((note) => (
-                    <li>{note}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </>
-      )}
-    </section>
-
-    <!-- CONVERSION ========================================== -->
-    {project.conversion && (
-      <section class="detail-section" id="conversion">
-        <div class="section-eyebrow">
-          <span class="section-num">{sectionNum('conversion')} · conversion</span>
-        </div>
-        <h2>Migration · before → after</h2>
-        <p style="margin-top: 1rem; max-width: 72ch; color: var(--fg-muted); line-height: 1.6;">
-          {project.conversion.summary}
-        </p>
-
-        <div class="diagram-frame" style="margin-top: 1.5rem;">
-          <div class="diagram-frame-header">
-            <span class="dot" style="background:#ff5f56"></span>
-            <span class="dot" style="background:#ffbd2e"></span>
-            <span class="dot" style="background:#27c93f"></span>
-            <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.conversion.mmd</span>
-          </div>
-          <div class="mermaid-container">
-            <pre class="mermaid">{project.conversion.mermaid}</pre>
-          </div>
-        </div>
-
-        {project.conversion.changes.length > 0 && (
-          <>
-            <h3>What changed</h3>
-            <div class="changes-table" style="margin-top: 1rem;">
-              <div class="changes-row head">
-                <div>Before</div>
-                <div class="arrow" aria-hidden="true">→</div>
-                <div>After</div>
-              </div>
-              {project.conversion.changes.map((c) => (
-                <div class="changes-row">
-                  <div class="before">{c.before}</div>
-                  <div class="arrow" aria-hidden="true">→</div>
-                  <div class="after">{c.after}</div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {project.conversion.notes.length > 0 && (
-          <>
-            <h3>Why &amp; how</h3>
-            <ul class="notes-list">
-              {project.conversion.notes.map((note) => (
-                <li>{note}</li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
-    )}
-
-    <!-- DATABASE DESIGN ===================================== -->
-    {project.database && (
-      <section class="detail-section" id="database">
-        <div class="section-eyebrow">
-          <span class="section-num">{sectionNum('data')} · data</span>
-        </div>
-        <h2>Database design</h2>
-        <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
-          {project.database.blurb}
-        </p>
-
-        <div class="diagram-frame" style="margin-top: 1.5rem;">
-          <div class="diagram-frame-header">
-            <span class="dot" style="background:#ff5f56"></span>
-            <span class="dot" style="background:#ffbd2e"></span>
-            <span class="dot" style="background:#27c93f"></span>
-            <span class="diagram-frame-title">{project.title.toLowerCase().replace(/\s+/g, '-')}.schema.mmd</span>
-          </div>
-          <div class="mermaid-container">
-            <pre class="mermaid">{project.database.mermaid}</pre>
-          </div>
-        </div>
-
-        {project.database.tables && project.database.tables.length > 0 && (
-          <>
-            <h3>Selected table reference</h3>
-            {project.database.tables.map((table) => (
-              <div class="db-table" style="margin-top: 1.5rem;">
-                <div class="db-table-header">
-                  <span class="db-table-name">
-                    <span class="accent">▸</span> {table.name}
-                  </span>
-                  {table.description && <span class="db-table-desc">{table.description}</span>}
-                </div>
-                <div class="db-rows">
-                  <div class="db-head">Column</div>
-                  <div class="db-head">Type</div>
-                  <div class="db-head">Notes</div>
-                  {table.columns.map((col) => (
-                    <>
-                      <div class="col-name" data-label="Column">{col.name}</div>
-                      <div class="col-type" data-label="Type">{col.type}</div>
-                      <div class="col-notes" data-label="Notes">{col.notes || ''}</div>
-                    </>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </>
-        )}
-      </section>
-    )}
-
-    <!-- API REFERENCE ===================================== -->
-    {project.apiEndpoints && project.apiEndpoints.length > 0 && (
-      <section class="detail-section" id="api">
-        <div class="section-eyebrow">
-          <span class="section-num">{sectionNum('api')} · api</span>
-        </div>
-        <h2>API surface</h2>
-        <div class="api-table" style="margin-top: 1.5rem;">
-          <div class="api-row head">
-            <div>Method</div>
-            <div>Path</div>
-            <div>Auth</div>
-            <div>Purpose</div>
-          </div>
-          {project.apiEndpoints.map((ep) => (
-            <div class="api-row">
-              <div><span class={`method-badge method-${ep.method}`}>{ep.method}</span></div>
-              <div style="color: var(--fg);">{ep.path}</div>
-              <div>{ep.auth || '—'}</div>
-              <div>{ep.purpose}</div>
-            </div>
-          ))}
+        <div class="featured-video-frame">
+          <video controls preload="metadata" playsinline>
+            <source src={featuredVideoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
       </section>
     )}
 
-    <!-- COST ============================================== -->
-    <section class="detail-section" id="cost">
-      <div class="section-eyebrow">
-        <span class="section-num">{sectionNum('costs')} · costs</span>
+    <!-- OVERVIEW ============================================= -->
+    <section class="detail-section" id="overview">
+      <div class="section-head">
+        <p class="eyebrow">Overview</p>
+        <h2 class="section-title">What it is.</h2>
       </div>
-      <h2>Cost breakdown</h2>
-      <p style="margin-top:1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
-        Designed for $0/month forever — every line of the stack runs on a free tier with no expiry.
-      </p>
-
-      <div class="cost-summary">
-        <div class="head">Service</div>
-        <div class="head">Free tier</div>
-        <div class="head">We use</div>
-        <div class="head">Headroom</div>
-        {project.cost.rows.map((row) => (
-          <>
-            <div class="service-name">{row.service}</div>
-            <div>{row.freeTier}</div>
-            <div>{row.weUse}</div>
-            <div class="headroom">{row.headroom}</div>
-          </>
-        ))}
-      </div>
-
-      <div class="cost-total">
-        <div style="display:flex; flex-direction:column; gap:0.3rem;">
-          <span class="label">Monthly total</span>
-          <span class="value">{project.cost.monthlyTotal}</span>
-        </div>
-      </div>
-
-      <h3>Why each free tier was chosen</h3>
-      <ul class="notes-list">
-        {project.cost.rationale.map((r) => (
-          <li>{r}</li>
-        ))}
-      </ul>
+      <p class="detail-summary">{project.summary}</p>
     </section>
 
-    <!-- GALLERY ========================================== -->
+    <!-- GALLERY (highlight) ================================== -->
     {gallery.length > 0 && (
       <section class="detail-section" id="gallery">
-        <div class="section-eyebrow">
-          <span class="section-num">{sectionNum('gallery')} · gallery</span>
+        <div class="section-head">
+          <p class="eyebrow">Gallery</p>
+          <h2 class="section-title">Inside the product.</h2>
+          <p class="section-sub">Click any image to enlarge. Videos play inline.</p>
         </div>
-        <h2>Gallery</h2>
-        <p style="margin-top: 1rem; max-width: 64ch; color: var(--fg-muted); line-height: 1.6;">
-          Click any image to expand. Videos play inline.
-        </p>
 
         <div class="gallery-grid">
           {gallery.map((g) => (
             g.kind === 'image' && g.asset ? (
-              <div class="gallery-item" data-zoom={g.asset.src} data-caption={g.caption || ''}>
-                <Image src={g.asset} width={1280} alt={g.caption || project.title} format="avif" quality={85} />
+              <div class="gallery-item" data-zoom={g.asset.src} data-caption={g.caption || project.title}>
+                <Image src={g.asset} width={1280} alt={g.caption || project.title} format="avif" quality={82} loading="lazy" decoding="async" />
                 {g.caption && <div class="gallery-caption">{g.caption}</div>}
               </div>
             ) : (
@@ -541,377 +213,72 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         </div>
       </section>
     )}
+
+    <!-- STACK USED =========================================== -->
+    <section class="detail-section" id="stack">
+      <div class="section-head">
+        <p class="eyebrow">Stack</p>
+        <h2 class="section-title">Stack used.</h2>
+      </div>
+      <div class="stack-grid">
+        {project.techGroups.map((group) => (
+          <div class="stack-card">
+            <p class="stack-card-label">{group.label}</p>
+            <div class="stack-card-items">
+              {group.items.map((item) => <span class="tech-chip">{item}</span>)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- COST ================================================= -->
+    <section class="detail-section" id="cost">
+      <div class="section-head">
+        <p class="eyebrow">Cost</p>
+        <h2 class="section-title">Runs at {project.cost.monthlyTotal}.</h2>
+        <p class="section-sub">Every service sits on a free tier with room to spare — designed that way, not stitched together.</p>
+      </div>
+
+      <div class="cost-summary">
+        <div class="head">Service</div>
+        <div class="head">Free tier</div>
+        <div class="head">In use</div>
+        <div class="head">Headroom</div>
+        {project.cost.rows.map((row) => (
+          <>
+            <div class="service-name" data-label="Service">{row.service}</div>
+            <div data-label="Free tier">{row.freeTier}</div>
+            <div data-label="In use">{row.weUse}</div>
+            <div class="headroom" data-label="Headroom">{row.headroom}</div>
+          </>
+        ))}
+      </div>
+
+      <div class="cost-total">
+        <span class="label">Monthly total</span>
+        <span class="value">{project.cost.monthlyTotal}</span>
+      </div>
+    </section>
   </article>
 
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
-    <button class="lightbox-close" aria-label="Close">×</button>
-    <img id="lightbox-img" src="" alt="" />
-  </div>
+  <Lightbox />
 
-  <!-- PERFORMANCE STYLES (scoped to this page) -->
   <style is:global>
-    /* Mermaid containers fade in once their SVG is rendered, so the lazy
-       render doesn't pop in jarringly. */
-    .mermaid-container .mermaid {
-      opacity: 0;
-      transition: opacity 0.35s ease-out;
-    }
-    .mermaid-container .mermaid.mermaid-rendered {
-      opacity: 1;
-    }
-    /* Reserve vertical space while the diagram is still pending so the
-       scroll position doesn't shift when each diagram resolves. */
-    .mermaid-container {
-      min-height: 240px;
-    }
-    @media (max-width: 768px) {
-      .mermaid-container {
-        min-height: 180px;
-      }
-    }
-
-    /* Skip layout/paint work for sections that aren't near the viewport.
-       Saves significant scroll cost on mobile since each detail section
-       owns dozens of nodes. contain-intrinsic-size reserves space so the
-       scrollbar doesn't jump as content materializes. */
+    /* Defer offscreen sections' rendering work — keeps scrolling smooth. */
     .detail-section {
       content-visibility: auto;
-      contain-intrinsic-size: 0 800px;
+      contain-intrinsic-size: 0 720px;
     }
     @media (max-width: 768px) {
       .detail-section {
-        contain-intrinsic-size: 0 600px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .mermaid-container .mermaid {
-        transition: none;
-      }
-    }
-
-    /* Cinematic embed — interactive product showcase iframe */
-    .cinematic-frame {
-      position: relative;
-      margin-top: 2rem;
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid rgba(94, 234, 212, 0.18);
-      background: #f7f1e8;
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(94, 234, 212, 0.05);
-      isolation: isolate;
-    }
-    .cinematic-frame iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-      background: #f7f1e8;
-    }
-    .cinematic-fullscreen {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: rgba(15, 20, 34, 0.85);
-      color: #5eead4;
-      border: 1px solid rgba(94, 234, 212, 0.35);
-      border-radius: 999px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      text-decoration: none;
-      backdrop-filter: blur(8px);
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-      z-index: 2;
-    }
-    .cinematic-fullscreen:hover {
-      transform: translateY(-1px);
-      background: rgba(15, 20, 34, 0.95);
-      border-color: rgba(94, 234, 212, 0.6);
-    }
-
-    /* Poster shown briefly while the iframe is deferred-loaded.
-       Once iframe.onload fires, the poster fades out and the iframe fades in. */
-    .cinematic-poster {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: #0f1422;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      transition: opacity 0.5s ease;
-    }
-    .cinematic-poster.is-fading {
-      opacity: 0;
-      pointer-events: none;
-    }
-    .cinematic-poster-img {
-      position: absolute !important;
-      inset: 0;
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover;
-    }
-    .cinematic-poster-veil {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at center, rgba(15, 20, 34, 0.18) 0%, rgba(15, 20, 34, 0.5) 100%),
-        linear-gradient(180deg, rgba(15, 20, 34, 0.2) 0%, rgba(15, 20, 34, 0.45) 100%);
-      z-index: 1;
-    }
-    /* Subtle loading pill in the corner — non-intrusive while iframe boots */
-    .cinematic-loading {
-      position: absolute;
-      bottom: 14px;
-      left: 14px;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      background: rgba(15, 20, 34, 0.85);
-      color: rgba(226, 232, 240, 0.92);
-      border: 1px solid rgba(94, 234, 212, 0.25);
-      border-radius: 999px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      backdrop-filter: blur(8px);
-      pointer-events: none;
-    }
-    .cinematic-loading-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #5eead4;
-      box-shadow: 0 0 12px rgba(94, 234, 212, 0.7);
-      animation: cinematicDotPulse 1.4s ease-in-out infinite;
-    }
-    @keyframes cinematicDotPulse {
-      0%, 100% { opacity: 0.45; transform: scale(0.85); }
-      50%      { opacity: 1;    transform: scale(1.12); }
-    }
-    /* Iframe injected by JS — fade in for a smooth handoff from poster */
-    .cinematic-frame iframe.cinematic-iframe-active {
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    .cinematic-frame iframe.cinematic-iframe-active.is-ready {
-      opacity: 1;
-    }
-
-    @media (max-width: 768px) {
-      .cinematic-frame {
-        /* Keep 16:10 across screens — cinematic is a fixed-design canvas (1440x900).
-           Matching the iframe ratio to the design avoids wasted letterbox bars. */
-        margin-top: 1.25rem;
-      }
-      .cinematic-fullscreen {
-        font-size: 0.65rem;
-        padding: 6px 12px;
-        top: 10px;
-        right: 10px;
-      }
-      .cinematic-loading {
-        font-size: 0.62rem;
-        padding: 6px 10px;
-        bottom: 10px;
-        left: 10px;
+        contain-intrinsic-size: 0 560px;
       }
     }
   </style>
 
-  <!-- MERMAID LAZY INITIALIZATION -->
-  {/* Mermaid is ~1 MB. We don't import it until the FIRST diagram is about
-      to enter the viewport. That removes the entire mermaid network + parse
-      cost from any project page where the user doesn't scroll to a diagram.
-      Quality is preserved — diagrams render at full resolution when reached. */}
-  <script type="module">
-    let mermaidModule = null;
-    function loadMermaid() {
-      if (!mermaidModule) {
-        mermaidModule = import('https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs')
-          .then((m) => m.default);
-      }
-      return mermaidModule;
-    }
-
-    const LIGHT_THEME = {
-      primaryColor: '#f1f5f9',
-      primaryTextColor: '#0f172a',
-      primaryBorderColor: '#0f766e',
-      lineColor: '#0f766e',
-      secondaryColor: '#e2e8f0',
-      tertiaryColor: '#f8fafc',
-      background: '#ffffff',
-      mainBkg: '#f1f5f9',
-      secondBkg: '#e2e8f0',
-      tertiaryBkg: '#f8fafc',
-      edgeLabelBackground: '#ffffff',
-      clusterBkg: '#f1f5f9',
-      clusterBorder: '#0f766e',
-      attributeBackgroundColorOdd: '#f8fafc',
-      attributeBackgroundColorEven: '#f1f5f9',
-      relationLabelColor: '#0f172a',
-    };
-
-    const DARK_THEME = {
-      primaryColor: '#0f1422',
-      primaryTextColor: '#e2e8f0',
-      primaryBorderColor: '#5eead4',
-      lineColor: '#5eead4',
-      secondaryColor: '#0a0e1a',
-      tertiaryColor: '#0f1422',
-      background: 'transparent',
-      mainBkg: '#0f1422',
-      secondBkg: '#0a0e1a',
-      tertiaryBkg: '#1e293b',
-      edgeLabelBackground: '#0a0e1a',
-      clusterBkg: '#0f1422',
-      clusterBorder: '#5eead4',
-      attributeBackgroundColorOdd: '#0f1422',
-      attributeBackgroundColorEven: '#0a0e1a',
-      relationLabelColor: '#e2e8f0',
-      relationLabelBackground: '#0a0e1a',
-    };
-
-    let observer = null;
-    let renderQueue = Promise.resolve();
-    let initializedForTheme = null; // tracks which theme mermaid is currently configured for
-
-    async function ensureInitialized() {
-      const isLight = document.documentElement.classList.contains('theme-light');
-      const themeKey = isLight ? 'light' : 'dark';
-      if (initializedForTheme === themeKey) return;
-      const mermaid = await loadMermaid();
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: 'base',
-        securityLevel: 'loose',
-        fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-        themeVariables: isLight ? LIGHT_THEME : DARK_THEME,
-      });
-      initializedForTheme = themeKey;
-    }
-
-    function captureOriginalSource() {
-      document.querySelectorAll('.mermaid').forEach((el) => {
-        if (!el.dataset.mermaidSrc) {
-          el.dataset.mermaidSrc = el.textContent || '';
-        }
-      });
-    }
-
-    // Render a single .mermaid element. Queued sequentially via renderQueue
-    // so two diagrams entering the viewport at once don't race each other
-    // (mermaid.run mutates global state on each call).
-    function renderOne(el) {
-      if (el.dataset.lazyRendered === 'true') return;
-      el.dataset.lazyRendered = 'true';
-      renderQueue = renderQueue.then(async () => {
-        try {
-          // First-render: fetch + init mermaid here, not at script-parse time.
-          // Subsequent diagrams reuse the cached module.
-          await ensureInitialized();
-          const mermaid = await loadMermaid();
-          await mermaid.run({ nodes: [el] });
-          el.classList.add('mermaid-rendered');
-        } catch (err) {
-          console.error('Mermaid render error:', err);
-          // Even on error, fade in so the user sees the message instead of an
-          // invisible block.
-          el.classList.add('mermaid-rendered');
-        }
-      });
-    }
-
-    function setupObserver() {
-      if (observer) observer.disconnect();
-
-      // Render diagrams ~600px before they enter the viewport so they're
-      // ready by the time the user scrolls to them. On low-end mobile
-      // browsers without IntersectionObserver, fall back to rendering all.
-      if (typeof IntersectionObserver === 'undefined') {
-        document.querySelectorAll('.mermaid').forEach(renderOne);
-        return;
-      }
-
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            renderOne(entry.target);
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        rootMargin: '600px 0px',
-        threshold: 0,
-      });
-
-      document.querySelectorAll('.mermaid').forEach((el) => {
-        if (el.dataset.lazyRendered !== 'true') {
-          observer.observe(el);
-        }
-      });
-    }
-
-    function resetForRerender() {
-      // Reset every diagram back to its original source so mermaid can
-      // re-render with the new theme variables (or after a page swap).
-      document.querySelectorAll('.mermaid').forEach((el) => {
-        const src = el.dataset.mermaidSrc;
-        if (src !== undefined) {
-          el.removeAttribute('data-processed');
-          el.removeAttribute('data-lazy-rendered');
-          el.classList.remove('mermaid-rendered');
-          el.textContent = src;
-        }
-      });
-    }
-
-    // First load — DO NOT fetch mermaid here. Only set up the observer.
-    // Mermaid module is fetched lazily inside renderOne() when the first
-    // diagram enters the viewport.
-    captureOriginalSource();
-    setupObserver();
-
-    // After a view-transition swap brings us into a new case-study page
-    document.addEventListener('astro:page-load', () => {
-      captureOriginalSource();
-      setupObserver();
-    });
-
-    // Theme toggle: reset and re-observe so visible diagrams re-render with
-    // the new palette. Only forces a re-init if mermaid was already loaded.
-    document.addEventListener('theme-changed', () => {
-      if (initializedForTheme !== null) {
-        initializedForTheme = null; // force re-init on next render with new theme
-        resetForRerender();
-        setupObserver();
-      }
-    });
-  </script>
-
-  <!-- CINEMATIC AUTO-LOAD (deferred) -->
+  <!-- CINEMATIC AUTO-LOAD (deferred so the page paints first) -->
   <script>
-    // Defer the cinematic iframe until the browser is idle, so the rest of the
-    // page paints and becomes interactive first. The thumbnail poster shows
-    // immediately as a graceful placeholder. When the iframe loads, it fades
-    // in over the poster. Full quality preserved; ~300-600 ms delay vs being
-    // in initial HTML — but the page becomes interactive significantly sooner.
     function bindCinematic() {
       document.querySelectorAll<HTMLElement>('.cinematic-frame[data-cinematic-url]').forEach((frame) => {
         if (frame.dataset.bound === 'true') return;
@@ -922,7 +289,6 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
         if (!url) return;
 
         function injectIframe() {
-          // Guard against double-injection across page-load events
           if (frame.querySelector('iframe.cinematic-iframe-active')) return;
           const poster = frame.querySelector<HTMLElement>('.cinematic-poster');
           const iframe = document.createElement('iframe');
@@ -931,19 +297,14 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
           iframe.setAttribute('allow', 'fullscreen');
           iframe.setAttribute('allowfullscreen', 'true');
           iframe.className = 'cinematic-iframe-active';
-          iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;background:#f7f1e8;position:absolute;inset:0;z-index:3;';
           iframe.addEventListener('load', () => {
-            // Iframe content finished loading → reveal it + fade out poster
             iframe.classList.add('is-ready');
             if (poster) poster.classList.add('is-fading');
-            // Remove poster after fade completes to free DOM
             setTimeout(() => poster?.remove(), 600);
           }, { once: true });
           frame.appendChild(iframe);
         }
 
-        // Schedule injection AFTER the browser becomes idle. Falls back to a
-        // small timeout for browsers without requestIdleCallback (Safari).
         const schedule = (cb: () => void) => {
           if ('requestIdleCallback' in window) {
             (window as any).requestIdleCallback(cb, { timeout: 1500 });
@@ -961,44 +322,4 @@ const sectionNum = (name: string) => String(sectionOrder.indexOf(name) + 1).padS
     bindCinematic();
     document.addEventListener('astro:page-load', bindCinematic);
   </script>
-
-  <script>
-    // Gallery lightbox (images only)
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-    const closeBtn = document.querySelector('.lightbox-close');
-
-    document.querySelectorAll('.gallery-item:not(.is-video)').forEach((item) => {
-      item.addEventListener('click', () => {
-        const src = (item as HTMLElement).dataset.zoom;
-        const caption = (item as HTMLElement).dataset.caption;
-        if (src && lightboxImg) {
-          lightboxImg.src = src;
-          lightboxImg.alt = caption || '';
-          lightbox?.classList.add('is-open');
-          lightbox?.setAttribute('aria-hidden', 'false');
-        }
-      });
-    });
-
-    closeBtn?.addEventListener('click', () => {
-      lightbox?.classList.remove('is-open');
-      lightbox?.setAttribute('aria-hidden', 'true');
-    });
-
-    lightbox?.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        lightbox.classList.remove('is-open');
-        lightbox.setAttribute('aria-hidden', 'true');
-      }
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox?.classList.contains('is-open')) {
-        lightbox.classList.remove('is-open');
-        lightbox.setAttribute('aria-hidden', 'true');
-      }
-    });
-  </script>
 </MainLayout>
-

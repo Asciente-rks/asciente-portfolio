@@ -1,4 +1,8 @@
 ---
+/**
+ * Footer — the contact card at the bottom of every page.
+ * All text and links come from src/data/site.ts.
+ */
 import { siteConfig } from '../data/site';
 
 const year = new Date().getFullYear();
@@ -8,24 +12,25 @@ const mailto = `mailto:${contact.email}`;
 
 <section class="footer-section" id="contact">
   <div class="footer-card reveal">
-    <p class="footer-eyebrow">{contact.footerEyebrow}</p>
+    <p class="eyebrow">{contact.footerEyebrow}</p>
     <h2 class="footer-title">{contact.footerHeading}</h2>
+    <p class="footer-line">{contact.footerLine}</p>
     <div class="footer-actions">
-      <a href={mailto} class="action-btn">
-        <span>email</span>
-        <span style="color:var(--accent)">→</span>
+      <a href={mailto} class="action-btn is-primary">
+        <span>Email me</span>
+        <span aria-hidden="true">→</span>
       </a>
       <a href={contact.github} target="_blank" rel="noopener noreferrer" class="action-btn">
-        <span>github</span>
-        <span style="color:var(--accent)">→</span>
+        <span>GitHub</span>
+        <span aria-hidden="true">↗</span>
       </a>
       <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" class="action-btn">
-        <span>linkedin</span>
-        <span style="color:var(--accent)">→</span>
+        <span>LinkedIn</span>
+        <span aria-hidden="true">↗</span>
       </a>
     </div>
     <p class="footer-bottom">
-      © {year} {identity.fullName} · Cloud-Native Backend & QA Engineer
+      © {year} {identity.fullName} · {identity.roleTitle}
     </p>
   </div>
 </section>

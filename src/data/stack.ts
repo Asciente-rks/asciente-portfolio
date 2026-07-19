@@ -1,3 +1,11 @@
+/* ============================================================
+   TECHNICAL STACK — shown inside the "Software Engineer" panel.
+
+   Each block is one category card. To add a technology, add a
+   new line inside `items`. To add a category, copy a whole
+   { label, items } block. Plain text only — edit freely.
+   ============================================================ */
+
 export interface StackGroup {
   label: string;
   items: string[];

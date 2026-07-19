@@ -1,51 +1,30 @@
 ---
+/**
+ * ProjectCard — one project tile in the projects grid.
+ * The content comes from the project's file in src/data/projects/.
+ */
 import { Image } from 'astro:assets';
 import type { Project } from '../data/projects';
 
 interface Props {
   project: Project;
   thumbSrc?: ImageMetadata;
-  index?: number;
 }
 
-const { project, thumbSrc, index = 0 } = Astro.props;
+const { project, thumbSrc } = Astro.props;
 const statusLabel = project.status === 'live' ? 'Live' : project.status === 'in-dev' ? 'In Development' : 'Archived';
-const projectNumber = String(index + 1).padStart(2, '0');
-const liveLabel = project.liveLabel ?? 'live demo';
+const liveLabel = project.liveLabel ?? 'Live demo';
 const detailHref = `/projects/${project.slug}`;
-
-// Choose accent for placeholder gradient based on slug hash
-function hashStr(s: string) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i);
-  return Math.abs(h);
-}
-const palette = [
-  ['#0d9488', '#5eead4'],
-  ['#7c3aed', '#a78bfa'],
-  ['#dc2626', '#fda4af'],
-  ['#0369a1', '#7dd3fc'],
-  ['#a16207', '#fcd34d'],
-];
-const [c1] = palette[hashStr(project.slug) % palette.length];
 ---
 
-<!--
-  IMPORTANT: nested <a> tags are invalid HTML — browsers will auto-close the
-  outer anchor and split your card across grid cells. So the card root is an
-  <article>, the main clickable region (cover + title + summary + chips) is
-  its own <a>, and the action buttons are SIBLINGS of that anchor, not
-  descendants. JS makes the article itself feel clickable.
--->
-<article class="project-card" data-href={detailHref} tabindex="0" role="link" aria-label={`Open ${project.title}`}>
+<article class="project-card reveal" data-href={detailHref} tabindex="0" role="link" aria-label={`Open ${project.title}`}>
   <a class="project-card-main" href={detailHref}>
-    <div class="project-card-cover" style={!thumbSrc ? `background: linear-gradient(135deg, ${c1} 0%, #0a0e1a 80%);` : ''}>
+    <div class="project-card-cover">
       {thumbSrc ? (
-        <Image src={thumbSrc} width={1280} alt={`${project.title} thumbnail`} format="avif" quality={85} />
+        <Image src={thumbSrc} width={960} alt={`${project.title} screenshot`} format="avif" quality={80} loading="lazy" decoding="async" />
       ) : (
         <div class="cover-placeholder">
-          <span class="cover-placeholder-eyebrow">No preview yet</span>
-          <span class="cover-placeholder-title">{project.title}</span>
+          <span>{project.title}</span>
         </div>
       )}
       <div class="project-card-overlay-tag">
@@ -55,90 +34,59 @@ const [c1] = palette[hashStr(project.slug) % palette.length];
     </div>
 
     <div class="project-card-body">
-      <div class="project-card-eyebrow">
-        <span>P{projectNumber} · {project.role}</span>
-        <span style="color: var(--accent)">{project.language}</span>
-      </div>
-
       <h3 class="project-card-title">{project.title}</h3>
-
       <p class="project-card-summary">{project.tagline}</p>
-
       <div class="project-card-tech">
         {project.tech.slice(0, 5).map((t) => <span class="tech-chip">{t}</span>)}
-        {project.tech.length > 5 && <span class="tech-chip">+{project.tech.length - 5}</span>}
+        {project.tech.length > 5 && <span class="tech-chip is-more">+{project.tech.length - 5}</span>}
       </div>
     </div>
   </a>
 
   <div class="project-card-actions">
-    {project.sourceUrl ? (
-      <a
-        class="action-btn"
-        href={project.sourceUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span>source</span>
-        <span style="color:var(--accent); font-size:0.7rem">↗</span>
+    {project.sourceUrl && (
+      <a class="action-btn is-small" href={project.sourceUrl} target="_blank" rel="noopener noreferrer">
+        <span>GitHub</span>
+        <span aria-hidden="true">↗</span>
       </a>
-    ) : (
-      <span
-        class="action-btn is-disabled"
-        aria-disabled="true"
-        title="Source not on GitHub"
-      >
-        <span>source</span>
-        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-      </span>
     )}
-    {project.liveUrl ? (
-      <a
-        class="action-btn"
-        href={project.liveUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span>{liveLabel.toLowerCase()}</span>
-        <span style="color:var(--accent); font-size:0.7rem">↗</span>
+    {project.liveUrl && (
+      <a class="action-btn is-small" href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+        <span>{liveLabel}</span>
+        <span aria-hidden="true">↗</span>
       </a>
-    ) : (
-      <span
-        class="action-btn is-disabled"
-        aria-disabled="true"
-        title="No live deployment"
-      >
-        <span>live demo</span>
-        <span style="color:var(--fg-muted); font-size:0.7rem">[#]</span>
-      </span>
     )}
+    <a class="action-btn is-small is-ghost" href={detailHref}>
+      <span>Case study</span>
+      <span aria-hidden="true">→</span>
+    </a>
   </div>
 </article>
 
 <script>
-  // Make the whole article behave like a link, but only when the user clicks
-  // somewhere that ISN'T already a link / button (so the action buttons keep
-  // their own destinations and middle-click / cmd-click still work as expected).
-  document.querySelectorAll<HTMLElement>('article.project-card[data-href]').forEach((card) => {
-    const href = card.dataset.href;
-    if (!href) return;
+  // Make the whole card clickable without breaking the inner links.
+  function bindCards() {
+    document.querySelectorAll<HTMLElement>('article.project-card[data-href]').forEach((card) => {
+      if (card.dataset.bound === 'yes') return;
+      card.dataset.bound = 'yes';
+      const href = card.dataset.href;
+      if (!href) return;
 
-    card.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      // If the click landed on an interactive element inside the actions row,
-      // let it handle itself.
-      if (target.closest('a, button, [role="button"]:not([data-href])')) return;
-      // The main `<a class="project-card-main">` will already navigate; don't
-      // double-navigate.
-      if (target.closest('.project-card-main')) return;
-      window.location.href = href;
-    });
-
-    card.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
+      card.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('a, button')) return;
         window.location.href = href;
-      }
+      });
+
+      card.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          const target = e.target as HTMLElement;
+          if (target.closest('a, button')) return;
+          window.location.href = href;
+        }
+      });
     });
-  });
+  }
+  bindCards();
+  document.addEventListener('astro:page-load', bindCards);
 </script>

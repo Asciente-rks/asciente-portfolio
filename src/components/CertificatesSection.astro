@@ -1,0 +1,82 @@
+---
+/**
+ * CertificatesSection — the certificate wall.
+ * The list of certificates lives in src/data/certificates.ts.
+ *
+ * Each tile shows a lightweight preview image; clicking it opens
+ * the full-size preview in a lightbox, with a link to the
+ * original PDF document.
+ */
+import { certificates, certificatesIntro } from '../data/certificates';
+
+// Preview images (SVG-wrapped, lazy-loaded)
+const previewModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/Certificates/previews/*.svg',
+  { eager: true }
+);
+
+// Original PDFs — Vite copies them into the build and returns their URL
+const pdfModules = import.meta.glob<string>('../assets/Certificates/*.pdf', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+
+const items = certificates
+  .map((cert) => {
+    const preview = previewModules[`../assets/Certificates/previews/${cert.preview}`]?.default;
+    const pdfUrl = pdfModules[`../assets/Certificates/${cert.pdf}`];
+    return { ...cert, previewMeta: preview, pdfUrl };
+  })
+  .filter((c) => !!c.previewMeta);
+---
+
+<section class="cert-section" id="certificates">
+  <div class="section-head reveal">
+    <p class="eyebrow">Certifications</p>
+    <h2 class="section-title">Signed, dated, verifiable.</h2>
+    <p class="section-sub">{certificatesIntro}</p>
+  </div>
+
+  <div class="cert-grid">
+    {items.map((cert) => (
+      <figure class={`cert-tile reveal${cert.featured ? ' is-featured' : ''}`}>
+        <button
+          class="cert-frame"
+          type="button"
+          data-zoom={cert.previewMeta!.src}
+          data-caption={`${cert.title} — ${cert.issuer}`}
+          data-pdf={cert.pdfUrl || ''}
+          aria-label={`Enlarge certificate: ${cert.title}`}
+        >
+          <img
+            src={cert.previewMeta!.src}
+            width={cert.previewMeta!.width}
+            height={cert.previewMeta!.height}
+            alt={`${cert.title} certificate, issued by ${cert.issuer}`}
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="cert-zoom-hint" aria-hidden="true">Click to enlarge</span>
+        </button>
+        <figcaption class="cert-caption">
+          <div class="cert-caption-text">
+            <span class="cert-title">{cert.title}</span>
+            <span class="cert-issuer">{cert.issuer} · {cert.detail}</span>
+          </div>
+          {cert.pdfUrl && (
+            <a
+              class="cert-pdf-link"
+              href={cert.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open original PDF of ${cert.title}`}
+            >
+              PDF ↗
+            </a>
+          )}
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</section>

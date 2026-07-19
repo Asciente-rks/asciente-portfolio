@@ -1,0 +1,44 @@
+---
+/**
+ * ExperienceSection — the professional experience timeline.
+ * All entries come from src/data/experience.ts — edit them there.
+ */
+import { experience, experienceIntro, distinctions } from '../data/experience';
+---
+
+<section class="xp-section" id="experience">
+  <div class="section-head reveal">
+    <p class="eyebrow">Experience</p>
+    <h2 class="section-title">Where I've practiced it.</h2>
+    <p class="section-sub">{experienceIntro}</p>
+  </div>
+
+  <div class="xp-list">
+    {experience.map((entry) => (
+      <article class={`xp-item reveal track-${entry.track}`}>
+        <div class="xp-marker" aria-hidden="true"></div>
+        <div class="xp-content">
+          <div class="xp-top">
+            <span class={`xp-badge track-${entry.track}`}>{entry.trackLabel}</span>
+            <span class="xp-period">{entry.period}</span>
+          </div>
+          <h3 class="xp-role">{entry.role}</h3>
+          <p class="xp-company">{entry.company} · {entry.location}</p>
+          <p class="xp-summary">{entry.summary}</p>
+          <ul class="xp-bullets">
+            {entry.bullets.map((bullet) => <li>{bullet}</li>)}
+          </ul>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div class="distinctions reveal">
+    {distinctions.map((d) => (
+      <div class="distinction">
+        <span class="distinction-title">{d.title}</span>
+        <span class="distinction-detail">{d.detail}</span>
+      </div>
+    ))}
+  </div>
+</section>

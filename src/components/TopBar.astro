@@ -1,34 +1,30 @@
 ---
+/**
+ * TopBar — the fixed navigation bar.
+ * The links point to sections of the homepage. To rename your
+ * name/role in the bar, edit src/data/site.ts instead.
+ */
 import { siteConfig } from '../data/site';
 ---
 
 <header class="topbar">
   <div class="topbar-inner">
     <a href="/" class="topbar-brand" aria-label="Home">
-      <span class="glyph">{siteConfig.brand.glyph}</span>
-      <span class="brand-text">{siteConfig.brand.short}</span>
+      <span class="brand-name">{siteConfig.identity.fullName}</span>
+      <span class="brand-role">{siteConfig.identity.roleTitle}</span>
     </a>
 
-    <nav class="topbar-nav">
-      <a href="/#projects" class="topbar-link">projects.ls</a>
-      <a href="/#stack" class="topbar-link">stack.json</a>
-      <a href="/#contact" class="topbar-link">contact.tsx</a>
+    <nav class="topbar-nav" aria-label="Main">
+      <a href="/#roles" class="topbar-link">Work</a>
+      <a href="/#experience" class="topbar-link">Experience</a>
+      <a href="/#certificates" class="topbar-link">Certificates</a>
+      <a href="/#contact" class="topbar-link">Contact</a>
     </nav>
 
-    <div class="topbar-actions">
-      <!-- Same ⌘K pill at every breakpoint. Mobile shrinks it via CSS but
-           it stays clickable and behaves the same as desktop. -->
-      <button class="kbd-hint" data-cmdk-trigger aria-label="Open command palette">
-        <span class="kbd-hint-label">command</span>
-        <span class="kbd">⌘</span>
-        <span class="kbd">K</span>
-      </button>
-
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z" />
-        </svg>
-      </button>
-    </div>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light / dark theme">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z" />
+      </svg>
+    </button>
   </div>
 </header>

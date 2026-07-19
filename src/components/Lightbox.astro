@@ -1,0 +1,79 @@
+---
+/**
+ * Lightbox — full-screen viewer for images.
+ * Any element with a `data-zoom="<image url>"` attribute opens it.
+ * Optional attributes: data-caption, data-pdf (adds an "Open PDF" link).
+ * Include once per page.
+ */
+---
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+  <button class="lightbox-close" aria-label="Close viewer">×</button>
+  <figure class="lightbox-figure">
+    <img id="lightbox-img" src="" alt="" />
+    <figcaption class="lightbox-caption">
+      <span id="lightbox-caption-text"></span>
+      <a id="lightbox-pdf" href="" target="_blank" rel="noopener noreferrer" hidden>Open original PDF ↗</a>
+    </figcaption>
+  </figure>
+</div>
+
+<script>
+  function initLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img') as HTMLImageElement | null;
+    const captionText = document.getElementById('lightbox-caption-text');
+    const pdfLink = document.getElementById('lightbox-pdf') as HTMLAnchorElement | null;
+    if (!lightbox || !img) return;
+
+    function close() {
+      lightbox!.classList.remove('is-open');
+      lightbox!.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function open(src: string, caption: string, pdf: string) {
+      img!.src = src;
+      img!.alt = caption;
+      if (captionText) captionText.textContent = caption;
+      if (pdfLink) {
+        if (pdf) {
+          pdfLink.href = pdf;
+          pdfLink.hidden = false;
+        } else {
+          pdfLink.hidden = true;
+        }
+      }
+      lightbox!.classList.add('is-open');
+      lightbox!.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Event delegation — works for elements added at any time.
+    if (document.body.dataset.lightboxBound !== 'yes') {
+      document.body.dataset.lightboxBound = 'yes';
+
+      document.addEventListener('click', (e) => {
+        const target = (e.target as HTMLElement).closest<HTMLElement>('[data-zoom]');
+        if (target) {
+          e.preventDefault();
+          open(target.dataset.zoom || '', target.dataset.caption || '', target.dataset.pdf || '');
+          return;
+        }
+        const lb = document.getElementById('lightbox');
+        if (!lb || !lb.classList.contains('is-open')) return;
+        const clicked = e.target as HTMLElement;
+        if (clicked === lb || clicked.classList.contains('lightbox-close')) {
+          close();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+      });
+    }
+  }
+
+  initLightbox();
+  document.addEventListener('astro:page-load', initLightbox);
+</script>

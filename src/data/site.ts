@@ -1,33 +1,50 @@
+/* ============================================================
+   SITE-WIDE TEXT & LINKS — edit anything between quotes.
+
+   This file controls: your name, the role line under it, the
+   intro paragraph, contact links, and browser-tab titles.
+   No coding knowledge needed — just change the text.
+   ============================================================ */
+
 export const siteConfig = {
-  brand: {
-    short: "~/ralph-sonio",
-    glyph: "~",
-  },
   identity: {
     fullName: "Ralph Kenneth Sonio",
-    shortName: "R. K. F. Sonio",
-    role: "Backend · QA",
-    focus: "Cloud Native",
-    statusLabel: "Available",
+    firstName: "Ralph",
+    /** The role line shown under your name, in the header and browser tab. */
+    roleTitle: "Software Engineer | QA Engineer",
+    location: "Baguio City, Philippines",
+    education: "BS Information Technology · STI College Baguio · Class of 2026",
   },
+
   hero: {
-    eyebrow: "~/portfolio · v2.0",
-    nameLine1: "Ralph Kenneth",
-    nameLine2: "Sonio",
-    tagline: "Cloud-Native Backend Engineer · Quality Assurance Tester",
-    bioHtml: `I architect <strong style="color: var(--fg)">scalable, type-safe systems</strong> and enforce <strong style="color: var(--fg)">high-availability standards</strong> through rigorous Quality Assurance. My focus is on cloud-native infrastructure, event-driven architecture, and production-grade stability.`,
+    /** Small label above your name. */
+    eyebrow: "Portfolio",
+    /** Your intro paragraph. Keep it to 2–3 sentences for the cleanest look. */
+    summary:
+      "I build serverless, cloud-native backend systems on AWS — and I test software the way a QA engineer does: methodically, reproducibly, and before users ever see a defect. Every project here is live, documented, and runs at $0/month by design.",
+    /** Three quick facts shown under the summary. Edit freely. */
+    facts: [
+      { label: "Focus", value: "Cloud-native backend · Quality assurance" },
+      { label: "Currently", value: "Backend Developer Intern → return offer at IOL Inc." },
+      { label: "Based in", value: "Baguio City, Philippines" },
+    ],
   },
+
   contact: {
     email: "sonioralphkenneth@gmail.com",
     github: "https://github.com/Asciente-rks",
     linkedin: "https://www.linkedin.com/in/ralph-kenneth-sonio-59a615391",
-    footerHeading: "Connect with me",
-    footerEyebrow: "Reach out",
+    footerEyebrow: "Contact",
+    footerHeading: "Let's build something reliable.",
+    footerLine:
+      "Open to backend engineering and QA roles — or a conversation about either.",
   },
+
+  /** Browser tab + search-engine text. */
   meta: {
-    title: "Ralph Sonio · Cloud-Native Backend & QA Engineer",
+    title: "Ralph Kenneth Sonio · Software Engineer | QA Engineer",
     description:
-      "Cloud-Native Backend Engineer & Quality Assurance Tester. Selected work, architecture notes, and case studies.",
+      "Software Engineer and QA Engineer. Serverless AWS backend projects, quality assurance practice, experience, and certifications.",
     siteUrl: "https://asciente-portfolio.vercel.app",
   },
 };

@@ -1,114 +1,28 @@
 ---
+/**
+ * HOMEPAGE — composed entirely from components:
+ *
+ *   Hero                → photo, name, role line, summary (src/data/site.ts)
+ *   RoleSelector        → "Which role?" buttons + both role panels
+ *   ExperienceSection   → timeline (src/data/experience.ts)
+ *   CertificatesSection → certificate wall (src/data/certificates.ts)
+ *
+ * The contact footer is part of the layout.
+ * To change content, edit the data files — not this page.
+ */
 import MainLayout from '../layouts/MainLayout.astro';
-import Terminal from '../components/Terminal.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { Image } from 'astro:assets';
-import { projects } from '../data/projects';
+import Hero from '../components/Hero.astro';
+import RoleSelector from '../components/RoleSelector.astro';
+import ExperienceSection from '../components/ExperienceSection.astro';
+import CertificatesSection from '../components/CertificatesSection.astro';
+import Lightbox from '../components/Lightbox.astro';
 import { siteConfig } from '../data/site';
-import { stackGroups } from '../data/stack';
-import GradPicSrc from '../assets/GradPic_Sonio.jpg';
-
-// Lazy-resolved imports for project thumbnails.
-const thumbModules = import.meta.glob<{ default: ImageMetadata }>('../assets/**/*.{png,jpg,jpeg,webp,avif}', { eager: true });
-
-function getThumb(rel: string | undefined): ImageMetadata | undefined {
-  if (!rel) return undefined;
-  const key = `../assets/${rel}`;
-  return thumbModules[key]?.default;
-}
-
-const liveProjects = projects.filter((p) => p.status === 'live');
-const totalProjects = projects.length;
-const inDevProjects = projects.filter((p) => p.status === 'in-dev');
-const totalStackEntries = stackGroups.reduce((acc, group) => acc + group.items.length, 0);
-
-const heroBio = `${siteConfig.hero.bioHtml} ${totalProjects} projects total · ${liveProjects.length} live in production · every one of them runs at <strong style="color: var(--accent)">$0/month</strong>.`;
 ---
 
 <MainLayout title={siteConfig.meta.title} description={siteConfig.meta.description}>
-  <!-- HERO ===================================================== -->
-  <section class="hero" id="about">
-    <div class="hero-grid">
-      <div class="profile-card">
-        <Image src={GradPicSrc} width={400} alt={siteConfig.identity.fullName} class="profile-img" format="avif" quality={85} loading="eager" decoding="async" />
-        <div class="profile-meta">
-          <div class="profile-meta-row">
-            <span>name</span>
-            <strong>{siteConfig.identity.shortName}</strong>
-          </div>
-          <div class="profile-meta-row">
-            <span>role</span>
-            <strong>{siteConfig.identity.role}</strong>
-          </div>
-          <div class="profile-meta-row">
-            <span>focus</span>
-            <strong>{siteConfig.identity.focus}</strong>
-          </div>
-          <div class="profile-meta-row">
-            <span>status</span>
-            <span style="color: var(--status-live); display:inline-flex; align-items:center; gap:0.4rem;">
-              <span class="status-dot live" style="position:relative; display:inline-block;"></span>
-              {siteConfig.identity.statusLabel}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <p class="eyebrow">{siteConfig.hero.eyebrow}</p>
-        <h1 class="hero-name" style="margin-top: 1rem;">
-          {siteConfig.hero.nameLine1}<br />{siteConfig.hero.nameLine2}
-        </h1>
-        <p class="hero-tagline">
-          {siteConfig.hero.tagline}
-        </p>
-        <p class="hero-bio" set:html={heroBio}></p>
-
-        <div style="margin-top: 1rem;">
-          <Terminal />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STACK ==================================================== -->
-  <section class="projects-section" id="stack" style="margin-top: 6rem;">
-    <div class="projects-header">
-      <p class="eyebrow">02 · technical expertise</p>
-      <h2 class="section-title">The stack</h2>
-      <div class="meta-line">
-        <span>{`stack.json :: ${stackGroups.length} categories · ${totalStackEntries} entries`}</span>
-        <span style="color: var(--accent);">production-grade stability</span>
-      </div>
-    </div>
-
-    <div class="stack-grid">
-      {stackGroups.map((group) => (
-        <div class="stack-card">
-          <p class="stack-card-label">{group.label}</p>
-          <div class="stack-card-items">
-            {group.items.map((item) => <span class="tech-chip">{item}</span>)}
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- PROJECTS ================================================= -->
-  <section class="projects-section" id="projects">
-    <div class="projects-header">
-      <p class="eyebrow">03 · projects</p>
-      <h2 class="section-title">Selected work.</h2>
-      <div class="meta-line">
-        <span>{`projects.ls :: ${totalProjects} entries · ${liveProjects.length} live · ${inDevProjects.length} in development`}</span>
-        <span>last_updated: {new Date().getFullYear()}</span>
-      </div>
-    </div>
-
-    <div class="projects-grid">
-      {projects.map((project, i) => (
-        <ProjectCard project={project} thumbSrc={getThumb(project.thumbnail)} index={i} />
-      ))}
-    </div>
-  </section>
+  <Hero />
+  <RoleSelector />
+  <ExperienceSection />
+  <CertificatesSection />
+  <Lightbox />
 </MainLayout>

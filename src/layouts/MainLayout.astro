@@ -1,7 +1,12 @@
 ---
+/**
+ * MainLayout — the shell around every page.
+ * Handles: fonts, colour theme (light/dark), top bar, footer,
+ * and the reveal-on-scroll animation.
+ * You normally never need to edit this file.
+ */
 import TopBar from '../components/TopBar.astro';
 import Footer from '../components/Footer.astro';
-import CommandPalette from '../components/CommandPalette.astro';
 import { siteConfig } from '../data/site';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/globals.css';
@@ -20,7 +25,7 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a0e1a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0b0f1a" media="(prefers-color-scheme: dark)" />
     <meta name="description" content={description} />
     <meta name="format-detection" content="telephone=no" />
     <meta property="og:type" content="website" />
@@ -30,32 +35,30 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <title>{title}</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230a0e1a'/><text x='16' y='22' font-family='JetBrains Mono, monospace' font-size='18' fill='%235eead4' text-anchor='middle' font-weight='700'>~</text></svg>" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230f172a'/><text x='16' y='22' font-family='Georgia, serif' font-size='17' fill='%235eead4' text-anchor='middle' font-weight='600'>R</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
     />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
       />
     </noscript>
 
     <script is:inline data-astro-rerun>
-      // Apply theme before paint to avoid flash. Default is LIGHT - to switch
-      // back to dark-by-default, change the fallback branch in this script.
-      // data-astro-rerun makes this re-execute on every ClientRouter
-      // navigation so the .theme-light class survives view transitions.
+      // Apply the saved theme before first paint (prevents a colour flash).
+      // Light is the default for first-time visitors.
       (function () {
         try {
           var stored = localStorage.getItem('theme');
@@ -82,10 +85,9 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
     </main>
 
     <Footer />
-    <CommandPalette />
 
     <script>
-      // Reveal-on-scroll observer (lightweight, vanilla)
+      // Reveal-on-scroll animation for elements with class="reveal"
       function initReveals() {
         const io = new IntersectionObserver(
           (entries) => {
@@ -96,13 +98,12 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
               }
             }
           },
-          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+          { threshold: 0.1, rootMargin: '0px 0px -6% 0px' }
         );
         document.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => io.observe(el));
       }
 
-      // Theme toggle - persisted in localStorage so a return visit honours
-      // the explicit choice, but first-time visitors land on light.
+      // Light / dark theme toggle (persisted in localStorage)
       function applyTheme(theme: string) {
         if (theme === 'light') {
           document.documentElement.classList.add('theme-light');
@@ -150,8 +151,6 @@ const { title = siteConfig.meta.title, description = siteConfig.meta.description
       bootstrap();
       document.addEventListener('astro:page-load', bootstrap);
 
-      // Apply the stored theme to the INCOMING document during view-transition
-      // morph. This avoids any flash of the wrong theme between pages.
       document.addEventListener('astro:before-swap', (event: any) => {
         const incoming = event.newDocument?.documentElement;
         if (incoming) syncThemeToHtml(incoming);
