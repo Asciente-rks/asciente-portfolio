@@ -26,6 +26,12 @@
     const pdfLink = document.getElementById('lightbox-pdf') as HTMLAnchorElement | null;
     if (!lightbox || !img) return;
 
+    // Move the lightbox to <body> so it layers above the fixed top bar
+    // (inside <main> it would be trapped in a lower stacking context).
+    if (lightbox.parentElement !== document.body) {
+      document.body.appendChild(lightbox);
+    }
+
     function close() {
       lightbox!.classList.remove('is-open');
       lightbox!.setAttribute('aria-hidden', 'true');
