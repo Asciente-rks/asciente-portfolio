@@ -202,4 +202,13 @@ const liveCount = projects.filter((p) => p.status === 'live').length;
 
   initRoleSelector();
   document.addEventListener('astro:page-load', initRoleSelector);
+
+  // Same-document hash changes (e.g. typing /#qa-engineer in the address
+  // bar, or a future in-page link) also switch panels.
+  window.addEventListener('hashchange', () => {
+    const h = window.location.hash.replace('#', '');
+    if (h === 'software-engineer' || h === 'qa-engineer') {
+      openPanel(h);
+    }
+  });
 </script>
