@@ -24,9 +24,9 @@ export const roleExplorer = {
 
   qaEngineer: {
     label: "QA Engineer",
-    buttonHint: "Process · Toolkit · Practice",
+    buttonHint: "Manual · Automation · Process",
     intro:
-      "Quality assurance is not an afterthought to my engineering work — it is a concurrent discipline. At IOL Inc. I tested 5+ internal production systems while shipping backend features, and every portfolio project above went through the same process.",
+      "Quality assurance is not an afterthought to my engineering work — it is a concurrent discipline. At IOL Inc. I manually tested 5+ internal production systems while shipping backend features. Today that practice extends into automation: Jest for unit testing, Supertest for integration testing, and Playwright for end-to-end testing.",
 
     /** The practice cards. Add or remove blocks freely. */
     practices: [
@@ -35,16 +35,16 @@ export const roleExplorer = {
         body: "Structured test passes across web, desktop, and mobile builds — happy paths, edge cases, and the unhappy paths developers forget. Release candidates get validated before anything reaches production.",
       },
       {
+        title: "Automated Testing",
+        body: "Jest for unit tests, Supertest for API integration tests, and Playwright for end-to-end browser flows — automation practice that grew directly out of manual QA. Postman stays in the loop for exploratory API checks.",
+      },
+      {
         title: "Bug Reporting & Triage",
         body: "Reproducible reports with steps, expected vs. actual behaviour, environment, and evidence — written so a developer can act without a single follow-up question. Severity tagging and ticket triage keep the queue honest.",
       },
       {
         title: "Regression & Release Validation",
         body: "Fixes get verified, surrounding features get re-tested, and regression sweeps run before every deploy. Coordinating directly with developers shortened regression turnaround at IOL Inc.",
-      },
-      {
-        title: "API & Backend Testing",
-        body: "Postman collections for contract, auth, and status-code checks; Jest and Supertest for automated coverage on the backends I build myself.",
       },
       {
         title: "Quality Standards",
@@ -60,9 +60,10 @@ export const roleExplorer = {
     toolkit: [
       "Manual Testing",
       "Exploratory Testing",
+      "Jest (unit)",
+      "Supertest (integration)",
+      "Playwright (E2E)",
       "Postman",
-      "Jest",
-      "Supertest",
       "Regression Testing",
       "Bug Reports",
       "Test Documentation",

@@ -78,19 +78,3 @@ export const experience: ExperienceEntry[] = [
     ],
   },
 ];
-
-/** Shown as a compact row under the timeline. Edit or add freely. */
-export const distinctions = [
-  {
-    title: "Codefest · 1st Runner-Up",
-    detail: "Tagisan ng Talino inter-school programming competition",
-  },
-  {
-    title: "Certificate of System Turnover",
-    detail: "H100 Ecolodge capstone — formally delivered to the client",
-  },
-  {
-    title: "BS Information Technology",
-    detail: "STI College Baguio · Class of 2026",
-  },
-];

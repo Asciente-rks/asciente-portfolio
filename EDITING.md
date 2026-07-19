@@ -24,7 +24,6 @@ icon), commit to `main`, and Vercel redeploys the site automatically in
 | A project's title, description, gallery, cost table | `src/data/projects/<project>.ts` |
 | Which projects appear, and in what order | `src/data/projects/index.ts` |
 | Experience entries (jobs, bullets, badges) | `src/data/experience.ts` |
-| Education & awards row | `src/data/experience.ts` (bottom) |
 | Certificates | `src/data/certificates.ts` |
 | My photo | replace `src/assets/GradPic_Sonio.jpg` (keep the same file name) |
 

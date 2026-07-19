@@ -6,6 +6,12 @@
  *   · Software Engineer → tech stack + all projects
  *   · QA Engineer       → QA practice, toolkit and highlights
  *
+ * How panel state works (for the curious): the open panel is stored
+ * in the URL hash (#software-engineer / #qa-engineer) and mirrored as
+ * a class on <html>. A tiny inline script applies that class during
+ * every page transition — so pressing Back from a project page
+ * restores the exact panel AND scroll position you left.
+ *
  * Wording comes from src/data/roles.ts.
  * Stack comes from src/data/stack.ts.
  * Projects come from src/data/projects/.
@@ -26,6 +32,17 @@ function getThumb(rel: string | undefined): ImageMetadata | undefined {
 
 const liveCount = projects.filter((p) => p.status === 'live').length;
 ---
+
+<!-- Runs during every page swap, BEFORE paint & scroll restoration,
+     so the correct panel is already open when you navigate back. -->
+<script is:inline data-astro-rerun>
+  (function () {
+    var h = window.location.hash.replace('#', '');
+    var html = document.documentElement;
+    html.classList.toggle('show-software-engineer', h === 'software-engineer');
+    html.classList.toggle('show-qa-engineer', h === 'qa-engineer');
+  })();
+</script>
 
 <section class="role-section" id="roles">
   <div class="section-head reveal">
@@ -63,7 +80,7 @@ const liveCount = projects.filter((p) => p.status === 'live').length;
   </div>
 
   <!-- ============ SOFTWARE ENGINEER PANEL ============ -->
-  <div class="role-panel" id="software-engineer" role="tabpanel" aria-labelledby="tab-software" hidden>
+  <div class="role-panel" id="software-engineer" role="tabpanel" aria-labelledby="tab-software">
     <p class="role-panel-intro">{se.intro}</p>
 
     <div class="subsection">
@@ -97,7 +114,7 @@ const liveCount = projects.filter((p) => p.status === 'live').length;
   </div>
 
   <!-- ============ QA ENGINEER PANEL ============ -->
-  <div class="role-panel" id="qa-engineer" role="tabpanel" aria-labelledby="tab-qa" hidden>
+  <div class="role-panel" id="qa-engineer" role="tabpanel" aria-labelledby="tab-qa">
     <p class="role-panel-intro">{qa.intro}</p>
 
     <div class="qa-stats">
@@ -136,53 +153,51 @@ const liveCount = projects.filter((p) => p.status === 'live').length;
 
 <script>
   // Role panel switching — plain JS, no dependencies.
-  function initRoleSelector() {
-    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-role-btn]');
-    if (!buttons.length) return;
+  const PANELS = ['software-engineer', 'qa-engineer'];
 
-    function openPanel(id: string, scroll: boolean) {
-      buttons.forEach((btn) => {
-        const target = document.getElementById(btn.dataset.roleBtn || '');
-        const isMatch = btn.dataset.roleBtn === id;
-        btn.classList.toggle('is-active', isMatch);
-        btn.setAttribute('aria-selected', String(isMatch));
-        if (target) {
-          if (isMatch) {
-            target.hidden = false;
-            // restart the reveal animation
-            target.classList.remove('is-open');
-            void target.offsetWidth;
-            target.classList.add('is-open');
-          } else {
-            target.hidden = true;
-            target.classList.remove('is-open');
-          }
-        }
-      });
-      if (scroll) {
-        const panel = document.getElementById(id);
-        if (panel) {
-          const y = panel.getBoundingClientRect().top + window.scrollY - 96;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-      }
+  function syncButtons() {
+    const html = document.documentElement;
+    document.querySelectorAll<HTMLButtonElement>('[data-role-btn]').forEach((btn) => {
+      const id = btn.dataset.roleBtn || '';
+      const isOpen = html.classList.contains(`show-${id}`);
+      btn.classList.toggle('is-active', isOpen);
+      btn.setAttribute('aria-selected', String(isOpen));
+    });
+  }
+
+  function openPanel(id: string) {
+    const html = document.documentElement;
+    PANELS.forEach((p) => html.classList.toggle(`show-${p}`, p === id));
+    syncButtons();
+
+    const panel = document.getElementById(id);
+    if (panel) {
+      // restart the entrance animation
+      panel.classList.remove('is-open');
+      void panel.offsetWidth;
+      panel.classList.add('is-open');
+
+      const y = panel.getBoundingClientRect().top + window.scrollY - 96;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
 
-    buttons.forEach((btn) => {
+    // Store the choice in the URL — preserve the router's history state
+    // so Back/Forward scroll restoration keeps working.
+    try {
+      history.replaceState(history.state, '', `#${id}`);
+    } catch (_) {}
+  }
+
+  function initRoleSelector() {
+    document.querySelectorAll<HTMLButtonElement>('[data-role-btn]').forEach((btn) => {
       if (btn.dataset.bound === 'yes') return;
       btn.dataset.bound = 'yes';
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.roleBtn!;
-        openPanel(id, true);
-        history.replaceState(null, '', `#${id}`);
-      });
+      btn.addEventListener('click', () => openPanel(btn.dataset.roleBtn!));
     });
-
-    // Deep link support: /#software-engineer or /#qa-engineer
-    const hash = window.location.hash.replace('#', '');
-    if (hash === 'software-engineer' || hash === 'qa-engineer') {
-      openPanel(hash, true);
-    }
+    // The inline script already applied the html classes — just mirror
+    // them onto the buttons. No scrolling here: the browser (and the
+    // router) handle scroll position for hash links and Back/Forward.
+    syncButtons();
   }
 
   initRoleSelector();

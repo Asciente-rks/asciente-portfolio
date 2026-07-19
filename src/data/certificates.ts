@@ -11,7 +11,6 @@
       (a screenshot or export of page 1 works — .svg, .png or .webp)
    3. Copy one block below and update the file names + text.
 
-   `featured: true` gives the certificate a wider tile.
    ============================================================ */
 
 export type Certificate = {
@@ -22,11 +21,10 @@ export type Certificate = {
   preview: string;
   /** File name inside src/assets/Certificates/ — the PDF opened on click. */
   pdf: string;
-  featured?: boolean;
 };
 
 export const certificatesIntro =
-  "Every credential below is the real document — click any of them to open the original PDF.";
+  "Every credential below is the real document — tap to enlarge, or download the original PDF.";
 
 export const certificates: Certificate[] = [
   {
@@ -35,7 +33,6 @@ export const certificates: Certificate[] = [
     detail: "Production serverless architecture · 2026",
     preview: "serverless-aws.svg",
     pdf: "serverless-aws-dark.pdf",
-    featured: true,
   },
   {
     title: "Enterprise TypeScript",

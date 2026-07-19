@@ -13,7 +13,6 @@ export const siteConfig = {
     /** The role line shown under your name, in the header and browser tab. */
     roleTitle: "Software Engineer | QA Engineer",
     location: "Baguio City, Philippines",
-    education: "BS Information Technology · STI College Baguio · Class of 2026",
   },
 
   hero: {
@@ -22,10 +21,9 @@ export const siteConfig = {
     /** Your intro paragraph. Keep it to 2–3 sentences for the cleanest look. */
     summary:
       "I build serverless, cloud-native backend systems on AWS — and I test software the way a QA engineer does: methodically, reproducibly, and before users ever see a defect. Every project here is live, documented, and runs at $0/month by design.",
-    /** Three quick facts shown under the summary. Edit freely. */
+    /** Quick facts shown under the summary. Edit freely. */
     facts: [
-      { label: "Focus", value: "Cloud-native backend · Quality assurance" },
-      { label: "Currently", value: "Backend Developer Intern → return offer at IOL Inc." },
+      { label: "Focus", value: "Cloud-native backend · QA automation" },
       { label: "Based in", value: "Baguio City, Philippines" },
     ],
   },

@@ -1,6 +1,7 @@
 ---
 /**
  * ProjectCard — one project tile in the projects grid.
+ * The whole card is clickable and opens the project page.
  * The content comes from the project's file in src/data/projects/.
  */
 import { Image } from 'astro:assets';
@@ -17,7 +18,7 @@ const liveLabel = project.liveLabel ?? 'Live demo';
 const detailHref = `/projects/${project.slug}`;
 ---
 
-<article class="project-card reveal" data-href={detailHref} tabindex="0" role="link" aria-label={`Open ${project.title}`}>
+<article class="project-card" data-href={detailHref} tabindex="0" role="link" aria-label={`Open ${project.title}`}>
   <a class="project-card-main" href={detailHref}>
     <div class="project-card-cover">
       {thumbSrc ? (
@@ -56,15 +57,14 @@ const detailHref = `/projects/${project.slug}`;
         <span aria-hidden="true">↗</span>
       </a>
     )}
-    <a class="action-btn is-small is-ghost" href={detailHref}>
-      <span>Case study</span>
-      <span aria-hidden="true">→</span>
-    </a>
   </div>
 </article>
 
 <script>
-  // Make the whole card clickable without breaking the inner links.
+  import { navigate } from 'astro:transitions/client';
+
+  // Make the whole card clickable (through the client router, so the
+  // browser Back button returns to the exact same scroll position).
   function bindCards() {
     document.querySelectorAll<HTMLElement>('article.project-card[data-href]').forEach((card) => {
       if (card.dataset.bound === 'yes') return;
@@ -75,14 +75,14 @@ const detailHref = `/projects/${project.slug}`;
       card.addEventListener('click', (e) => {
         const target = e.target as HTMLElement;
         if (target.closest('a, button')) return;
-        window.location.href = href;
+        navigate(href);
       });
 
       card.addEventListener('keydown', (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
           const target = e.target as HTMLElement;
           if (target.closest('a, button')) return;
-          window.location.href = href;
+          navigate(href);
         }
       });
     });

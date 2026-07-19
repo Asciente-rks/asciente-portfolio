@@ -3,9 +3,10 @@
  * CertificatesSection — the certificate wall.
  * The list of certificates lives in src/data/certificates.ts.
  *
- * Each tile shows a lightweight preview image; clicking it opens
- * the full-size preview in a lightbox, with a link to the
- * original PDF document.
+ * Each tile shows a lightweight preview image; tapping it opens
+ * the full-size preview in a lightbox. The "PDF" button downloads
+ * the original document (downloading is the reliable behaviour on
+ * phones — many mobile browsers can't display PDFs inline).
  */
 import { certificates, certificatesIntro } from '../data/certificates';
 
@@ -26,7 +27,8 @@ const items = certificates
   .map((cert) => {
     const preview = previewModules[`../assets/Certificates/previews/${cert.preview}`]?.default;
     const pdfUrl = pdfModules[`../assets/Certificates/${cert.pdf}`];
-    return { ...cert, previewMeta: preview, pdfUrl };
+    const downloadName = `${cert.title.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')}-Ralph-Sonio.pdf`;
+    return { ...cert, previewMeta: preview, pdfUrl, downloadName };
   })
   .filter((c) => !!c.previewMeta);
 ---
@@ -40,13 +42,14 @@ const items = certificates
 
   <div class="cert-grid">
     {items.map((cert) => (
-      <figure class={`cert-tile reveal${cert.featured ? ' is-featured' : ''}`}>
+      <figure class="cert-tile">
         <button
           class="cert-frame"
           type="button"
           data-zoom={cert.previewMeta!.src}
           data-caption={`${cert.title} — ${cert.issuer}`}
           data-pdf={cert.pdfUrl || ''}
+          data-pdf-name={cert.downloadName}
           aria-label={`Enlarge certificate: ${cert.title}`}
         >
           <img
@@ -57,7 +60,7 @@ const items = certificates
             loading="lazy"
             decoding="async"
           />
-          <span class="cert-zoom-hint" aria-hidden="true">Click to enlarge</span>
+          <span class="cert-zoom-hint" aria-hidden="true">Tap to enlarge</span>
         </button>
         <figcaption class="cert-caption">
           <div class="cert-caption-text">
@@ -68,11 +71,10 @@ const items = certificates
             <a
               class="cert-pdf-link"
               href={cert.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Open original PDF of ${cert.title}`}
+              download={cert.downloadName}
+              aria-label={`Download PDF of ${cert.title}`}
             >
-              PDF ↗
+              PDF ↓
             </a>
           )}
         </figcaption>

@@ -16,13 +16,15 @@ const { identity, hero, contact } = siteConfig;
     <div class="hero-portrait reveal is-visible">
       <Image
         src={PortraitSrc}
-        width={460}
+        widths={[240, 460]}
+        sizes="(max-width: 720px) 190px, (max-width: 860px) 240px, 340px"
         alt={identity.fullName}
         class="hero-portrait-img"
         format="avif"
         quality={82}
         loading="eager"
         decoding="async"
+        fetchpriority="high"
       />
     </div>
 

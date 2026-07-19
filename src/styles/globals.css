@@ -199,17 +199,6 @@ video {
   font-size: 0.78rem;
 }
 
-.action-btn.is-ghost {
-  border-color: transparent;
-  color: var(--fg-muted);
-}
-
-.action-btn.is-ghost:hover {
-  color: var(--fg);
-  border-color: var(--border-strong);
-  background: transparent;
-}
-
 .tech-chip {
   display: inline-flex;
   align-items: center;
@@ -561,8 +550,17 @@ video {
   transform: translateY(-50%) translateX(3px) rotate(90deg);
 }
 
+/* Panels are hidden until a role is chosen. The open panel is
+   controlled by a class on <html> (set from the URL hash), which
+   keeps the right panel open when navigating back from a project. */
 .role-panel {
+  display: none;
   margin-top: 1rem;
+}
+
+html.show-software-engineer #software-engineer,
+html.show-qa-engineer #qa-engineer {
+  display: block;
 }
 
 .role-panel.is-open {
@@ -1042,14 +1040,15 @@ video {
   min-width: 0;
 }
 
-.cert-tile.is-featured {
-  grid-column: span 2;
-}
-
+/* Every tile shares the same aspect ratio so the grid stays perfectly
+   symmetrical, whatever shape the certificate documents are. */
 .cert-frame {
   position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+  aspect-ratio: 10 / 7;
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -1061,7 +1060,8 @@ video {
 
 .cert-frame img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
   display: block;
 }
 
@@ -1687,10 +1687,6 @@ video {
   .cert-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .cert-tile.is-featured {
-    grid-column: span 2;
-  }
 }
 
 @media (max-width: 860px) {
@@ -1704,7 +1700,7 @@ video {
   }
 
   .hero-portrait {
-    max-width: 300px;
+    max-width: 240px;
   }
 
   .qa-stats,
@@ -1730,16 +1726,52 @@ video {
     display: none;
   }
 
+  /* Backdrop blur is expensive to scroll on phones — use a
+     near-solid background instead. */
+  .topbar {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+  }
+
+  .project-card-overlay-tag {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--bg-elev);
+  }
+
+  .hero {
+    padding-top: 2.2rem;
+  }
+
+  .hero-grid {
+    gap: 1.6rem;
+  }
+
+  /* Keep the photo modest on phones. */
+  .hero-portrait {
+    max-width: 190px;
+    border-radius: 14px;
+  }
+
+  .hero-summary {
+    font-size: 0.98rem;
+  }
+
+  /* Skip layout work for offscreen tiles — smoother scrolling. */
+  .cert-tile,
+  .xp-item,
+  .project-card {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 360px;
+  }
+
   .role-choice {
     grid-template-columns: 1fr;
   }
 
   .cert-grid {
     grid-template-columns: 1fr;
-  }
-
-  .cert-tile.is-featured {
-    grid-column: span 1;
   }
 
   .xp-item {

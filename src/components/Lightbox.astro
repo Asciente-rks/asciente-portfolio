@@ -13,7 +13,7 @@
     <img id="lightbox-img" src="" alt="" />
     <figcaption class="lightbox-caption">
       <span id="lightbox-caption-text"></span>
-      <a id="lightbox-pdf" href="" target="_blank" rel="noopener noreferrer" hidden>Open original PDF ↗</a>
+      <a id="lightbox-pdf" href="" hidden>Download original PDF ↓</a>
     </figcaption>
   </figure>
 </div>
@@ -38,13 +38,17 @@
       document.body.style.overflow = '';
     }
 
-    function open(src: string, caption: string, pdf: string) {
+    function open(src: string, caption: string, pdf: string, pdfName: string) {
       img!.src = src;
       img!.alt = caption;
       if (captionText) captionText.textContent = caption;
       if (pdfLink) {
         if (pdf) {
           pdfLink.href = pdf;
+          // `download` makes phones save the file instead of trying to
+          // render the PDF in a tab (which shows a blank screen on many
+          // mobile browsers).
+          pdfLink.setAttribute('download', pdfName || 'certificate.pdf');
           pdfLink.hidden = false;
         } else {
           pdfLink.hidden = true;
@@ -63,7 +67,7 @@
         const target = (e.target as HTMLElement).closest<HTMLElement>('[data-zoom]');
         if (target) {
           e.preventDefault();
-          open(target.dataset.zoom || '', target.dataset.caption || '', target.dataset.pdf || '');
+          open(target.dataset.zoom || '', target.dataset.caption || '', target.dataset.pdf || '', target.dataset.pdfName || '');
           return;
         }
         const lb = document.getElementById('lightbox');

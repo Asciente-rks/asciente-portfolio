@@ -3,7 +3,7 @@
  * ExperienceSection — the professional experience timeline.
  * All entries come from src/data/experience.ts — edit them there.
  */
-import { experience, experienceIntro, distinctions } from '../data/experience';
+import { experience, experienceIntro } from '../data/experience';
 ---
 
 <section class="xp-section" id="experience">
@@ -30,15 +30,6 @@ import { experience, experienceIntro, distinctions } from '../data/experience';
           </ul>
         </div>
       </article>
-    ))}
-  </div>
-
-  <div class="distinctions reveal">
-    {distinctions.map((d) => (
-      <div class="distinction">
-        <span class="distinction-title">{d.title}</span>
-        <span class="distinction-detail">{d.detail}</span>
-      </div>
     ))}
   </div>
 </section>

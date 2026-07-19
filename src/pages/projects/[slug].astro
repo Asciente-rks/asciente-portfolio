@@ -65,7 +65,7 @@ const liveLabel = project.liveLabel ?? 'Live demo';
   <article>
     <!-- HERO ================================================= -->
     <section class="detail-hero">
-      <a href="/#software-engineer" class="detail-back">
+      <a href="/#software-engineer" class="detail-back" id="detail-back">
         <span aria-hidden="true">←</span>
         <span>All projects</span>
       </a>
@@ -276,6 +276,31 @@ const liveLabel = project.liveLabel ?? 'Live demo';
       }
     }
   </style>
+
+  <!-- SMART BACK BUTTON -->
+  <script>
+    // "All projects": if the visitor came from inside the site, go BACK in
+    // history — that restores the projects list at the exact scroll position
+    // they left, so picking the next project is effortless. If they landed
+    // here directly (shared link, search result), fall back to the homepage
+    // with the projects panel open.
+    function bindBack() {
+      const back = document.getElementById('detail-back');
+      if (!back || back.dataset.bound === 'yes') return;
+      back.dataset.bound = 'yes';
+      back.addEventListener('click', (e) => {
+        const st: any = history.state;
+        const hasInAppHistory = st && typeof st.index === 'number' && st.index > 0;
+        const cameFromHere = document.referrer && document.referrer.startsWith(window.location.origin);
+        if (hasInAppHistory || (cameFromHere && window.history.length > 1)) {
+          e.preventDefault();
+          history.back();
+        }
+      });
+    }
+    bindBack();
+    document.addEventListener('astro:page-load', bindBack);
+  </script>
 
   <!-- CINEMATIC AUTO-LOAD (deferred so the page paints first) -->
   <script>
